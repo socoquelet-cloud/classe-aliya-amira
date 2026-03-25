@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>✨ Les Alphabets</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Patrick+Hand&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif}
+#app{min-height:100vh}
+
+:root{
+--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+--purple:#9B59B6;--teal:#1ABC9C;--red:#E74C3C;--orange:#FF7043;
+--ar-green:#2E7D32;--en-blue:#1565C0;
+--bg:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);
+--ar:'Noto Naskh Arabic',serif;
+--en:'Patrick Hand',cursive;
+}
+
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.28)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes appear{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* ── HOME ── */
+.home{min-height:100vh;background:var(--bg);padding:22px 16px 60px}
+.hero{text-align:center;margin-bottom:20px;animation:fadeDown .5s ease both}
+.hero-emoji{font-size:56px;display:block;animation:bounce 2.5s infinite;margin-bottom:6px}
+.hero-title{font-size:24px;font-weight:900;background:linear-gradient(90deg,var(--en-blue),var(--ar-green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* alpha tabs */
+.alpha-tabs{display:flex;background:#fff;border-radius:22px;padding:4px;gap:4px;max-width:360px;margin:0 auto 20px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.at-btn{flex:1;border:none;border-radius:18px;padding:9px 8px;font-weight:800;font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;text-align:center;line-height:1.3}
+.at-btn.active{color:#fff}
+.at-btn:not(.active){background:transparent;color:#bbb}
+
+/* progress strip */
+.prog-strip{background:#fff;border-radius:16px;padding:12px 16px;max-width:440px;margin:0 auto 18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;font-weight:700;color:#888}
+.prog-row span:last-child{color:var(--gold)}
+.bar-track{background:#F0F0F0;border-radius:99px;height:9px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s}
+
+/* mode grid */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:440px;margin:0 auto}
+.mode-card{background:#fff;border-radius:18px;padding:16px 12px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .2s;animation:fadeUp .4s ease both}
+.mode-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.11)}
+.mode-card:active{transform:scale(.96)}
+.mc-icon{font-size:34px;margin-bottom:7px}
+.mc-title{font-weight:900;font-size:13px;margin-bottom:2px}
+.mc-desc{font-size:10px;color:#aaa;line-height:1.4}
+
+/* letter grid */
+.letter-grid-title{font-weight:900;color:#666;font-size:13px;max-width:440px;margin:18px auto 9px}
+.letter-grid{display:grid;gap:7px;max-width:440px;margin:0 auto}
+.en-grid{grid-template-columns:repeat(7,1fr)}
+.ar-grid{grid-template-columns:repeat(7,1fr);direction:rtl}
+.lg-cell{background:#fff;border-radius:11px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);border:2px solid transparent;transition:all .18s;position:relative}
+.lg-cell:active{transform:scale(.9)}
+.lg-cell.learned{border-color:var(--green)}
+.lg-cell .lc-letter{font-size:18px;font-weight:800;line-height:1}
+.lg-cell .lc-dot{width:5px;height:5px;border-radius:50%;margin-top:3px}
+.lg-cell .lc-check{position:absolute;top:1px;right:2px;font-size:8px}
+.ar-cell .lc-letter{font-family:var(--ar);font-size:20px}
+
+/* ── PAGE ── */
+.page{min-height:100vh;background:var(--bg);padding:16px 14px 56px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.07);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;color:#666;margin-bottom:12px;font-weight:700}
+
+/* ── ENGLISH LETTER CARD ── */
+.en-letter-card{background:#fff;border-radius:24px;padding:22px 18px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 20px rgba(0,0,0,.09);margin-bottom:16px;border-top:5px solid var(--en-blue)}
+.en-big{font-family:var(--en);font-size:88px;font-weight:700;line-height:1;color:var(--en-blue)}
+.en-forms{display:flex;justify-content:center;gap:20px;margin:8px 0 12px}
+.en-form{text-align:center}
+.en-form-label{font-size:9px;color:#bbb;font-weight:700;text-transform:uppercase;margin-bottom:2px}
+.en-form-letter{font-family:var(--en);font-size:32px;font-weight:700;color:var(--en-blue);line-height:1}
+.en-word{font-family:var(--en);font-size:26px;font-weight:700;color:#444;margin-bottom:4px}
+.en-highlight{color:var(--en-blue)}
+.en-tip{font-size:11px;color:#ccc;font-style:italic;margin-top:6px}
+
+/* ── ARABIC LETTER CARD ── */
+.ar-letter-card{background:#fff;border-radius:24px;padding:22px 18px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 20px rgba(0,0,0,.09);margin-bottom:16px;border-top:5px solid var(--ar-green)}
+.ar-big{font-family:var(--ar);font-size:80px;font-weight:700;line-height:1.3;color:var(--ar-green);direction:rtl}
+.ar-name{font-size:18px;font-weight:900;color:#555;margin:4px 0 2px}
+.ar-sound{font-size:13px;color:#888;margin-bottom:12px}
+
+/* 4 forms grid */
+.forms-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:12px 0;width:100%}
+.form-box{background:#F8F8F8;border-radius:14px;padding:10px 6px;text-align:center}
+.form-box-label{font-size:9px;color:#aaa;font-weight:700;text-transform:uppercase;margin-bottom:5px}
+.form-box-letter{font-family:var(--ar);font-size:26px;font-weight:700;direction:rtl;line-height:1.4}
+.form-box.isolated{border:2px solid var(--ar-green)}
+.form-box.initial .form-box-letter{color:#1565C0}
+.form-box.medial .form-box-letter{color:#9B59B6}
+.form-box.final .form-box-letter{color:#E74C3C}
+
+.ar-word-box{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border-radius:16px;padding:14px;text-align:center;margin-top:6px}
+.ar-word{font-family:var(--ar);font-size:32px;font-weight:700;direction:rtl;color:var(--ar-green);margin-bottom:4px}
+.ar-word-fr{font-size:13px;color:#888;font-style:italic}
+.ar-word-emoji{font-size:28px;margin-bottom:4px}
+
+/* buttons */
+.btn{border:none;border-radius:14px;padding:11px 22px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.dots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:320px;margin-top:6px}
+.dot{width:8px;height:8px;border-radius:50%;cursor:pointer;transition:background .25s}
+
+/* quiz */
+.quiz-q{background:#fff;border-radius:20px;padding:20px 16px;text-align:center;width:100%;max-width:380px;box-shadow:0 5px 16px rgba(0,0,0,.08);margin-bottom:14px}
+.quiz-opts-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:380px}
+.q-opt{background:#F8F8F8;border:2.5px solid #EEE;border-radius:14px;padding:14px 8px;cursor:pointer;font-weight:800;font-size:14px;text-align:center;transition:all .2s;color:#444;font-family:'Nunito',sans-serif}
+.q-opt:active{transform:scale(.95)}
+.q-opt.correct{background:#E8F5E9;border-color:var(--green);color:#2E7D32;animation:pop .35s ease}
+.q-opt.wrong{background:#FFEBEE;border-color:var(--red);color:#C62828;animation:shake .35s ease}
+.q-opt .ar-opt{font-family:var(--ar);font-size:32px;direction:rtl;display:block;margin-bottom:4px}
+.q-opt .en-opt{font-family:var(--en);font-size:28px;display:block;margin-bottom:4px}
+
+/* feedback */
+.feedback{min-height:38px;font-size:22px;font-weight:900;text-align:center;margin:6px 0}
+
+/* result */
+.result{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:slideUp .4s ease both;padding-top:22px}
+.result-big{font-size:70px;animation:pop .5s ease both}
+.stars-row{display:flex;gap:5px;font-size:26px}
+
+/* nav counter */
+.nav-counter{font-size:11px;color:#bbb;font-weight:700;margin-bottom:12px}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════
+// 🇬🇧 ENGLISH ALPHABET
+// ══════════════════════════════════════════════════
+const EN_ALPHA = [
+  {l:'A', color:'#FF6B9D', emoji:'🍎', word:'apple',   tip:'says /æ/ like in "cat"'},
+  {l:'B', color:'#FF9500', emoji:'🐝', word:'bee',     tip:'lips pop open : b-b-b'},
+  {l:'C', color:'#4A90D9', emoji:'🐱', word:'cat',     tip:'hard /k/ sound'},
+  {l:'D', color:'#9B59B6', emoji:'🐬', word:'dolphin', tip:'tongue behind teeth : d-d'},
+  {l:'E', color:'#2ECC71', emoji:'🥚', word:'egg',     tip:'short /ɛ/ like in "bed"'},
+  {l:'F', color:'#E74C3C', emoji:'🐸', word:'frog',    tip:'teeth on lip : f-f-f'},
+  {l:'G', color:'#1ABC9C', emoji:'🦒', word:'giraffe', tip:'hard /g/ like "go"'},
+  {l:'H', color:'#F39C12', emoji:'🎩', word:'hat',     tip:'breath out : h-h-h'},
+  {l:'I', color:'#FF6B9D', emoji:'🍦', word:'ice',     tip:'long /aɪ/ like "my"'},
+  {l:'J', color:'#3498DB', emoji:'🕹️', word:'jellyfish',tip:'soft /dʒ/ like "jam"'},
+  {l:'K', color:'#E91E63', emoji:'🦘', word:'kangaroo',tip:'same as hard C'},
+  {l:'L', color:'#8BC34A', emoji:'🦁', word:'lion',    tip:'tongue to roof : l-l-l'},
+  {l:'M', color:'#FF5722', emoji:'🌙', word:'moon',    tip:'lips together : m-m-m'},
+  {l:'N', color:'#607D8B', emoji:'🥜', word:'nut',     tip:'tongue on teeth : n-n-n'},
+  {l:'O', color:'#FF9800', emoji:'🦉', word:'owl',     tip:'round lips : /ɒ/ or /oʊ/'},
+  {l:'P', color:'#9C27B0', emoji:'🐧', word:'penguin', tip:'lips pop : p-p-p'},
+  {l:'Q', color:'#F44336', emoji:'👑', word:'queen',   tip:'always /kw/ in English'},
+  {l:'R', color:'#00BCD4', emoji:'🌈', word:'rainbow', tip:'tongue curls back'},
+  {l:'S', color:'#4CAF50', emoji:'🐍', word:'snake',   tip:'hiss : s-s-s'},
+  {l:'T', color:'#FF6B9D', emoji:'🐢', word:'turtle',  tip:'tap tongue : t-t-t'},
+  {l:'U', color:'#3F51B5', emoji:'☂️', word:'umbrella',tip:'/ʌ/ like "cup"'},
+  {l:'V', color:'#009688', emoji:'🌋', word:'volcano', tip:'teeth on lip : v-v-v'},
+  {l:'W', color:'#FF9500', emoji:'🐺', word:'wolf',    tip:'round lips first'},
+  {l:'X', color:'#795548', emoji:'🎸', word:'xylophone',tip:'/z/ or /ks/ sound'},
+  {l:'Y', color:'#E91E63', emoji:'🧶', word:'yarn',    tip:'/j/ sound like "yes"'},
+  {l:'Z', color:'#607D8B', emoji:'🦓', word:'zebra',   tip:'buzz : z-z-z'},
+];
+
+// ══════════════════════════════════════════════════
+// 🕌 ARABIC ALPHABET — 28 letters with 4 forms
+// ══════════════════════════════════════════════════
+const AR_ALPHA = [
+{
+id:'alif',   name:'Alif',   sound:'a / aa',  color:'#E53935', emoji:'🦁', wordAr:'أَسَد',  wordFr:'lion',
+iso:'ا', ini:'ا', med:'ـا', fin:'ـا',
+note:'Pas de forme initiale/médiane jointe — alif ne se connecte pas à gauche'
+},
+{
+id:'ba',     name:'Baa',    sound:'b',        color:'#8E24AA', emoji:'🚪', wordAr:'بَاب',   wordFr:'porte',
+iso:'ب', ini:'بـ', med:'ـبـ', fin:'ـب',
+},
+{
+id:'ta',     name:'Taa',    sound:'t',        color:'#1E88E5', emoji:'🍎', wordAr:'تُفَّاحَة',wordFr:'pomme',
+iso:'ت', ini:'تـ', med:'ـتـ', fin:'ـت',
+},
+{
+id:'tha',    name:'Thaa',   sound:'th (anglais)', color:'#00897B', emoji:'🐍', wordAr:'ثُعْبَان',wordFr:'serpent',
+iso:'ث', ini:'ثـ', med:'ـثـ', fin:'ـث',
+},
+{
+id:'jim',    name:'Jiim',   sound:'dj',       color:'#F4511E', emoji:'🌊', wordAr:'جَبَل',  wordFr:'montagne',
+iso:'ج', ini:'جـ', med:'ـجـ', fin:'ـج',
+},
+{
+id:'ha2',    name:'Haa',    sound:'h (soufflé)', color:'#6D4C41', emoji:'🐴', wordAr:'حِصَان', wordFr:'cheval',
+iso:'ح', ini:'حـ', med:'ـحـ', fin:'ـح',
+},
+{
+id:'kha',    name:'Khaa',   sound:'kh',       color:'#455A64', emoji:'🍞', wordAr:'خُبْز',  wordFr:'pain',
+iso:'خ', ini:'خـ', med:'ـخـ', fin:'ـخ',
+},
+{
+id:'dal',    name:'Daal',   sound:'d',        color:'#C62828', emoji:'🐔', wordAr:'دَجَاجَة',wordFr:'poule',
+iso:'د', ini:'د', med:'ـد', fin:'ـد',
+note:'Ne se connecte pas à gauche'
+},
+{
+id:'dhal',   name:'Dhaal',  sound:'dh (anglais this)', color:'#AD1457', emoji:'💛', wordAr:'ذَهَب', wordFr:'or',
+iso:'ذ', ini:'ذ', med:'ـذ', fin:'ـذ',
+note:'Ne se connecte pas à gauche'
+},
+{
+id:'ra',     name:'Raa',    sound:'r (roulé)', color:'#558B2F', emoji:'🌹', wordAr:'وَرْدَة', wordFr:'rose',
+iso:'ر', ini:'ر', med:'ـر', fin:'ـر',
+note:'Ne se connecte pas à gauche'
+},
+{
+id:'zay',    name:'Zaay',   sound:'z',        color:'#00695C', emoji:'🌺', wordAr:'زَهْرَة', wordFr:'fleur',
+iso:'ز', ini:'ز', med:'ـز', fin:'ـز',
+note:'Ne se connecte pas à gauche'
+},
+{
+id:'sin',    name:'Siin',   sound:'s',        color:'#1565C0', emoji:'🐟', wordAr:'سَمَكَة', wordFr:'poisson',
+iso:'س', ini:'سـ', med:'ـسـ', fin:'ـس',
+},
+{
+id:'shin',   name:'Shiin',  sound:'ch',       color:'#6A1B9A', emoji:'☀️', wordAr:'شَمْس',  wordFr:'soleil',
+iso:'ش', ini:'شـ', med:'ـشـ', fin:'ـش',
+},
+{
+id:'sad',    name:'Saad',   sound:'s (emphatique)', color:'#2E7D32', emoji:'🍅', wordAr:'صَنْدُوق',wordFr:'boîte',
+iso:'ص', ini:'صـ', med:'ـصـ', fin:'ـص',
+},
+{
+id:'dad',    name:'Daad',   sound:'d (emphatique)', color:'#F57F17', emoji:'🐸', wordAr:'ضِفْدَع', wordFr:'grenouille',
+iso:'ض', ini:'ضـ', med:'ـضـ', fin:'ـض',
+},
+{
+id:'ta2',    name:'Taa (emphatique)', sound:'t (emphatique)', color:'#BF360C', emoji:'🐦', wordAr:'طَائِر',  wordFr:'oiseau',
+iso:'ط', ini:'طـ', med:'ـطـ', fin:'ـط',
+},
+{
+id:'dha2',   name:'Dhaa (emphatique)', sound:'dh (emphatique)', color:'#4E342E', emoji:'🦴', wordAr:'ظَرْف',  wordFr:'enveloppe',
+iso:'ظ', ini:'ظـ', med:'ـظـ', fin:'ـظ',
+},
+{
+id:'3ayn',   name:"'Ayn",   sound:"' (gutturale)", color:'#1B5E20', emoji:'👁️', wordAr:'عَيْن',  wordFr:'œil',
+iso:'ع', ini:'عـ', med:'ـعـ', fin:'ـع',
+},
+{
+id:'ghayn',  name:'Ghayn',  sound:'gh (grasseyé)', color:'#33691E', emoji:'🌲', wordAr:'غَابَة', wordFr:'forêt',
+iso:'غ', ini:'غـ', med:'ـغـ', fin:'ـغ',
+},
+{
+id:'fa',     name:'Faa',    sound:'f',        color:'#E65100', emoji:'🦋', wordAr:'فَرَاشَة',wordFr:'papillon',
+iso:'ف', ini:'فـ', med:'ـفـ', fin:'ـف',
+},
+{
+id:'qaf',    name:'Qaaf',   sound:'q (guttural)', color:'#4A148C', emoji:'🌙', wordAr:'قَمَر',  wordFr:'lune',
+iso:'ق', ini:'قـ', med:'ـقـ', fin:'ـق',
+},
+{
+id:'kaf',    name:'Kaaf',   sound:'k',        color:'#01579B', emoji:'🐱', wordAr:'قِطَّة', wordFr:'chat',
+iso:'ك', ini:'كـ', med:'ـكـ', fin:'ـك',
+},
+{
+id:'lam',    name:'Laam',   sound:'l',        color:'#006064', emoji:'🦁', wordAr:'لَيْل',  wordFr:'nuit',
+iso:'ل', ini:'لـ', med:'ـلـ', fin:'ـل',
+},
+{
+id:'mim',    name:'Miim',   sound:'m',        color:'#880E4F', emoji:'🌊', wordAr:'مَاء',   wordFr:'eau',
+iso:'م', ini:'مـ', med:'ـمـ', fin:'ـم',
+},
+{
+id:'nun',    name:'Nuun',   sound:'n',        color:'#1A237E', emoji:'🌟', wordAr:'نَجْم',  wordFr:'étoile',
+iso:'ن', ini:'نـ', med:'ـنـ', fin:'ـن',
+},
+{
+id:'ha',     name:'Haa (doux)', sound:'h',    color:'#004D40', emoji:'🌬️', wordAr:'هَوَاء', wordFr:'air',
+iso:'ه', ini:'هـ', med:'ـهـ', fin:'ـه',
+},
+{
+id:'waw',    name:'Waaw',   sound:'w / ou',   color:'#BF360C', emoji:'🌹', wordAr:'وَرْدَة', wordFr:'rose',
+iso:'و', ini:'و', med:'ـو', fin:'ـو',
+note:'Ne se connecte pas à gauche'
+},
+{
+id:'ya',     name:'Yaa',    sound:'y / ii',   color:'#1B5E20', emoji:'💎', wordAr:'يَاقُوت',wordFr:'rubis',
+iso:'ي', ini:'يـ', med:'ـيـ', fin:'ـي',
+},
+];
+
+// ── Storage ──────────────────────────────────────
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+// ── State ─────────────────────────────────────────
+let ST = {
+page: 'home',
+alpha: 'en',          // 'en' | 'ar'
+idx: 0,               // current letter index in discover/flashcard
+// quiz
+quizType: null,       // 'name-to-letter' | 'letter-to-name' | 'en-letter-to-word' | 'en-word-to-letter'
+quizPool: [], quizIdx: 0, quizAns: null, quizScore: 0,
+feedback: '',
+// learned
+enLearned: loadLS('alpha_en_learned', {}),
+arLearned: loadLS('alpha_ar_learned', {}),
+enStars:   loadLS('alpha_en_stars', 0),
+arStars:   loadLS('alpha_ar_stars', 0),
+};
+
+function setState(p){Object.assign(ST,p);render()}
+function save(){
+saveLS('alpha_en_learned',ST.enLearned);
+saveLS('alpha_ar_learned',ST.arLearned);
+saveLS('alpha_en_stars',ST.enStars);
+saveLS('alpha_ar_stars',ST.arStars);
+}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#9B59B6'];
+for(let i=0;i<40;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=6+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.6}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+function toast(msg){
+const el=document.createElement('div');el.className='toast';el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+
+// ── Quiz builders ──────────────────────────────────
+function makeEnQuiz(type){
+// type: 'letter-to-word' = see letter, pick word | 'word-to-letter' = see word, pick letter
+return shuffle(EN_ALPHA).slice(0,12).map(correct=>{
+const others = shuffle(EN_ALPHA.filter(x=>x.l!==correct.l)).slice(0,3);
+return {correct, opts: shuffle([correct,...others]), type};
+});
+}
+
+function makeArQuiz(type){
+// type: 'name-to-letter' = see name, pick isolated form
+//       'letter-to-name' = see isolated letter, pick name
+//       'form-match' = see word form, pick letter name
+return shuffle(AR_ALPHA).slice(0,10).map(correct=>{
+const others = shuffle(AR_ALPHA.filter(x=>x.id!==correct.id)).slice(0,3);
+return {correct, opts: shuffle([correct,...others]), type};
+});
+}
+
+// ══════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════
+function render(){
+const app=document.getElementById('app');
+const {page,alpha,idx,quizPool,quizIdx,quizAns,quizScore,feedback,
+enLearned,arLearned,enStars,arStars} = ST;
+
+const isAr = alpha==='ar';
+const currentAlpha = isAr ? AR_ALPHA : EN_ALPHA;
+const learnedMap = isAr ? arLearned : enLearned;
+const learnedCount = Object.keys(learnedMap).length;
+const totalLetters = currentAlpha.length;
+const accentColor = isAr ? 'var(--ar-green)' : 'var(--en-blue)';
+
+// ─ HOME ─
+if(page==='home'){
+const enDone = Object.keys(enLearned).length;
+const arDone = Object.keys(arLearned).length;
+
+app.innerHTML=`
+<div class="home">
+  <div class="hero">
+    <span class="hero-emoji">🔤</span>
+    <div class="hero-title">Les Alphabets</div>
+    <div class="hero-sub">La classe d'Aliya & Amira</div>
+  </div>
+
+  <div class="alpha-tabs">
+    <button class="at-btn ${alpha==='en'?'active':''}" onclick="setState({alpha:'en'})"
+      style="${alpha==='en'?'background:linear-gradient(135deg,#1565C0,#4A90D9)':''}">
+      🇬🇧 English<br/><span style="font-size:9px;opacity:.8">26 lettres</span>
+    </button>
+    <button class="at-btn ${alpha==='ar'?'active':''}" onclick="setState({alpha:'ar'})"
+      style="${alpha==='ar'?'background:linear-gradient(135deg,#1B5E20,#2E7D32)':''}">
+      🕌 Arabe<br/><span style="font-size:9px;opacity:.8">28 lettres · 4 formes</span>
+    </button>
+  </div>
+
+  ${alpha==='en'?`
+  <div class="prog-strip">
+    <div class="prog-row"><span>🇬🇧 Lettres connues</span><span>${enDone}/26</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.round(enDone/26*100)}%;background:linear-gradient(90deg,#1565C0,#4A90D9)"></div></div>
+  </div>
+  <div class="mode-grid">
+    ${[
+      {id:'en-discover', icon:'👀', title:'Découverte',   desc:'Explore chaque lettre',       color:'#1565C0'},
+      {id:'en-quiz-l2w', icon:'🎯', title:'Quiz : Lettre → Mot', desc:'Vois la lettre, trouve le mot', color:'#4A90D9'},
+      {id:'en-quiz-w2l', icon:'🎯', title:'Quiz : Mot → Lettre', desc:'Vois le mot, trouve la lettre', color:'#FF9500'},
+      {id:'en-grid',     icon:'🔡', title:'Toutes les lettres', desc:'Vue d\'ensemble', color:'#9B59B6'},
+    ].map((m,i)=>`<div class="mode-card" onclick="openMode('${m.id}')" style="animation-delay:${i*.07}s;border-color:${m.color}33">
+      <div class="mc-icon">${m.icon}</div>
+      <div class="mc-title" style="color:${m.color}">${m.title}</div>
+      <div class="mc-desc">${m.desc}</div>
+    </div>`).join('')}
+  </div>
+  <div class="letter-grid-title">🔡 Les 26 lettres</div>
+  <div class="letter-grid en-grid">
+    ${EN_ALPHA.map((l,i)=>`<div class="lg-cell ${enLearned[l.l]?'learned':''}" onclick="openLetter('en',${i})"
+      style="background:${enLearned[l.l]?l.color+'12':'#fff'};border-color:${enLearned[l.l]?l.color+'55':'transparent'}">
+      <div class="lc-letter" style="color:${l.color};font-family:var(--en)">${l.l}</div>
+      <div class="lc-dot" style="background:${enLearned[l.l]?l.color:'#E0E0E0'}"></div>
+      ${enLearned[l.l]?'<span class="lc-check">✅</span>':''}
+    </div>`).join('')}
+  </div>`
+  :`
+  <div class="prog-strip">
+    <div class="prog-row"><span>🕌 Lettres connues</span><span>${arDone}/28</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.round(arDone/28*100)}%;background:linear-gradient(90deg,#1B5E20,#4CAF50)"></div></div>
+  </div>
+  <div class="mode-grid">
+    ${[
+      {id:'ar-discover',  icon:'👀', title:'Découverte',     desc:'Lettre + 4 formes + mot',    color:'#2E7D32'},
+      {id:'ar-quiz-l2n',  icon:'🎯', title:'Quiz : Lettre → Nom', desc:'Vois la lettre, trouve son nom', color:'#1B5E20'},
+      {id:'ar-quiz-n2l',  icon:'🎯', title:'Quiz : Nom → Lettre', desc:'Vois le nom, trouve la lettre', color:'#FF9500'},
+      {id:'ar-quiz-form', icon:'🔀', title:'Quiz : Les formes',    desc:'Reconnais les 4 formes',  color:'#9B59B6'},
+    ].map((m,i)=>`<div class="mode-card" onclick="openMode('${m.id}')" style="animation-delay:${i*.07}s;border-color:${m.color}33">
+      <div class="mc-icon">${m.icon}</div>
+      <div class="mc-title" style="color:${m.color}">${m.title}</div>
+      <div class="mc-desc">${m.desc}</div>
+    </div>`).join('')}
+  </div>
+  <div class="letter-grid-title">الحروف الهجائية · Les 28 lettres</div>
+  <div class="letter-grid ar-grid">
+    ${AR_ALPHA.map((l,i)=>`<div class="lg-cell ar-cell ${arLearned[l.id]?'learned':''}" onclick="openLetter('ar',${i})"
+      style="background:${arLearned[l.id]?l.color+'12':'#fff'};border-color:${arLearned[l.id]?l.color+'55':'transparent'}">
+      <div class="lc-letter" style="color:${l.color}">${l.iso}</div>
+      <div class="lc-dot" style="background:${arLearned[l.id]?l.color:'#E0E0E0'}"></div>
+      ${arLearned[l.id]?'<span class="lc-check">✅</span>':''}
+    </div>`).join('')}
+  </div>`}
+</div>`;
+
+}
+
+// ─ EN LETTER DETAIL ─
+else if(page==='en-letter'){
+const L = EN_ALPHA[idx];
+const prev=idx>0, next=idx<25;
+const isLearned=!!enLearned[L.l];
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home',alpha:'en'})">← Retour</button>
+<div class="nav-counter">${idx+1} / 26</div>
+
+
+  <div class="en-letter-card">
+    <div class="en-big">${L.l}</div>
+    <div class="en-forms">
+      <div class="en-form">
+        <div class="en-form-label">Majuscule</div>
+        <div class="en-form-letter" style="color:${L.color}">${L.l.toUpperCase()}</div>
+      </div>
+      <div class="en-form">
+        <div class="en-form-label">Minuscule</div>
+        <div class="en-form-letter" style="color:${L.color}">${L.l.toLowerCase()}</div>
+      </div>
+    </div>
+    <div style="font-size:48px;margin-bottom:8px">${L.emoji}</div>
+    <div class="en-word" style="color:${L.color}">
+      <span class="en-highlight">${L.word[0].toUpperCase()}</span>${L.word.slice(1)}
+    </div>
+    <div class="en-tip">${L.tip}</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="setState({idx:${idx-1}})" ${prev?'':'disabled'}>← Préc.</button>
+    <button class="btn" style="background:${isLearned?'var(--green)':L.color}" onclick="markEn(${idx})">
+      ${isLearned?'✅ Apprise !':'⭐ Je la connais !'}
+    </button>
+    <button class="btn btn-ghost" onclick="setState({idx:${idx+1}})" ${next?'':'disabled'}>Suiv. →</button>
+  </div>
+  <div class="dots">
+    ${EN_ALPHA.map((_,i)=>`<div class="dot" onclick="setState({idx:${i}})"
+      style="background:${i===idx?L.color:enLearned[EN_ALPHA[i].l]?EN_ALPHA[i].color+'99':'#DDD'}"></div>`).join('')}
+  </div>
+</div>`;
+
+}
+
+// ─ AR LETTER DETAIL ─
+else if(page==='ar-letter'){
+const L = AR_ALPHA[idx];
+const prev=idx>0, next=idx<27;
+const isLearned=!!arLearned[L.id];
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home',alpha:'ar'})">← Retour</button>
+<div class="nav-counter">${idx+1} / 28</div>
+
+
+  <div class="ar-letter-card">
+    <div class="ar-big">${L.iso}</div>
+    <div class="ar-name">${L.name}</div>
+    <div class="ar-sound">Son : <strong>${L.sound}</strong></div>
+
+    <!-- 4 FORMES -->
+    <div class="forms-grid">
+      <div class="form-box isolated">
+        <div class="form-box-label">Isolée</div>
+        <div class="form-box-letter" style="color:${L.color}">${L.iso}</div>
+      </div>
+      <div class="form-box initial">
+        <div class="form-box-label">Initiale</div>
+        <div class="form-box-letter">${L.ini}</div>
+      </div>
+      <div class="form-box medial">
+        <div class="form-box-label">Médiane</div>
+        <div class="form-box-letter">${L.med}</div>
+      </div>
+      <div class="form-box final">
+        <div class="form-box-label">Finale</div>
+        <div class="form-box-letter">${L.fin}</div>
+      </div>
+    </div>
+
+    ${L.note?`<div style="font-size:11px;color:#aaa;text-align:center;margin-top:2px;font-style:italic">💡 ${L.note}</div>`:''}
+
+    <!-- MOT EXEMPLE -->
+    <div class="ar-word-box">
+      <div class="ar-word-emoji">${L.emoji}</div>
+      <div class="ar-word">${L.wordAr}</div>
+      <div class="ar-word-fr">${L.wordFr}</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="setState({idx:${idx-1}})" ${prev?'':'disabled'}>← Préc.</button>
+    <button class="btn" style="background:${isLearned?'var(--green)':L.color}" onclick="markAr(${idx})">
+      ${isLearned?'✅ Apprise !':'⭐ Je la connais !'}
+    </button>
+    <button class="btn btn-ghost" onclick="setState({idx:${idx+1}})" ${next?'':'disabled'}>Suiv. →</button>
+  </div>
+  <div class="dots">
+    ${AR_ALPHA.map((_,i)=>`<div class="dot" onclick="setState({idx:${i}})"
+      style="background:${i===idx?L.color:arLearned[AR_ALPHA[i].id]?AR_ALPHA[i].color+'99':'#DDD'}"></div>`).join('')}
+  </div>
+</div>`;
+
+}
+
+// ─ EN QUIZ ─
+else if(page==='en-quiz'){
+if(!quizPool.length){setState({quizPool:makeEnQuiz(ST.quizType),quizIdx:0,quizAns:null,quizScore:0,feedback:''});return;}
+const Q=quizPool[quizIdx];
+if(!Q){showResult('en');return;}
+const isL2W = Q.type==='letter-to-word';
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',alpha:'en',quizPool:[],quizScore:0,quizAns:null,feedback:''})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:12px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${quizIdx+1}/${quizPool.length}</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
+<div class="quiz-q" style="border-top:4px solid ${Q.correct.color}">
+  ${isL2W
+    ? `<div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:10px">
+         Quel mot commence par cette lettre ?
+       </div>
+       <div style="font-family:var(--en);font-size:80px;font-weight:700;color:${Q.correct.color};line-height:1">
+         ${Q.correct.l}
+       </div>`
+    : `<div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:10px">
+         Quelle lettre commence ce mot ?
+       </div>
+       <div style="font-size:52px;margin-bottom:6px">
+         ${Q.correct.emoji}
+       </div>
+       <div style="font-family:var(--en);font-size:22px;font-weight:700;color:${Q.correct.color}">
+         _ ${Q.correct.word.slice(1)}
+       </div>`
+  }
+</div>
+
+  <div class="feedback">${feedback==='correct'?['🎉 Yes!','⭐ Great!','✅ Correct!'][~~(Math.random()*3)]:feedback==='wrong'?'💪 Not quite!':''}</div>
+
+  <div class="quiz-opts-2">
+    ${Q.opts.map((o,i)=>{
+      const isC=o.l===Q.correct.l;
+      const isCh=quizAns!==null&&quizAns===i;
+      let cls=''; if(quizAns!==null){if(isC)cls='correct';else if(isCh)cls='wrong';}
+      return`<button class="q-opt ${cls}" onclick="answerQuiz(${i})">
+        ${isL2W
+          ?`<span style="font-size:22px">${o.emoji}</span>
+            <span class="en-opt" style="color:${isCh||quizAns===null?o.color:'inherit'}">${o.word}</span>`
+          :`<span class="en-opt" style="color:${isCh||quizAns===null?o.color:'inherit'}">${o.l}</span>`
+        }
+      </button>`;
+    }).join('')}
+  </div>
+</div>`;
+
+}
+
+// ─ AR QUIZ ─
+else if(page==='ar-quiz'){
+if(!quizPool.length){setState({quizPool:makeArQuiz(ST.quizType),quizIdx:0,quizAns:null,quizScore:0,feedback:''});return;}
+const Q=quizPool[quizIdx];
+if(!Q){showResult('ar');return;}
+const type=Q.type;
+
+// Determine question display
+let qHTML='';
+if(type==='letter-to-name'){
+  qHTML=`<div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:10px">Quel est le nom de cette lettre ?</div>
+    <div style="font-family:var(--ar);font-size:80px;font-weight:700;color:${Q.correct.color};direction:rtl;line-height:1.3">${Q.correct.iso}</div>`;
+} else if(type==='name-to-letter'){
+  qHTML=`<div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:10px">Trouve la lettre :</div>
+    <div style="font-size:22px;font-weight:900;color:${Q.correct.color};margin-bottom:4px">${Q.correct.name}</div>
+    <div style="font-size:13px;color:#aaa">Son : ${Q.correct.sound}</div>`;
+} else { // form-match
+  const forms=[{f:Q.correct.iso,lbl:'Isolée'},{f:Q.correct.ini,lbl:'Initiale'},{f:Q.correct.med,lbl:'Médiane'},{f:Q.correct.fin,lbl:'Finale'}];
+  const picked=shuffle(forms)[0];
+  Q._shownForm=picked;
+  qHTML=`<div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:8px">Forme <strong>${picked.lbl}</strong> — quelle lettre est-ce ?</div>
+    <div style="font-family:var(--ar);font-size:72px;color:${Q.correct.color};direction:rtl;line-height:1.4">${picked.f}</div>`;
+}
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',alpha:'ar',quizPool:[],quizScore:0,quizAns:null,feedback:''})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:12px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${quizIdx+1}/${quizPool.length}</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
+
+  <div class="quiz-q" style="border-top:4px solid ${Q.correct.color}">${qHTML}</div>
+
+  <div class="feedback">${feedback==='correct'?['🎉 أَحْسَنْت !','⭐ ممتاز !','✅ صح !'][~~(Math.random()*3)]:feedback==='wrong'?'💪 حاولي مرة أخرى':''}</div>
+
+  <div class="quiz-opts-2">
+    ${Q.opts.map((o,i)=>{
+      const isC=o.id===Q.correct.id;
+      const isCh=quizAns!==null&&quizAns===i;
+      let cls=''; if(quizAns!==null){if(isC)cls='correct';else if(isCh)cls='wrong';}
+      return`<button class="q-opt ${cls}" onclick="answerQuiz(${i})">
+        ${type==='letter-to-name'||type==='form-match'
+          ?`<span style="font-size:13px;font-weight:900;color:${isCh||quizAns===null?o.color:'inherit'}">${o.name}</span>
+            <span style="font-size:11px;color:#aaa;display:block;margin-top:3px">${o.sound}</span>`
+          :`<span class="ar-opt" style="color:${isCh||quizAns===null?o.color:'inherit'}">${o.iso}</span>`
+        }
+      </button>`;
+    }).join('')}
+  </div>
+</div>`;
+
+}
+
+// ─ RESULT ─
+else if(page==='result'){
+const pct=Math.round(quizScore/quizPool.length*100);
+const s=pct>=80?3:pct>=55?2:1;
+const isAr=ST.alpha==='ar';
+app.innerHTML=`<div class="page"> <div class="result"> <div class="result-big">${s===3?'🏆':s===2?'⭐':'💪'}</div> <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / ${quizPool.length}</div> <div class="stars-row">${[0,1,2].map(j=>`<span>${j<s?'⭐':'☆'}</span>`).join('')}</div> <div style="font-size:14px;color:#888;text-align:center"> ${s===3?(isAr?'ممتاز ! أنتِ تعرفين الحروف ! 🎉':'Perfect! You know your letters! 🎉') :s===2?(isAr?'برافو ! واصلي':'Well done! Keep going 😊') :(isAr?'حاولي مرة أخرى 💪':'Keep practising! 💪')} </div> <div class="btn-row" style="margin-top:10px"> <button class="btn" style="background:var(--gold)" onclick="replayQuiz()">🔄 Rejouer</button> <button class="btn btn-ghost" onclick="setState({page:'home',quizPool:[],feedback:''})">🏠 Accueil</button> </div> </div> </div>`;
+if(s===3) confetti();
+}
+}
+
+// ── Actions ───────────────────────────────────────
+function openMode(id){
+if(id==='en-discover') setState({page:'en-letter',alpha:'en',idx:0});
+else if(id==='en-grid') setState({page:'home',alpha:'en'});
+else if(id==='en-quiz-l2w') setState({page:'en-quiz',alpha:'en',quizType:'letter-to-word',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+else if(id==='en-quiz-w2l') setState({page:'en-quiz',alpha:'en',quizType:'word-to-letter',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+else if(id==='ar-discover') setState({page:'ar-letter',alpha:'ar',idx:0});
+else if(id==='ar-quiz-l2n') setState({page:'ar-quiz',alpha:'ar',quizType:'letter-to-name',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+else if(id==='ar-quiz-n2l') setState({page:'ar-quiz',alpha:'ar',quizType:'name-to-letter',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+else if(id==='ar-quiz-form') setState({page:'ar-quiz',alpha:'ar',quizType:'form-match',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+}
+
+function openLetter(lang,i){
+setState({page:lang+'-letter',alpha:lang,idx:i});
+}
+
+function markEn(i){
+const L=EN_ALPHA[i];
+if(!ST.enLearned[L.l]){
+ST.enLearned[L.l]=true;
+ST.enStars=Math.min(ST.enStars+1,99);
+save();toast('⭐ '+L.l+' apprise !');render();
+}
+}
+
+function markAr(i){
+const L=AR_ALPHA[i];
+if(!ST.arLearned[L.id]){
+ST.arLearned[L.id]=true;
+ST.arStars=Math.min(ST.arStars+1,99);
+save();toast('⭐ '+L.name+' apprise !');render();
+}
+}
+
+function answerQuiz(optIdx){
+if(ST.quizAns!==null) return;
+const Q=ST.quizPool[ST.quizIdx];
+const chosen=Q.opts[optIdx];
+const isAr=ST.page==='ar-quiz';
+const isCorrect=isAr?(chosen.id===Q.correct.id):(chosen.l===Q.correct.l);
+const score=isCorrect?ST.quizScore+1:ST.quizScore;
+if(isCorrect){
+if(isAr) markAr(AR_ALPHA.findIndex(x=>x.id===Q.correct.id));
+else markEn(EN_ALPHA.findIndex(x=>x.l===Q.correct.l));
+}
+ST.quizAns=optIdx;ST.quizScore=score;ST.feedback=isCorrect?'correct':'wrong';
+render();
+setTimeout(()=>{
+const next=ST.quizIdx+1;
+if(next>=ST.quizPool.length){showResult(isAr?'ar':'en');return;}
+ST.quizIdx=next;ST.quizAns=null;ST.feedback='';render();
+},1100);
+}
+
+function showResult(lang){
+ST.alpha=lang;
+const pct=Math.round(ST.quizScore/ST.quizPool.length*100);
+const s=pct>=80?3:pct>=55?2:1;
+if(lang==='en') ST.enStars=Math.max(ST.enStars,s);
+else ST.arStars=Math.max(ST.arStars,s);
+save();setState({page:'result'});
+if(s===3) confetti();
+}
+
+function replayQuiz(){
+const isAr=ST.alpha==='ar';
+const pool=isAr?makeArQuiz(ST.quizType):makeEnQuiz(ST.quizType);
+setState({quizPool:pool,quizIdx:0,quizScore:0,quizAns:null,feedback:'',page:isAr?'ar-quiz':'en-quiz'});
+}
+
+render();
+</script>
+
+</body>
+</html>

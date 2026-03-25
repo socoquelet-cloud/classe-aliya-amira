@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Vocabulaire - Aliya et Amira</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:"Nunito",sans-serif;-webkit-tap-highlight-color:transparent}
+#app{min-height:100vh}
+:root{--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;--purple:#9B59B6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+@keyframes flip{0%{transform:rotateY(0)}100%{transform:rotateY(180deg)}}
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* PICKER */
+.picker{min-height:100vh;background:linear-gradient(135deg,#FFF0FA,#F0F8FF,#FFF8F0);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px}
+.picker-title{font-size:24px;font-weight:900;background:linear-gradient(90deg,#FF9A9E,#4A90D9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;text-align:center}
+.picker-sub{font-size:13px;color:#aaa;margin-bottom:28px;text-align:center;font-weight:700}
+.profiles{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.profile-card{background:#fff;border-radius:24px;padding:24px 20px;min-width:160px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.1);cursor:pointer;transition:all .2s;border:3px solid transparent;animation:fadeUp .4s ease both}
+.profile-card:hover{transform:translateY(-5px)}
+.profile-card:active{transform:scale(.96)}
+.pc-emoji{font-size:56px;display:block;margin-bottom:8px}
+.pc-name{font-size:20px;font-weight:900;margin-bottom:8px}
+.pc-cta{border:none;border-radius:16px;padding:10px 20px;font-weight:900;font-size:13px;cursor:pointer;font-family:"Nunito",sans-serif;color:#fff;width:100%}
+
+/* MAIN */
+.main{min-height:100vh;display:flex;flex-direction:column}
+.header{padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.header-left{display:flex;align-items:center;gap:8px;flex:1}
+.switch-btn{background:rgba(255,255,255,.3);border:none;border-radius:14px;padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer;font-family:"Nunito",sans-serif;color:#fff}
+.prog-bars{padding:8px 14px;display:flex;flex-direction:column;gap:5px}
+.prog-row{display:flex;align-items:center;gap:8px}
+.prog-flag{font-size:14px;width:20px}
+.prog-label{font-size:10px;font-weight:700;color:#888;min-width:70px}
+.prog-track{flex:1;height:7px;background:#F0F0F0;border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .5s}
+.prog-pct{font-size:9px;font-weight:800;color:#aaa;min-width:28px;text-align:right}
+
+/* NAV TABS */
+.nav-tabs{display:flex;background:#F8F8F8;padding:6px;gap:4px;border-radius:0}
+.nav-tab{flex:1;border:none;border-radius:12px;padding:8px 4px;font-size:11px;font-weight:800;cursor:pointer;font-family:"Nunito",sans-serif;transition:all .2s}
+.nav-tab.active{background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+
+/* LANG PILLS */
+.lang-pills{display:flex;gap:6px;padding:8px 14px;overflow-x:auto}
+.lang-pill{border:none;border-radius:18px;padding:6px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:"Nunito",sans-serif;white-space:nowrap;transition:all .18s}
+.lang-pill.active{color:#fff}
+.lang-pill:not(.active){background:#F0F0F0;color:#888}
+
+/* CAT PILLS */
+.cat-pills{display:flex;gap:6px;padding:4px 14px 8px;overflow-x:auto}
+.cat-pill{border:none;border-radius:18px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:"Nunito",sans-serif;white-space:nowrap;transition:all .18s}
+.cat-pill.active{color:#fff}
+.cat-pill:not(.active){background:#F0F0F0;color:#888}
+
+/* FLASHCARD */
+.flashcard-area{flex:1;display:flex;flex-direction:column;align-items:center;padding:14px 14px 60px}
+.card{background:#fff;border-radius:24px;width:100%;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.1);padding:28px 20px;text-align:center;margin-bottom:14px;cursor:pointer;transition:transform .15s}
+.card:active{transform:scale(.97)}
+.card-emoji{font-size:72px;margin-bottom:10px;display:block}
+.card-cat{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#bbb;margin-bottom:8px}
+.card-word{font-size:38px;font-weight:900;margin-bottom:6px}
+.card-word.rtl{direction:rtl;font-family:"Noto Naskh Arabic",serif;font-size:34px}
+.card-back{margin-top:14px;border-top:1px solid #F0F0F0;padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.card-back-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#F8F8F8;border-radius:12px}
+.back-flag{font-size:15px}
+.back-word{font-size:15px;font-weight:700;color:#444}
+.back-word.rtl{direction:rtl;font-family:"Noto Naskh Arabic",serif;font-size:17px;text-align:right;flex:1}
+.hint{font-size:12px;color:#ccc;margin-top:6px}
+.learned-badge{background:#E8F5E9;color:#2E7D32;border-radius:10px;padding:3px 10px;font-size:11px;font-weight:800;margin-top:6px;display:inline-block}
+
+/* CARD NAV */
+.card-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+.btn{border:none;border-radius:13px;padding:11px 22px;font-weight:800;font-size:13px;cursor:pointer;font-family:"Nunito",sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.dots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:280px}
+.dot{width:8px;height:8px;border-radius:50%;cursor:pointer;transition:background .2s}
+
+/* QUIZ */
+.quiz-area{flex:1;display:flex;flex-direction:column;align-items:center;padding:14px 14px 60px}
+.quiz-q{background:#fff;border-radius:20px;padding:20px;text-align:center;width:100%;max-width:380px;box-shadow:0 5px 16px rgba(0,0,0,.08);margin-bottom:12px}
+.quiz-score{font-size:14px;font-weight:900;color:var(--gold);margin-bottom:8px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:380px}
+.q-opt{border:2.5px solid #EEE;background:#F8F8F8;border-radius:13px;padding:13px 8px;cursor:pointer;font-family:"Nunito",sans-serif;font-weight:800;font-size:13px;text-align:center;transition:all .2s;color:#444}
+.q-opt:active{transform:scale(.95)}
+.q-opt.rtl-opt{direction:rtl;font-family:"Noto Naskh Arabic",serif;font-size:16px}
+.q-opt.correct{background:#E8F5E9;border-color:#4CAF50;color:#2E7D32}
+.q-opt.wrong{background:#FFEBEE;border-color:#F44336;color:#C62828}
+.feedback{min-height:36px;font-size:22px;font-weight:900;text-align:center;margin:5px 0}
+
+/* CATALOGUE */
+.catalogue-area{flex:1;padding:8px 14px 60px}
+.search-box{position:relative;margin-bottom:10px}
+.search-box input{width:100%;background:#F8F8F8;border:1.5px solid #E8E8E8;border-radius:14px;padding:10px 14px 10px 36px;font-size:13px;font-family:"Nunito",sans-serif;outline:none}
+.search-ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.4}
+.words-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.word-cell{background:#fff;border-radius:14px;padding:10px 6px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);border:2px solid transparent;transition:all .18s}
+.word-cell:active{transform:scale(.93)}
+.word-cell.learned{border-color:#4CAF50}
+.wc-emoji{font-size:26px}
+.wc-word{font-size:11px;font-weight:700;margin-top:3px;color:#555}
+.wc-word.rtl{direction:rtl;font-family:"Noto Naskh Arabic",serif;font-size:13px}
+
+/* RESULT */
+.result{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 20px;animation:fadeUp .4s ease both}
+.result-big{font-size:72px;animation:pop .5s ease both}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+const WORDS = [
+{ fr:"Chat",          darija:"Mich",            en:"Cat",              ar:"قِطَّة",       emoji:"🐱", cat:"Animaux" },
+  { fr:"Chien",         darija:"Kelb",            en:"Dog",              ar:"كَلْب",        emoji:"🐶", cat:"Animaux" },
+  { fr:"Lapin",         darija:"Qniya",           en:"Rabbit",           ar:"أَرْنَب",      emoji:"🐰", cat:"Animaux" },
+  { fr:"Lion",          darija:"Sba3",            en:"Lion",             ar:"أَسَد",        emoji:"🦁", cat:"Animaux" },
+  { fr:"Éléphant",      darija:"Fil",             en:"Elephant",         ar:"فِيل",         emoji:"🐘", cat:"Animaux" },
+  { fr:"Girafe",        darija:"Zarafa",          en:"Giraffe",          ar:"زَرَافَة",     emoji:"🦒", cat:"Animaux" },
+  { fr:"Oiseau",        darija:"3sfour",          en:"Bird",             ar:"عُصْفُور",     emoji:"🐦", cat:"Animaux" },
+  { fr:"Poisson",       darija:"Hout",            en:"Fish",             ar:"سَمَكَة",      emoji:"🐟", cat:"Animaux" },
+  { fr:"Tortue",        darija:"Fkroun",          en:"Turtle",           ar:"سُلَحْفَاة",   emoji:"🐢", cat:"Animaux" },
+  { fr:"Canard",        darija:"Batta",           en:"Duck",             ar:"بَطَّة",       emoji:"🦆", cat:"Animaux" },
+  { fr:"Vache",         darija:"Bagra",           en:"Cow",              ar:"بَقَرَة",      emoji:"🐄", cat:"Animaux" },
+  { fr:"Mouton",        darija:"Kharouf",         en:"Sheep",            ar:"خَرُوف",       emoji:"🐑", cat:"Animaux" },
+  { fr:"Cheval",        darija:"3oud",            en:"Horse",            ar:"حِصَان",       emoji:"🐴", cat:"Animaux" },
+  { fr:"Grenouille",    darija:"Dafda3",          en:"Frog",             ar:"ضِفْدَع",      emoji:"🐸", cat:"Animaux" },
+  { fr:"Papillon",      darija:"Farfara",         en:"Butterfly",        ar:"فَرَاشَة",     emoji:"🦋", cat:"Animaux" },
+  { fr:"Abeille",       darija:"Nhal",            en:"Bee",              ar:"نَحْلَة",      emoji:"🐝", cat:"Animaux" },
+  { fr:"Singe",         darija:"Maimoun",         en:"Monkey",           ar:"قِرْد",        emoji:"🐒", cat:"Animaux" },
+  { fr:"Cochon",        darija:"Halluf",          en:"Pig",              ar:"خِنْزِير",     emoji:"🐷", cat:"Animaux" },
+  { fr:"Poule",         darija:"Djaja",           en:"Hen",              ar:"دَجَاجَة",     emoji:"🐔", cat:"Animaux" },
+  { fr:"Souris",        darija:"Far",             en:"Mouse",            ar:"فَأْر",        emoji:"🐭", cat:"Animaux" },
+
+{ fr:"Pomme",         darija:"Tffah",           en:"Apple",            ar:"تُفَّاحَة",    emoji:"🍎", cat:"Nourriture" },
+{ fr:"Banane",        darija:"Banana",          en:"Banana",           ar:"مَوْزَة",      emoji:"🍌", cat:"Nourriture" },
+{ fr:"Orange",        darija:"Limo",            en:"Orange",           ar:"بُرْتُقَالَة", emoji:"🍊", cat:"Nourriture" },
+{ fr:"Fraise",        darija:"Fraise",          en:"Strawberry",       ar:"فَرَاوِلَة",   emoji:"🍓", cat:"Nourriture" },
+{ fr:"Raisin",        darija:"3nb",             en:"Grapes",           ar:"عِنَب",        emoji:"🍇", cat:"Nourriture" },
+{ fr:"Pastèque",      darija:"Dellah",          en:"Watermelon",       ar:"بِطِّيخَة",    emoji:"🍉", cat:"Nourriture" },
+{ fr:"Pain",          darija:"Khobz",           en:"Bread",            ar:"خُبْز",        emoji:"🍞", cat:"Nourriture" },
+{ fr:"Lait",          darija:"Hlib",            en:"Milk",             ar:"حَلِيب",       emoji:"🥛", cat:"Nourriture" },
+{ fr:"Œuf",           darija:"Bid",             en:"Egg",              ar:"بَيْضَة",      emoji:"🥚", cat:"Nourriture" },
+{ fr:"Poulet",        darija:"Djaj",            en:"Chicken",          ar:"دَجَاج",       emoji:"🍗", cat:"Nourriture" },
+{ fr:"Soupe",         darija:"Hrira",           en:"Soup",             ar:"شُورْبَة",     emoji:"🍲", cat:"Nourriture" },
+{ fr:"Gâteau",        darija:"Halwa",           en:"Cake",             ar:"كَعْكَة",      emoji:"🎂", cat:"Nourriture" },
+{ fr:"Couscous",      darija:"Ksksu",           en:"Couscous",         ar:"كُسْكُس",      emoji:"🍚", cat:"Nourriture" },
+{ fr:"Eau",           darija:"Ma",              en:"Water",            ar:"مَاء",         emoji:"💧", cat:"Nourriture" },
+{ fr:"Jus",           darija:"3sir",            en:"Juice",            ar:"عَصِير",       emoji:"🧃", cat:"Nourriture" },
+{ fr:"Carotte",       darija:"Khizou",          en:"Carrot",           ar:"جَزَرَة",      emoji:"🥕", cat:"Nourriture" },
+{ fr:"Tomate",        darija:"Matisha",         en:"Tomato",           ar:"طَمَاطِم",     emoji:"🍅", cat:"Nourriture" },
+{ fr:"Citron",        darija:"Hamed",           en:"Lemon",            ar:"لَيْمُون",     emoji:"🍋", cat:"Nourriture" },
+{ fr:"Figue",         darija:"Karmous",         en:"Fig",              ar:"تِينَة",       emoji:"🍑", cat:"Nourriture" },
+{ fr:"Olive",         darija:"Zitoun",          en:"Olive",            ar:"زَيْتُونَة",   emoji:"🫒", cat:"Nourriture" },
+
+{ fr:"Rouge",         darija:"Hmar",            en:"Red",              ar:"أَحْمَر",      emoji:"🔴", cat:"Couleurs" },
+{ fr:"Bleu",          darija:"Zraq",            en:"Blue",             ar:"أَزْرَق",      emoji:"🔵", cat:"Couleurs" },
+{ fr:"Vert",          darija:"Lkhdar",          en:"Green",            ar:"أَخْضَر",      emoji:"🟢", cat:"Couleurs" },
+{ fr:"Jaune",         darija:"Sfar",            en:"Yellow",           ar:"أَصْفَر",      emoji:"🟡", cat:"Couleurs" },
+{ fr:"Orange",        darija:"Brtqali",         en:"Orange",           ar:"بُرْتُقَالِي", emoji:"🟠", cat:"Couleurs" },
+{ fr:"Violet",        darija:"Banafsaji",       en:"Purple",           ar:"بَنَفْسَجِي",  emoji:"🟣", cat:"Couleurs" },
+{ fr:"Rose",          darija:"Wardi",           en:"Pink",             ar:"وَرْدِي",      emoji:"🌸", cat:"Couleurs" },
+{ fr:"Blanc",         darija:"Biad",            en:"White",            ar:"أَبْيَض",      emoji:"⬜", cat:"Couleurs" },
+{ fr:"Noir",          darija:"Lkhal",           en:"Black",            ar:"أَسْوَد",      emoji:"⬛", cat:"Couleurs" },
+{ fr:"Marron",        darija:"Qhwi",            en:"Brown",            ar:"بُنِّي",       emoji:"🟤", cat:"Couleurs" },
+
+{ fr:"Maman",         darija:"Yamma",           en:"Mum",              ar:"أُمِّي",       emoji:"👩", cat:"Famille" },
+{ fr:"Papa",          darija:"Baba",            en:"Dad",              ar:"أَبِي",        emoji:"👨", cat:"Famille" },
+{ fr:"Bébé",          darija:"Drari",           en:"Baby",             ar:"رَضِيع",       emoji:"👶", cat:"Famille" },
+{ fr:"Grand-mère",    darija:"Jedda",           en:"Grandma",          ar:"جَدَّة",       emoji:"👵", cat:"Famille" },
+{ fr:"Grand-père",    darija:"Jedd",            en:"Grandpa",          ar:"جَدٌّ",        emoji:"👴", cat:"Famille" },
+{ fr:"Sœur",          darija:"Okhti",           en:"Sister",           ar:"أُخْت",        emoji:"👧", cat:"Famille" },
+{ fr:"Frère",         darija:"Khoya",           en:"Brother",          ar:"أَخ",          emoji:"👦", cat:"Famille" },
+{ fr:"Tante",         darija:"3ammti",          en:"Aunt",             ar:"عَمَّة",       emoji:"👩‍🦱", cat:"Famille" },
+{ fr:"Oncle",         darija:"3ammi",           en:"Uncle",            ar:"عَمٌّ",        emoji:"👨‍🦱", cat:"Famille" },
+{ fr:"Ami",           darija:"Sahbi",           en:"Friend",           ar:"صَدِيق",       emoji:"🤝", cat:"Famille" },
+
+{ fr:"Maison",        darija:"Dar",             en:"House",            ar:"بَيْت",        emoji:"🏠", cat:"Maison" },
+{ fr:"Lit",           darija:"Naamiya",         en:"Bed",              ar:"سَرِير",       emoji:"🛏️", cat:"Maison" },
+{ fr:"Table",         darija:"Tabla",           en:"Table",            ar:"طَاوِلَة",     emoji:"🪑", cat:"Maison" },
+{ fr:"Chaise",        darija:"Korsi",           en:"Chair",            ar:"كُرْسِي",      emoji:"🪑", cat:"Maison" },
+{ fr:"Porte",         darija:"Bab",             en:"Door",             ar:"بَاب",         emoji:"🚪", cat:"Maison" },
+{ fr:"Fenêtre",       darija:"Sherrjam",        en:"Window",           ar:"نَافِذَة",     emoji:"🪟", cat:"Maison" },
+{ fr:"Cuisine",       darija:"Kuzina",          en:"Kitchen",          ar:"مَطْبَخ",      emoji:"🍳", cat:"Maison" },
+{ fr:"Salle de bain", darija:"Bano",            en:"Bathroom",         ar:"حَمَّام",      emoji:"🛁", cat:"Maison" },
+{ fr:"Jardin",        darija:"Jnan",            en:"Garden",           ar:"حَدِيقَة",     emoji:"🌳", cat:"Maison" },
+{ fr:"Clé",           darija:"Sarout",          en:"Key",              ar:"مِفْتَاح",     emoji:"🔑", cat:"Maison" },
+
+{ fr:"Soleil",        darija:"Shems",           en:"Sun",              ar:"شَمْس",        emoji:"☀️", cat:"Nature" },
+{ fr:"Lune",          darija:"Qamar",           en:"Moon",             ar:"قَمَر",        emoji:"🌙", cat:"Nature" },
+{ fr:"Étoile",        darija:"Nejma",           en:"Star",             ar:"نَجْمَة",      emoji:"⭐", cat:"Nature" },
+{ fr:"Nuage",         darija:"Gima",            en:"Cloud",            ar:"سَحَابَة",     emoji:"☁️", cat:"Nature" },
+{ fr:"Pluie",         darija:"Shta",            en:"Rain",             ar:"مَطَر",        emoji:"🌧️", cat:"Nature" },
+{ fr:"Fleur",         darija:"Warda",           en:"Flower",           ar:"زَهْرَة",      emoji:"🌸", cat:"Nature" },
+{ fr:"Arbre",         darija:"Shajra",          en:"Tree",             ar:"شَجَرَة",      emoji:"🌳", cat:"Nature" },
+{ fr:"Mer",           darija:"Bhar",            en:"Sea",              ar:"بَحْر",        emoji:"🌊", cat:"Nature" },
+{ fr:"Montagne",      darija:"Jbal",            en:"Mountain",         ar:"جَبَل",        emoji:"⛰️", cat:"Nature" },
+{ fr:"Pierre",        darija:"Hjra",            en:"Stone",            ar:"حَجَر",        emoji:"🪨", cat:"Nature" },
+
+{ fr:"Voiture",       darija:"Tomobil",         en:"Car",              ar:"سَيَّارَة",    emoji:"🚗", cat:"Transport" },
+{ fr:"Bus",           darija:"Tobis",           en:"Bus",              ar:"حَافِلَة",     emoji:"🚌", cat:"Transport" },
+{ fr:"Train",         darija:"Tran",            en:"Train",            ar:"قِطَار",       emoji:"🚂", cat:"Transport" },
+{ fr:"Avion",         darija:"Tiyara",          en:"Plane",            ar:"طَائِرَة",     emoji:"✈️", cat:"Transport" },
+{ fr:"Vélo",          darija:"Bisklita",        en:"Bicycle",          ar:"دَرَّاجَة",    emoji:"🚲", cat:"Transport" },
+{ fr:"Bateau",        darija:"Babur",           en:"Boat",             ar:"قَارِب",       emoji:"⛵", cat:"Transport" },
+{ fr:"Moto",          darija:"Moto",            en:"Motorbike",        ar:"دَرَّاجَة نَارِيَّة", emoji:"🏍️", cat:"Transport" },
+{ fr:"Taxi",          darija:"Taxi",            en:"Taxi",             ar:"تَاكْسِي",     emoji:"🚕", cat:"Transport" },
+{ fr:"Ambulance",     darija:"Ambilanss",       en:"Ambulance",        ar:"سَيَّارَة إِسْعَاف", emoji:"🚑", cat:"Transport" },
+{ fr:"Camion",        darija:"Kamyu",           en:"Truck",            ar:"شَاحِنَة",     emoji:"🚚", cat:"Transport" },
+
+{ fr:"Livre",         darija:"Ktab",            en:"Book",             ar:"كِتَاب",       emoji:"📚", cat:"École" },
+{ fr:"Crayon",        darija:"Qalam",           en:"Pencil",           ar:"قَلَم رَصَاص", emoji:"✏️", cat:"École" },
+{ fr:"Cartable",      darija:"Chkara",          en:"School bag",       ar:"حَقِيبَة مَدْرَسِيَّة", emoji:"🎒", cat:"École" },
+{ fr:"Règle",         darija:"Masatara",        en:"Ruler",            ar:"مِسْطَرَة",    emoji:"📏", cat:"École" },
+{ fr:"Gomme",         darija:"Masha",           en:"Eraser",           ar:"مِمْحَاة",     emoji:"🩹", cat:"École" },
+{ fr:"Papier",        darija:"Waraqa",          en:"Paper",            ar:"وَرَقَة",      emoji:"📄", cat:"École" },
+{ fr:"École",         darija:"Madrasa",         en:"School",           ar:"مَدْرَسَة",    emoji:"🏫", cat:"École" },
+{ fr:"Professeur",    darija:"Oustad",          en:"Teacher",          ar:"أُسْتَاذ",     emoji:"👩‍🏫", cat:"École" },
+{ fr:"Tableau",       darija:"Sabura",          en:"Blackboard",       ar:"سَبُّورَة",    emoji:"🖊️", cat:"École" },
+{ fr:"Ciseaux",       darija:"Mqass",           en:"Scissors",         ar:"مِقَصّ",       emoji:"✂️", cat:"École" },
+
+{ fr:"Ballon",        darija:"Kura",            en:"Ball",             ar:"كُرَة",        emoji:"⚽", cat:"Jouets" },
+{ fr:"Poupée",        darija:"3arousa",         en:"Doll",             ar:"دُمْيَة",      emoji:"🪆", cat:"Jouets" },
+{ fr:"Puzzle",        darija:"Puzzle",          en:"Puzzle",           ar:"أُحْجِيَّة",   emoji:"🧩", cat:"Jouets" },
+{ fr:"Cube",          darija:"Mkaab",           en:"Block",            ar:"مُكَعَّب",     emoji:"🧱", cat:"Jouets" },
+{ fr:"Balançoire",    darija:"Mrjaha",          en:"Swing",            ar:"أُرْجُوحَة",   emoji:"🎠", cat:"Jouets" },
+{ fr:"Toboggan",      darija:"Zhalika",         en:"Slide",            ar:"زَحْلُوقَة",   emoji:"🛝", cat:"Jouets" },
+{ fr:"Dessin",        darija:"Rssam",           en:"Drawing",          ar:"رَسْم",        emoji:"🎨", cat:"Jouets" },
+{ fr:"Chanson",       darija:"Oghnia",          en:"Song",             ar:"أُغْنِيَة",    emoji:"🎵", cat:"Jouets" },
+{ fr:"Danse",         darija:"Rqass",           en:"Dance",            ar:"رَقْص",        emoji:"💃", cat:"Jouets" },
+{ fr:"Jeu",           darija:"L3ab",            en:"Game",             ar:"لُعْبَة",      emoji:"🎲", cat:"Jouets" },
+
+{ fr:"Robe",          darija:"Qmijet",          en:"Dress",            ar:"فُسْتَان",     emoji:"👗", cat:"Vêtements" },
+{ fr:"Pantalon",      darija:"Sirwal",          en:"Trousers",         ar:"بَنْطَلُون",   emoji:"👖", cat:"Vêtements" },
+{ fr:"Chaussures",    darija:"Sabbat",          en:"Shoes",            ar:"حِذَاء",       emoji:"👟", cat:"Vêtements" },
+{ fr:"Chaussettes",   darija:"Chrab",           en:"Socks",            ar:"جَوَارِب",     emoji:"🧦", cat:"Vêtements" },
+{ fr:"Chapeau",       darija:"Bonnu",           en:"Hat",              ar:"قُبَّعَة",     emoji:"🎩", cat:"Vêtements" },
+{ fr:"Manteau",       darija:"Mantu",           en:"Coat",             ar:"مَعْطَف",      emoji:"🧥", cat:"Vêtements" },
+{ fr:"Pyjama",        darija:"Pajama",          en:"Pyjamas",          ar:"بِيجَامَا",    emoji:"😴", cat:"Vêtements" },
+{ fr:"T-shirt",       darija:"Trikou",          en:"T-shirt",          ar:"قَمِيص",       emoji:"👕", cat:"Vêtements" },
+{ fr:"Écharpe",       darija:"Lhaf",            en:"Scarf",            ar:"وِشَاح",       emoji:"🧣", cat:"Vêtements" },
+{ fr:"Gants",         darija:"Kffwa",           en:"Gloves",           ar:"قُفَّازَات",   emoji:"🧤", cat:"Vêtements" },
+
+{ fr:"Content",       darija:"Farhane",         en:"Happy",            ar:"سَعِيد",       emoji:"😊", cat:"Émotions" },
+{ fr:"Triste",        darija:"Hzine",           en:"Sad",              ar:"حَزِين",       emoji:"😢", cat:"Émotions" },
+{ fr:"En colère",     darija:"M3assab",         en:"Angry",            ar:"غَاضِب",       emoji:"😠", cat:"Émotions" },
+{ fr:"Peur",          darija:"Khayef",          en:"Scared",           ar:"خَائِف",       emoji:"😨", cat:"Émotions" },
+{ fr:"Fatigué",       darija:"3yane",           en:"Tired",            ar:"مُتْعَب",      emoji:"😴", cat:"Émotions" },
+{ fr:"Faim",          darija:"Ji3ane",          en:"Hungry",           ar:"جَائِع",       emoji:"🤤", cat:"Émotions" },
+{ fr:"Soif",          darija:"3atshane",        en:"Thirsty",          ar:"عَطْشَان",     emoji:"😓", cat:"Émotions" },
+{ fr:"Amour",         darija:"Hobb",            en:"Love",             ar:"حُبّ",         emoji:"❤️", cat:"Émotions" },
+{ fr:"Bisou",         darija:"Busa",            en:"Kiss",             ar:"قُبْلَة",      emoji:"😘", cat:"Émotions" },
+{ fr:"Câlin",         darija:"3anqa",           en:"Hug",              ar:"عِنَاق",       emoji:"🤗", cat:"Émotions" },
+
+{ fr:"Un",            darija:"Wahed",           en:"One",              ar:"وَاحِد",       emoji:"1️⃣", cat:"Chiffres" },
+{ fr:"Deux",          darija:"Jouj",            en:"Two",              ar:"اِثْنَان",     emoji:"2️⃣", cat:"Chiffres" },
+{ fr:"Trois",         darija:"Tlata",           en:"Three",            ar:"ثَلَاثَة",     emoji:"3️⃣", cat:"Chiffres" },
+{ fr:"Quatre",        darija:"Rb3a",            en:"Four",             ar:"أَرْبَعَة",    emoji:"4️⃣", cat:"Chiffres" },
+{ fr:"Cinq",          darija:"Khamsa",          en:"Five",             ar:"خَمْسَة",      emoji:"5️⃣", cat:"Chiffres" },
+{ fr:"Six",           darija:"Stta",            en:"Six",              ar:"سِتَّة",       emoji:"6️⃣", cat:"Chiffres" },
+{ fr:"Sept",          darija:"Sb3a",            en:"Seven",            ar:"سَبْعَة",      emoji:"7️⃣", cat:"Chiffres" },
+{ fr:"Huit",          darija:"Tmnya",           en:"Eight",            ar:"ثَمَانِيَة",   emoji:"8️⃣", cat:"Chiffres" },
+{ fr:"Neuf",          darija:"Ts3oud",          en:"Nine",             ar:"تِسْعَة",      emoji:"9️⃣", cat:"Chiffres" },
+{ fr:"Dix",           darija:"3ashra",          en:"Ten",              ar:"عَشَرَة",      emoji:"🔟", cat:"Chiffres" },
+
+{ fr:"Bonjour",       darija:"Salam",           en:"Hello",            ar:"مَرْحَباً",    emoji:"👋", cat:"Formules" },
+{ fr:"Au revoir",     darija:"Bslama",          en:"Goodbye",          ar:"مَعَ السَّلَامَة", emoji:"🙋", cat:"Formules" },
+{ fr:"Merci",         darija:"Shokrane",        en:"Thank you",        ar:"شُكْراً",      emoji:"🙏", cat:"Formules" },
+{ fr:"S'il te plaît", darija:"3afak",           en:"Please",           ar:"مِنْ فَضْلِك", emoji:"🥺", cat:"Formules" },
+{ fr:"Oui",           darija:"Iyeh",            en:"Yes",              ar:"نَعَم",        emoji:"✅", cat:"Formules" },
+{ fr:"Non",           darija:"La",              en:"No",               ar:"لَا",          emoji:"❌", cat:"Formules" },
+{ fr:"Bravo",         darija:"Bravo",           en:"Well done",        ar:"أَحْسَنْت",    emoji:"🎉", cat:"Formules" },
+{ fr:"Excuse-moi",    darija:"Sma7li",          en:"Sorry",            ar:"آسِف",         emoji:"😅", cat:"Formules" },
+{ fr:"Bonne nuit",    darija:"Lila sa3ida",     en:"Good night",       ar:"تَصْبَح عَلَى خَيْر", emoji:"🌙", cat:"Formules" },
+{ fr:"Bonne journée", darija:"Nhar mubarak",    en:"Have a great day", ar:"يَوْم سَعِيد", emoji:"🌞", cat:"Formules" },
+
+{ fr:"Tête",          darija:"Rass",            en:"Head",             ar:"رَأْس",        emoji:"🗣️", cat:"Corps" },
+{ fr:"Yeux",          darija:"3inayn",          en:"Eyes",             ar:"عَيْنَان",     emoji:"👀", cat:"Corps" },
+{ fr:"Nez",           darija:"Nif",             en:"Nose",             ar:"أَنْف",        emoji:"👃", cat:"Corps" },
+{ fr:"Bouche",        darija:"Fomm",            en:"Mouth",            ar:"فَم",          emoji:"👄", cat:"Corps" },
+{ fr:"Oreilles",      darija:"Widnayn",         en:"Ears",             ar:"أُذُنَان",     emoji:"👂", cat:"Corps" },
+{ fr:"Mains",         darija:"Idayn",           en:"Hands",            ar:"يَدَان",       emoji:"👐", cat:"Corps" },
+{ fr:"Pieds",         darija:"Rijlayn",         en:"Feet",             ar:"قَدَمَان",     emoji:"🦶", cat:"Corps" },
+{ fr:"Ventre",        darija:"Krsh",            en:"Belly",            ar:"بَطْن",        emoji:"🫃", cat:"Corps" },
+{ fr:"Dos",           darija:"Dhar",            en:"Back",             ar:"ظَهْر",        emoji:"🙎", cat:"Corps" },
+{ fr:"Dents",         darija:"Snane",           en:"Teeth",            ar:"أَسْنَان",     emoji:"🦷", cat:"Corps" }
+];
+
+const CAT_COLORS = {
+"Animaux":      {bg:"#FFF3E0",accent:"#FF9800"},
+"Nourriture":   {bg:"#E8F5E9",accent:"#4CAF50"},
+"Couleurs":     {bg:"#FCE4EC",accent:"#E91E63"},
+"Famille":      {bg:"#E3F2FD",accent:"#2196F3"},
+"Maison":       {bg:"#FFF8E1",accent:"#FFC107"},
+"Nature":       {bg:"#E0F7FA",accent:"#00BCD4"},
+"Transport":    {bg:"#EDE7F6",accent:"#9C27B0"},
+"Ecole":        {bg:"#E8EAF6",accent:"#3F51B5"},
+"Jouets":       {bg:"#FBE9E7",accent:"#FF5722"},
+"Vetements":    {bg:"#F3E5F5",accent:"#7B1FA2"},
+"Emotions":     {bg:"#FFFDE7",accent:"#F9A825"},
+"Chiffres":     {bg:"#E1F5FE",accent:"#0288D1"},
+"Formules":     {bg:"#E8F5E9",accent:"#388E3C"},
+"Corps":        {bg:"#FCE4EC",accent:"#C2185B"},
+"Personnalise": {bg:"#F9FBE7",accent:"#827717"},
+};
+function catColor(cat){
+const k=cat.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z]/g,"");
+for(const key of Object.keys(CAT_COLORS)){
+if(key.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z]/g,"")===k) return CAT_COLORS[key];
+}
+return {bg:"#F5F5F5",accent:"#888"};
+}
+
+const LANGS = [
+{key:"fr",    flag:"🇫🇷", label:"Francais",        color:"#4FC3F7", rtl:false},
+{key:"darija",flag:"🇲🇦", label:"Darija",           color:"#FF8A65", rtl:false},
+{key:"en",    flag:"🇬🇧", label:"English",          color:"#81C784", rtl:false},
+{key:"ar",    flag:"🕌",  label:"Arabe",            color:"#AB47BC", rtl:true},
+];
+const PROFILES = [
+{id:"aliya",name:"Aliya",emoji:"🦋",grad:"linear-gradient(135deg,#FFB7C5,#FFDDE1)",accent:"#FF6B9D",light:"#FFF0F5",langs:["fr","darija","en","ar"]},
+{id:"amira",name:"Amira",emoji:"🌸",grad:"linear-gradient(135deg,#B5DEFF,#E0F4FF)",accent:"#4A90D9",light:"#EEF7FF",langs:["fr","darija","en"]},
+];
+
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+function wKey(w){return w.fr+"|"+w.cat}
+function lrnKey(w,lang){return wKey(w)+":"+lang}
+
+let ST = {
+page:"picker",
+profile:loadLS("hub_active_profile",null),
+lang:"fr",
+screen:"flash", // flash | quiz | catalogue
+cat:null,
+cardIdx:0,
+flipped:false,
+quizPool:[],quizIdx:0,quizAns:null,quizScore:0,quizDone:false,
+feedback:"",
+search:"",
+learned:null,
+customWords:loadLS("customWords",[]),
+overrides:loadLS("wordOverrides",{}),
+};
+
+// Init learned
+function initLearned(){
+const raw=loadLS("learnedV5",{aliya:[],amira:[]});
+ST.learned={aliya:new Set(raw.aliya),amira:new Set(raw.amira)};
+}
+initLearned();
+
+// If profile already set (from hub), skip picker
+if(ST.profile && PROFILES.find(p=>p.id===ST.profile)){
+ST.page="main";
+}
+
+function setState(p){Object.assign(ST,p);render()}
+function saveLearned(){
+if(!ST.learned)return;
+saveLS("learnedV5",{aliya:[...ST.learned.aliya],amira:[...ST.learned.amira]});
+}
+
+function getAllWords(){
+return[
+...WORDS.map(w=>{const k=wKey(w);return ST.overrides[k]?{...w,...ST.overrides[k]}:w;}),
+...ST.customWords
+];
+}
+function getFilteredWords(){
+const all=getAllWords();
+const byCat=ST.cat?all.filter(w=>w.cat===ST.cat):all;
+if(!ST.search.trim()) return byCat;
+const q=ST.search.toLowerCase();
+return byCat.filter(w=>w.fr.toLowerCase().includes(q)||w.en.toLowerCase().includes(q)||w.darija.toLowerCase().includes(q));
+}
+function getProfile(){return PROFILES.find(p=>p.id===ST.profile)}
+function getAvailLangs(){
+const p=getProfile();
+return p?LANGS.filter(l=>p.langs.includes(l.key)):LANGS;
+}
+function getLangObj(){return LANGS.find(l=>l.key===ST.lang)||LANGS[0]}
+function isLearned(w){
+if(!ST.learned||!ST.profile)return false;
+return ST.learned[ST.profile].has(lrnKey(w,ST.lang));
+}
+
+function confetti(){
+const c=["#FFD700","#FF9500","#FF6B9D","#4A90D9","#4CAF50","#9B59B6"];
+for(let i=0;i<40;i++){
+const el=document.createElement("div");el.className="cp";
+const sz=6+Math.random()*12;
+el.style.cssText="left:"+Math.random()*100+"%;width:"+sz+"px;height:"+sz+"px;background:"+c[~~(Math.random()*6)]+";animation-delay:"+Math.random()*.6+"s;";
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+function toast(msg){
+const el=document.createElement("div");el.className="toast";el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+
+function makeQuiz(pool,lang){
+const isRTL=LANGS.find(l=>l.key===lang)?.rtl;
+return shuffle(pool).slice(0,10).map(w=>{
+const others=shuffle(pool.filter(x=>x.fr!==w.fr)).slice(0,3);
+return{word:w,opts:shuffle([w,...others]),lang,isRTL};
+});
+}
+
+function render(){
+const app=document.getElementById("app");
+const p=getProfile();
+const filteredWords=getFilteredWords();
+const allWords=getAllWords();
+const cats=[...new Set(allWords.map(w=>w.cat))];
+const langObj=getLangObj();
+const availLangs=getAvailLangs();
+
+// PICKER
+if(ST.page==="picker"){
+app.innerHTML=` <div class="picker"> <div style="font-size:52px;margin-bottom:10px">📚</div> <div class="picker-title">Vocabulaire</div> <div class="picker-sub">La classe d'Aliya et Amira - Qui apprend ?</div> <div class="profiles"> ${PROFILES.map((pr,i)=>`
+<div class="profile-card" onclick="selectProfile('${pr.id}')"
+style="animation-delay:${i*.1}s;border-color:${pr.accent}44">
+<span class="pc-emoji">${pr.emoji}</span>
+<div class="pc-name" style="color:${pr.accent}">${pr.name}</div>
+<div style="font-size:11px;color:#aaa;margin-bottom:12px">${pr.langs.join(" ")}</div>
+<button class="pc-cta" style="background:${pr.grad};color:${pr.accent}">
+C'est parti !
+</button>
+</div>`).join("")} </div> </div>`;
+return;
+}
+
+// MAIN
+if(ST.page==="main"&&p){
+// Progress bars
+const progBars=availLangs.map(l=>{
+const done=[...ST.learned[ST.profile]].filter(k=>k.endsWith(":"+l.key)).length;
+const total=allWords.length;
+const pct=total?Math.round(done/total*100):0;
+return{...l,done,total,pct};
+});
+
+
+// Screen content
+let screenHTML="";
+
+// FLASHCARD
+if(ST.screen==="flash"){
+  const words=filteredWords;
+  if(!words.length){
+    screenHTML=`<div class="flashcard-area"><div style="text-align:center;opacity:.4;padding:40px;font-size:14px">Aucun mot trouvé</div></div>`;
+  } else {
+    const idx=Math.min(ST.cardIdx,words.length-1);
+    const w=words[idx];
+    const wordInLang=w[ST.lang]||w.fr;
+    const isRTL=langObj.rtl;
+    const lrn=isLearned(w);
+    const cc=catColor(w.cat);
+    
+    screenHTML=`<div class="flashcard-area">
+      <div class="card" onclick="toggleFlip()" style="border-top:5px solid ${cc.accent}">
+        <div class="card-cat" style="color:${cc.accent}">${w.cat}</div>
+        <span class="card-emoji">${w.emoji}</span>
+        <div class="card-word ${isRTL?"rtl":""}" style="color:${cc.accent}">${wordInLang}</div>
+        ${lrn?`<div class="learned-badge">Appris !</div>`:""}
+        ${ST.flipped?`
+        <div class="card-back">
+          ${availLangs.filter(l=>l.key!==ST.lang).map(l=>`
+          <div class="card-back-row">
+            <span class="back-flag">${l.flag}</span>
+            <span class="back-word ${l.rtl?"rtl":""}">${w[l.key]||""}</span>
+          </div>`).join("")}
+        </div>
+        `:`<div class="hint">Appuie pour voir les traductions</div>`}
+      </div>
+      <div class="card-nav">
+        <button class="btn btn-ghost" onclick="prevCard()" ${idx===0?"disabled":""}>← Prec.</button>
+        <button class="btn" style="background:${cc.accent}" onclick="markAndNext()">
+          ${lrn?"Suivant →":"J'ai appris ! →"}
+        </button>
+      </div>
+      <div class="dots">
+        ${words.map((_,i)=>`<div class="dot" onclick="setState({cardIdx:${i},flipped:false})"
+          style="background:${i===idx?cc.accent:isLearned(words[i])?cc.accent+"66":"#DDD"}"></div>`).join("")}
+      </div>
+      <div style="text-align:center;font-size:12px;color:#bbb;margin-top:10px">${idx+1} / ${words.length}</div>
+    </div>`;
+  }
+}
+
+// QUIZ
+else if(ST.screen==="quiz"){
+  if(ST.quizDone){
+    const pct=Math.round(ST.quizScore/ST.quizPool.length*100);
+    const stars=pct>=80?3:pct>=50?2:1;
+    screenHTML=`<div class="quiz-area"><div class="result">
+      <div class="result-big">${stars===3?"🏆":stars===2?"⭐":"💪"}</div>
+      <div style="font-size:22px;font-weight:900;color:#444">${ST.quizScore} / ${ST.quizPool.length}</div>
+      <div style="font-size:28px">${[0,1,2].map(j=>j<stars?"⭐":"☆").join("")}</div>
+      <div style="font-size:14px;color:#888">${stars===3?"Parfait ! Bravo !":stars===2?"Tres bien ! Continue !":"Courage, tu progresses !"}</div>
+      <button class="btn" style="background:var(--gold);margin-top:8px" onclick="startQuiz()">Rejouer</button>
+    </div></div>`;
+  } else if(!ST.quizPool.length){
+    screenHTML=`<div class="quiz-area" style="align-items:center;justify-content:center;display:flex;flex-direction:column;gap:14px;padding:40px 20px">
+      <div style="font-size:16px;font-weight:900;color:#555">Pret pour le quiz ?</div>
+      <button class="btn" style="background:var(--gold)" onclick="startQuiz()">Commencer !</button>
+    </div>`;
+  } else {
+    const Q=ST.quizPool[ST.quizIdx];
+    if(!Q){setState({quizDone:true});return;}
+    const isRTL=Q.isRTL;
+    screenHTML=`<div class="quiz-area">
+      <div class="quiz-q" style="border-top:4px solid ${catColor(Q.word.cat).accent}">
+        <div class="quiz-score">Question ${ST.quizIdx+1}/${ST.quizPool.length} - Score: ${ST.quizScore}</div>
+        <div style="font-size:52px;margin-bottom:8px">${Q.word.emoji}</div>
+        <div style="font-size:18px;font-weight:900;color:${catColor(Q.word.cat).accent}">${Q.word.fr}</div>
+        <div style="font-size:12px;color:#bbb;margin-top:4px">Comment dit-on ${LANGS.find(l=>l.key===Q.lang)?.flag||""} ?</div>
+      </div>
+      <div class="feedback">${ST.feedback==="correct"?"Bravo !":ST.feedback==="wrong"?"Presque !":""}</div>
+      <div class="quiz-opts">
+        ${Q.opts.map((o,i)=>{
+          const correct=o.fr===Q.word.fr;
+          const chosen=ST.quizAns!==null&&ST.quizAns===i;
+          let cls="";
+          if(ST.quizAns!==null){if(correct)cls="correct";else if(chosen)cls="wrong";}
+          const txt=o[Q.lang]||o.fr;
+          return`<button class="q-opt ${cls} ${isRTL?"rtl-opt":""}" onclick="answerQuiz(${i})">${txt}</button>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+}
+
+// CATALOGUE
+else if(ST.screen==="catalogue"){
+  const words=filteredWords;
+  screenHTML=`<div class="catalogue-area">
+    <div class="search-box">
+      <span class="search-ic">🔍</span>
+      <input type="text" placeholder="Chercher..." value="${ST.search}" oninput="setState({search:this.value,cardIdx:0})"/>
+    </div>
+    <div class="words-grid">
+      ${words.map((w,i)=>{
+        const wordInLang=w[ST.lang]||w.fr;
+        const isRTL=langObj.rtl;
+        const lrn=isLearned(w);
+        const cc=catColor(w.cat);
+        return`<div class="word-cell ${lrn?"learned":""}" onclick="openWord(${i})"
+          style="${lrn?`border-color:${cc.accent}66;background:${cc.bg}`:``}">
+          <div class="wc-emoji">${w.emoji}</div>
+          <div class="wc-word ${isRTL?"rtl":""}" style="color:${cc.accent}">${wordInLang}</div>
+          ${lrn?`<div style="font-size:10px;color:#4CAF50">✓</div>`:""}
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+app.innerHTML=`
+<div class="main">
+  <!-- HEADER -->
+  <div class="header" style="background:${p.grad}">
+    <div class="header-left">
+      <span style="font-size:22px">${p.emoji}</span>
+      <span style="font-size:15px;font-weight:900;color:${p.accent}">${p.name}</span>
+    </div>
+    <button class="switch-btn" onclick="setState({page:'picker'})" style="color:${p.accent}">Changer</button>
+  </div>
+  
+  <!-- PROGRESS BARS -->
+  <div class="prog-bars" style="background:${p.light}">
+    ${progBars.map(l=>`
+    <div class="prog-row">
+      <span class="prog-flag">${l.flag}</span>
+      <span class="prog-label">${l.label}</span>
+      <div class="prog-track"><div class="prog-fill" style="width:${l.pct}%;background:${l.color}"></div></div>
+      <span class="prog-pct">${l.pct}%</span>
+    </div>`).join("")}
+  </div>
+  
+  <!-- SCREEN TABS -->
+  <div class="nav-tabs">
+    ${[["flash","Flashcards"],["quiz","Quiz"],["catalogue","Catalogue"]].map(([id,lbl])=>`
+    <button class="nav-tab ${ST.screen===id?"active":""}" onclick="setState({screen:'${id}',cardIdx:0,flipped:false})"
+      style="${ST.screen===id?`color:${p.accent}`:`color:#aaa`}">${lbl}</button>`).join("")}
+  </div>
+  
+  <!-- LANG PILLS -->
+  <div class="lang-pills">
+    ${availLangs.map(l=>`
+    <button class="lang-pill ${ST.lang===l.key?"active":""}" onclick="setState({lang:'${l.key}',cardIdx:0,flipped:false,quizPool:[],quizDone:false})"
+      style="${ST.lang===l.key?`background:${l.color}`:``}">${l.flag} ${l.label}</button>`).join("")}
+  </div>
+  
+  <!-- CAT PILLS -->
+  <div class="cat-pills">
+    <button class="cat-pill ${!ST.cat?"active":""}" onclick="setState({cat:null,cardIdx:0})"
+      style="${!ST.cat?`background:${p.accent}`:`color:${p.accent}`}">Tout</button>
+    ${cats.map(c=>`
+    <button class="cat-pill ${ST.cat===c?"active":""}" onclick="setState({cat:'${c}',cardIdx:0,flipped:false})"
+      style="${ST.cat===c?`background:${catColor(c).accent}`:``}">${c}</button>`).join("")}
+  </div>
+  
+  ${screenHTML}
+</div>`;
+
+
+}
+}
+
+function selectProfile(id){
+ST.profile=id;
+ST.page="main";
+ST.lang=PROFILES.find(p=>p.id===id).langs[0];
+saveLS("hub_active_profile",id);
+render();
+}
+
+function toggleFlip(){setState({flipped:!ST.flipped})}
+
+function markAndNext(){
+const words=getFilteredWords();
+const idx=Math.min(ST.cardIdx,words.length-1);
+const w=words[idx];
+if(!isLearned(w)){
+const k=lrnKey(w,ST.lang);
+ST.learned[ST.profile].add(k);
+saveLearned();
+toast("Appris !");
+}
+const next=Math.min(idx+1,words.length-1);
+setState({cardIdx:next,flipped:false});
+}
+
+function prevCard(){
+setState({cardIdx:Math.max(0,ST.cardIdx-1),flipped:false});
+}
+
+function openWord(i){
+setState({screen:"flash",cardIdx:i,flipped:false});
+}
+
+function startQuiz(){
+const words=getFilteredWords();
+if(words.length<4){toast("Il faut au moins 4 mots pour le quiz !");return;}
+const pool=makeQuiz(words,ST.lang);
+setState({quizPool:pool,quizIdx:0,quizAns:null,quizScore:0,quizDone:false,feedback:""});
+}
+
+function answerQuiz(i){
+if(ST.quizAns!==null)return;
+const Q=ST.quizPool[ST.quizIdx];
+const correct=Q.opts[i].fr===Q.word.fr;
+const score=correct?ST.quizScore+1:ST.quizScore;
+if(correct){
+const k=lrnKey(Q.word,ST.lang);
+ST.learned[ST.profile].add(k);
+saveLearned();
+}
+ST.quizAns=i;ST.quizScore=score;ST.feedback=correct?"correct":"wrong";
+render();
+setTimeout(()=>{
+const next=ST.quizIdx+1;
+if(next>=ST.quizPool.length){
+if(score>=ST.quizPool.length*.8)confetti();
+setState({quizDone:true});return;
+}
+setState({quizIdx:next,quizAns:null,feedback:""});
+},1000);
+}
+
+render();
+</script>
+
+</body>
+</html>

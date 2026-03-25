@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>✨ Mes Sourates</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Nunito',sans-serif;background:#1a1a2e;color:#fff;-webkit-tap-highlight-color:transparent}
+#app{min-height:100vh}
+
+/* ── ACCUEIL ── */
+.accueil{min-height:100vh;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 55%,#0f3460 100%);padding:28px 16px 60px}
+.hero{text-align:center;margin-bottom:22px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeDown .5s ease both}
+.hero-avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#FF8C42);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(255,215,0,.25),0 12px 36px rgba(0,0,0,.4);animation:glow 3s ease-in-out infinite;overflow:hidden}
+@keyframes glow{0%,100%{box-shadow:0 0 0 4px rgba(255,215,0,.25),0 12px 36px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 8px rgba(255,215,0,.4),0 16px 50px rgba(255,140,66,.3)}}
+.hero h1{font-size:24px;font-weight:900;background:linear-gradient(90deg,#FFD700,#FF8C42);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{opacity:.5;font-size:13px}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* progress */
+.prog-box{background:rgba(255,255,255,.07);border-radius:16px;padding:14px 18px;max-width:440px;margin:0 auto 18px;animation:fadeUp .4s .1s ease both}
+.prog-box .lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px}
+.prog-box .lbl span:last-child{color:#FFD700;font-weight:800}
+.bar-track{background:rgba(255,255,255,.1);border-radius:99px;height:9px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#FFD700,#FF8C42);transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* filters */
+.filters{display:flex;gap:7px;max-width:440px;margin:0 auto 14px;overflow-x:auto;padding-bottom:4px}
+.filter-btn{border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:'Nunito',sans-serif;transition:all .18s}
+.filter-btn.active{background:linear-gradient(135deg,#FFD700,#FF8C42);color:#1a1a2e}
+.filter-btn:not(.active){background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
+
+/* search */
+.search-box{max-width:440px;margin:0 auto 14px;position:relative}
+.search-box input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:10px 14px 10px 36px;color:#fff;font-size:13px;font-family:'Nunito',sans-serif;outline:none}
+.search-box input::placeholder{color:rgba(255,255,255,.35)}
+.search-box .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.4;font-size:15px}
+
+/* cards */
+.sourates-list{display:flex;flex-direction:column;gap:10px;max-width:440px;margin:0 auto}
+.sourate-card{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s,box-shadow .15s;animation:fadeUp .35s ease both;position:relative}
+.sourate-card:active{transform:scale(.97)}
+.sourate-card .num{font-size:10px;opacity:.35;font-weight:700;min-width:20px;text-align:center}
+.sourate-card .emoji-wrap{font-size:30px;flex-shrink:0}
+.sourate-card .info .name{font-weight:800;font-size:15px}
+.sourate-card .info .ar-name{font-family:'Noto Naskh Arabic',serif;font-size:14px;opacity:.6;direction:rtl;margin-top:1px}
+.sourate-card .info .sub{font-size:11px;opacity:.35;margin-top:1px}
+.sourate-card .right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:auto;flex-shrink:0}
+.pin-btn{position:absolute;top:8px;right:8px;font-size:14px;background:none;border:none;cursor:pointer;opacity:.4;transition:opacity .2s}
+.pin-btn.pinned{opacity:1}
+.stars{display:flex;gap:2px}
+.star{font-size:13px}
+.star.off{filter:grayscale(1) opacity(.2)}
+.status-badge{font-size:9px;font-weight:800;border-radius:8px;padding:2px 7px;text-align:center}
+.s-none{background:rgba(255,255,255,.1);color:rgba(255,255,255,.5)}
+.s-todo{background:rgba(255,200,0,.2);color:#FFD700}
+.s-learn{background:rgba(255,140,66,.2);color:#FF8C42}
+.s-done{background:rgba(76,175,80,.2);color:#81C784}
+.juz-header{font-size:11px;font-weight:800;opacity:.35;letter-spacing:1.5px;text-transform:uppercase;padding:14px 0 6px;max-width:440px;margin:0 auto}
+.bismillah{text-align:center;opacity:.15;font-size:13px;margin-top:36px;font-family:'Noto Naskh Arabic',serif;direction:rtl}
+
+/* ── PAGE SOURATE ── */
+.page{min-height:100vh;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 55%,#0f3460 100%);padding:20px 16px 56px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;padding:4px 0;margin-bottom:14px}
+.s-header{text-align:center;margin-bottom:20px}
+.s-header .emoji{font-size:42px;display:block;margin-bottom:4px}
+.s-header h2{font-size:22px;font-weight:900;margin-bottom:1px}
+.s-header .ar-title{font-family:'Noto Naskh Arabic',serif;font-size:18px;opacity:.6;direction:rtl;margin-bottom:2px}
+.s-header .sub{font-size:12px;opacity:.35}
+.s-header .stars-row{display:flex;justify-content:center;gap:4px;margin-top:6px}
+
+/* status picker */
+.status-picker{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
+.sp-btn{border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s}
+.sp-btn.active{color:#1a1a2e}
+.sp-btn:not(.active){background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+
+/* modes */
+.modes-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px}
+.mode-btn{background:rgba(255,255,255,.07);border-radius:14px;padding:16px 18px;color:#fff;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:4px;border:1px solid rgba(255,255,255,.1);transition:transform .15s;font-family:'Nunito',sans-serif}
+.mode-btn:active{transform:scale(.97)}
+.mode-title{font-weight:800;font-size:16px}
+.mode-desc{font-size:11px;opacity:.4}
+
+/* verset */
+.verset-card{background:rgba(255,255,255,.09);border-radius:18px;padding:24px 20px;text-align:center;width:100%;max-width:420px;margin-bottom:18px}
+.verset-num{font-size:10px;letter-spacing:2px;opacity:.4;text-transform:uppercase;margin-bottom:12px}
+.verset-ar{font-family:'Noto Naskh Arabic',serif;font-size:28px;line-height:2;direction:rtl;color:#FFE082;margin-bottom:14px}
+.verset-fr{font-size:13px;opacity:.75;font-style:italic;line-height:1.6}
+.verset-ph{font-size:13px;color:#A78BFA;font-style:italic;margin-bottom:10px;line-height:1.5;letter-spacing:.3px}
+.audio-btn{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:20px;padding:8px 18px;color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;margin:0 auto 10px;transition:all .2s}
+.audio-btn:active{transform:scale(.95)}
+.audio-btn.playing{background:rgba(255,215,0,.2);border-color:#FFD700;color:#FFD700}
+.audio-btn.loading{opacity:.6;cursor:wait}
+.audio-err{font-size:11px;color:rgba(255,100,100,.8);text-align:center;margin-bottom:8px}
+.show-hint{font-size:11px;opacity:.3;cursor:pointer;margin-top:8px}
+
+/* boutons */
+.btn{border:none;border-radius:13px;padding:12px 24px;font-weight:800;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.2;cursor:not-allowed}
+.btn-ghost{background:rgba(255,255,255,.1)}
+.btns-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:2px;flex-wrap:wrap;max-width:300px}
+.dot{width:8px;height:8px;border-radius:50%;cursor:pointer;transition:background .3s}
+.checklist{display:flex;gap:5px;justify-content:center;margin-top:7px;flex-wrap:wrap;font-size:16px}
+
+/* quiz */
+.quiz-question{background:rgba(255,255,255,.09);border-radius:16px;padding:20px 18px;text-align:center;width:100%;max-width:420px;margin-bottom:14px}
+.quiz-hint{font-size:11px;opacity:.45;margin-bottom:10px}
+.quiz-options{display:flex;flex-direction:column;gap:9px;width:100%;max-width:420px}
+.quiz-option{border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:14px 16px;color:#fff;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;text-align:left;font-style:italic;transition:background .25s;background:rgba(255,255,255,.07)}
+.quiz-option:active{transform:scale(.98)}
+.quiz-option.correct{background:rgba(76,175,80,.4);border-color:#4CAF50}
+.quiz-option.wrong{background:rgba(244,67,54,.2);border-color:rgba(244,67,54,.35)}
+
+/* result */
+.result-screen{text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;animation:fadeUp .4s ease both;margin-top:28px}
+.big-emoji{font-size:68px;animation:bounceIn .5s ease both}
+@keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+
+/* confetti */
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+
+/* streak */
+.streak-badge{background:rgba(255,140,66,.2);border:1px solid rgba(255,140,66,.4);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;color:#FF8C42;display:inline-flex;align-items:center;gap:4px}
+
+/* parent modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#1e2a4a;border-radius:20px;padding:24px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.modal h3{font-size:17px;font-weight:900;margin-bottom:14px;color:#FFD700}
+.modal input{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:10px 14px;color:#fff;font-size:16px;font-family:'Nunito',sans-serif;outline:none;letter-spacing:6px;text-align:center;margin-bottom:12px}
+.modal-btns{display:flex;gap:8px}
+.section-title{font-size:16px;font-weight:800;margin-bottom:16px;text-align:center;opacity:.9}
+
+/* notif toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(30,42,74,.97);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════════
+// 📖 LES 114 SOURATES
+// Juz 30 complet · autres sourates avec titres + statut
+// ══════════════════════════════════════════════════════
+const SOURATES = [
+  // ── JUZ 1 ──────────────────────────────────────────
+  { num:1,  id:"fatiha",    nom:"Al-Fatiha",    arNom:"الفاتحة",    emoji:"🌿", couleur:"#81C784", juz:1,  versets:[
+    {ar:"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",                       ph:"Bismillāhi r-raḥmāni r-raḥīm",          fr:"Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux"},
+    {ar:"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",                         ph:"Al-ḥamdu lillāhi rabbi l-ʿālamīn",        fr:"Louange à Allah, Seigneur de l'univers"},
+    {ar:"الرَّحْمَٰنِ الرَّحِيمِ",                                       ph:"Ar-raḥmāni r-raḥīm",                     fr:"Le Tout Miséricordieux, le Très Miséricordieux"},
+    {ar:"مَالِكِ يَوْمِ الدِّينِ",                                       ph:"Māliki yawmi d-dīn",                     fr:"Maître du Jour de la rétribution"},
+    {ar:"إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",                     ph:"Iyyāka naʿbudu wa-iyyāka nastaʿīn",       fr:"C'est Toi [Seul] que nous adorons, et c'est Toi [Seul] dont nous implorons le secours"},
+    {ar:"اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",                           ph:"Ihdinā ṣ-ṣirāṭa l-mustaqīm",             fr:"Guide-nous dans le droit chemin"},
+    {ar:"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", ph:"Ṣirāṭa lladhīna anʿamta ʿalayhim ghayri l-maghḍūbi ʿalayhim wa-lā ḍ-ḍāllīn", fr:"Le chemin de ceux que Tu as comblés de faveurs, non pas de ceux qui ont encouru Ta colère, ni des égarés"},
+  ]},
+
+// ── JUZ 30 (complet) ──────────────────────────────
+{ num:78, id:"naba",      nom:"An-Naba",      arNom:"النبأ",      emoji:"📣", couleur:"#4FC3F7", juz:30, versets:[
+{ar:"عَمَّ يَتَسَاءَلُونَ",                                          ph:"ʿAmma yatasāʾalūn",fr:"De quoi s'interrogent-ils entre eux ?"},
+{ar:"عَنِ النَّبَإِ الْعَظِيمِ",                                     ph:"ʿAni n-nabaʾi l-ʿaẓīm",fr:"Au sujet de la Grande Nouvelle"},
+{ar:"الَّذِي هُمْ فِيهِ مُخْتَلِفُونَ",                              ph:"Alladhī hum fīhi mukhtalifūn",fr:"À propos de laquelle ils diffèrent"},
+{ar:"كَلَّا سَيَعْلَمُونَ",                                          ph:"Kallā sayaʿlamūn",fr:"Certes non, ils sauront bientôt"},
+{ar:"ثُمَّ كَلَّا سَيَعْلَمُونَ",                                    ph:"Thumma kallā sayaʿlamūn",fr:"Et encore, certes non, ils sauront bientôt"},
+]},
+{ num:79, id:"naziat",    nom:"An-Nazi'at",   arNom:"النازعات",   emoji:"⚡", couleur:"#7E57C2", juz:30, versets:[
+{ar:"وَالنَّازِعَاتِ غَرْقًا",                                       ph:"Wa-n-nāziʿāti gharqā",fr:"Par ceux qui arrachent violemment"},
+{ar:"وَالنَّاشِطَاتِ نَشْطًا",                                       ph:"Wa-n-nāshiṭāti nashṭā",fr:"Et ceux qui délestent avec aisance"},
+{ar:"وَالسَّابِحَاتِ سَبْحًا",                                       ph:"Wa-s-sābiḥāti sabḥā",fr:"Et ceux qui nagent avec légèreté"},
+{ar:"فَالسَّابِقَاتِ سَبْقًا",                                       ph:"Fa-s-sābiqāti sabqā",fr:"Et qui devancent rapidement"},
+{ar:"فَالْمُدَبِّرَاتِ أَمْرًا",                                     ph:"Fa-l-mudabbirāti amrā",fr:"Et qui gèrent les affaires"},
+]},
+{ num:80, id:"abasa",     nom:"'Abasa",       arNom:"عبس",        emoji:"😯", couleur:"#FF7043", juz:30, versets:[
+{ar:"عَبَسَ وَتَوَلَّىٰ",                                            ph:"ʿAbasa wa-tawallā",fr:"Il fronça les sourcils et se détourna"},
+{ar:"أَن جَاءَهُ الْأَعْمَىٰ",                                       ph:"An jāʾahu l-aʿmā",fr:"Parce qu'un aveugle vint à lui"},
+{ar:"وَمَا يُدْرِيكَ لَعَلَّهُ يَزَّكَّىٰ",                         ph:"Wa-mā yudrīka laʿallahu yazzakkā",fr:"Qui te dit s'il allait peut-être se purifier"},
+{ar:"أَوْ يَذَّكَّرُ فَتَنفَعَهُ الذِّكْرَىٰ",                       ph:"Aw yadhdhakkaru fa-tanfaʿahu dh-dhikrā",fr:"Ou se souvenir et profiter du rappel"},
+]},
+{ num:81, id:"takwir",    nom:"At-Takwir",    arNom:"التكوير",    emoji:"🌑", couleur:"#546E7A", juz:30, versets:[
+{ar:"إِذَا الشَّمْسُ كُوِّرَتْ",                                     ph:"Idhā sh-shamsu kuwwirat",fr:"Quand le soleil sera replié"},
+{ar:"وَإِذَا النُّجُومُ انكَدَرَتْ",                                 ph:"Wa-idhā n-nujūmu nkadarat",fr:"Et quand les étoiles s'obscurciront"},
+{ar:"وَإِذَا الْجِبَالُ سُيِّرَتْ",                                  ph:"Wa-idhā l-jibālu suyyirat",fr:"Et quand les montagnes seront emportées"},
+{ar:"وَإِذَا الْعِشَارُ عُطِّلَتْ",                                  ph:"Wa-idhā l-ʿishāru ʿuṭṭilat",fr:"Et quand les chamelles pleines seront abandonnées"},
+{ar:"وَإِذَا الْوُحُوشُ حُشِرَتْ",                                  ph:"Wa-idhā l-wuḥūshu ḥushirat",fr:"Et quand les bêtes sauvages seront rassemblées"},
+]},
+{ num:82, id:"infitar",   nom:"Al-Infitar",   arNom:"الإنفطار",   emoji:"🌌", couleur:"#1565C0", juz:30, versets:[
+{ar:"إِذَا السَّمَاءُ انفَطَرَتْ",                                   ph:"Idhā s-samāʾu nfaṭarat",fr:"Quand le ciel sera fendu"},
+{ar:"وَإِذَا الْكَوَاكِبُ انتَثَرَتْ",                               ph:"Wa-idhā l-kawākibu ntatharat",fr:"Et quand les étoiles seront dispersées"},
+{ar:"وَإِذَا الْبِحَارُ فُجِّرَتْ",                                  ph:"Wa-idhā l-biḥāru fujjirat",fr:"Et quand les mers seront mises en communication"},
+{ar:"وَإِذَا الْقُبُورُ بُعْثِرَتْ",                                 ph:"Wa-idhā l-qubūru buʿthirat",fr:"Et quand les tombes seront bouleversées"},
+{ar:"عَلِمَتْ نَفْسٌ مَّا قَدَّمَتْ وَأَخَّرَتْ",                   ph:"ʿAlimāt nafsun mā qaddamat wa-akhkharat",fr:"Chaque âme saura alors ce qu'elle a accompli et ce qu'elle a laissé"},
+]},
+{ num:83, id:"mutaffifin",nom:"Al-Mutaffifin",arNom:"المطففين",   emoji:"⚖️", couleur:"#F57F17", juz:30, versets:[
+{ar:"وَيْلٌ لِّلْمُطَفِّفِينَ",                                      ph:"Waylun li-l-muṭaffifīn",fr:"Malheur aux fraudeurs"},
+{ar:"الَّذِينَ إِذَا اكْتَالُوا عَلَى النَّاسِ يَسْتَوْفُونَ",      ph:"Alladhīna idhā ktālū ʿalā n-nāsi yastawfūn",fr:"Qui, lorsqu'ils font mesurer pour eux, exigent la pleine mesure"},
+{ar:"وَإِذَا كَالُوهُمْ أَو وَّزَنُوهُمْ يُخْسِرُونَ",              ph:"Wa-idhā kālūhum aw wazanūhum yukhsirūn",fr:"Mais qui, lorsqu'ils mesurent ou pèsent pour autrui, donnent moins"},
+]},
+{ num:84, id:"inshiqaq",  nom:"Al-Inshiqaq",  arNom:"الإنشقاق",  emoji:"🌅", couleur:"#FF8C42", juz:30, versets:[
+{ar:"إِذَا السَّمَاءُ انشَقَّتْ",                                    ph:"Idhā s-samāʾu nshaqqa",fr:"Quand le ciel se fendra"},
+{ar:"وَأَذِنَتْ لِرَبِّهَا وَحُقَّتْ",                               ph:"Wa-adhhinat li-rabbihā wa-ḥuqqat",fr:"En obéissant à son Seigneur, comme il se doit"},
+{ar:"وَإِذَا الْأَرْضُ مُدَّتْ",                                     ph:"Wa-idhā l-arḍu muddat",fr:"Et quand la terre sera aplatie"},
+{ar:"وَأَلْقَتْ مَا فِيهَا وَتَخَلَّتْ",                             ph:"Wa-alqat mā fīhā wa-takhallat",fr:"Et aura rejeté ce qu'elle contenait et se sera vidée"},
+]},
+{ num:85, id:"buruj",     nom:"Al-Buruj",     arNom:"البروج",     emoji:"🏰", couleur:"#8D6E63", juz:30, versets:[
+{ar:"وَالسَّمَاءِ ذَاتِ الْبُرُوجِ",                                 ph:"Wa-s-samāʾi dhāti l-burūj",fr:"Par le ciel aux constellations"},
+{ar:"وَالْيَوْمِ الْمَوْعُودِ",                                       ph:"Wa-l-yawmi l-mawʿūd",fr:"Et par le Jour promis"},
+{ar:"وَشَاهِدٍ وَمَشْهُودٍ",                                         ph:"Wa-shāhidin wa-mashhūd",fr:"Et par le témoin et ce dont on est témoin"},
+{ar:"قُتِلَ أَصْحَابُ الْأُخْدُودِ",                                 ph:"Qutila aṣḥābu l-ukhdūd",fr:"Maudits soient les gens de la tranchée"},
+]},
+{ num:86, id:"tariq",     nom:"At-Tariq",     arNom:"الطارق",     emoji:"⭐", couleur:"#5C6BC0", juz:30, versets:[
+{ar:"وَالسَّمَاءِ وَالطَّارِقِ",                                     ph:"Wa-s-samāʾi wa-ṭ-ṭāriq",fr:"Par le ciel et l'Astre nocturne"},
+{ar:"وَمَا أَدْرَاكَ مَا الطَّارِقُ",                                ph:"Wa-mā adrāka mā ṭ-ṭāriq",fr:"Et qui te dira ce qu'est l'Astre nocturne ?"},
+{ar:"النَّجْمُ الثَّاقِبُ",                                          ph:"An-najmu th-thāqib",fr:"C'est l'étoile perçante"},
+{ar:"إِن كُلُّ نَفْسٍ لَّمَّا عَلَيْهَا حَافِظٌ",                   ph:"In kullu nafsin lammā ʿalayhā ḥāfiẓ",fr:"Sur toute âme veille un gardien"},
+]},
+{ num:87, id:"ala",       nom:"Al-A'la",      arNom:"الأعلى",     emoji:"🌟", couleur:"#FFD700", juz:30, versets:[
+{ar:"سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى",                              ph:"Sabbiḥi sma rabbika l-aʿlā",fr:"Glorifie le nom de ton Seigneur le Très-Haut"},
+{ar:"الَّذِي خَلَقَ فَسَوَّىٰ",                                      ph:"Alladhī khalaqa fa-sawwā",fr:"Qui a créé et harmonieusement formé"},
+{ar:"وَالَّذِي قَدَّرَ فَهَدَىٰ",                                    ph:"Wa-lladhī qaddara fa-hadā",fr:"Et qui a décrété et guidé"},
+{ar:"وَالَّذِي أَخْرَجَ الْمَرْعَىٰ",                                ph:"Wa-lladhī akhraja l-marʿā",fr:"Et qui fait sortir le pâturage"},
+{ar:"فَجَعَلَهُ غُثَاءً أَحْوَىٰ",                                   ph:"Fa-jaʿalahu ghuthāʾan aḥwā",fr:"Et en fait ensuite un foin sombre"},
+{ar:"سَنُقْرِئُكَ فَلَا تَنسَىٰ",                                    ph:"Sanuqriʾuka fa-lā tansā",fr:"Nous te ferons réciter, et tu n'oublieras pas"},
+]},
+{ num:88, id:"ghashiya",  nom:"Al-Ghashiya",  arNom:"الغاشية",    emoji:"😱", couleur:"#E53935", juz:30, versets:[
+{ar:"هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ",                            ph:"Hal atāka ḥadīthu l-ghāshiya",fr:"T'est-il parvenu le récit de l'Enveloppante ?"},
+{ar:"وُجُوهٌ يَوْمَئِذٍ خَاشِعَةٌ",                                 ph:"Wujūhun yawmaʾidhin khāshiʿa",fr:"Ce jour-là, des visages seront humiliés"},
+{ar:"عَامِلَةٌ نَّاصِبَةٌ",                                          ph:"ʿĀmilatun nāṣiba",fr:"Fourbus et épuisés"},
+{ar:"تَصْلَىٰ نَارًا حَامِيَةً",                                     ph:"Taṣlā nāran ḥāmiya",fr:"Ils brûleront dans un feu ardent"},
+]},
+{ num:89, id:"fajr",      nom:"Al-Fajr",      arNom:"الفجر",      emoji:"🌄", couleur:"#FB8C00", juz:30, versets:[
+{ar:"وَالْفَجْرِ",                                                   ph:"Wa-l-fajr",fr:"Par l'aurore"},
+{ar:"وَلَيَالٍ عَشْرٍ",                                              ph:"Wa-layālin ʿashr",fr:"Et par les dix nuits"},
+{ar:"وَالشَّفْعِ وَالْوَتْرِ",                                       ph:"Wa-sh-shafʿi wa-l-watr",fr:"Et par le pair et l'impair"},
+{ar:"وَاللَّيْلِ إِذَا يَسْرِ",                                      ph:"Wa-l-layli idhā yasr",fr:"Et par la nuit quand elle s'en va"},
+{ar:"هَلْ فِي ذَٰلِكَ قَسَمٌ لِّذِي حِجْرٍ",                        ph:"Hal fī dhālika qasamun li-dhī ḥijr",fr:"N'y a-t-il pas là un serment pour tout homme intelligent ?"},
+]},
+{ num:90, id:"balad",     nom:"Al-Balad",     arNom:"البلد",      emoji:"🏙️", couleur:"#6D4C41", juz:30, versets:[
+{ar:"لَا أُقْسِمُ بِهَٰذَا الْبَلَدِ",                               ph:"Lā uqsimu bi-hādhā l-balad",fr:"Je jure par cette cité"},
+{ar:"وَأَنتَ حِلٌّ بِهَٰذَا الْبَلَدِ",                              ph:"Wa-anta ḥillun bi-hādhā l-balad",fr:"Alors que tu es un habitant de cette cité"},
+{ar:"وَوَالِدٍ وَمَا وَلَدَ",                                         ph:"Wa-wālidin wa-mā walad",fr:"Et par le géniteur et ce qu'il a engendré"},
+{ar:"لَقَدْ خَلَقْنَا الْإِنسَانَ فِي كَبَدٍ",                       ph:"La-qad khalaqnā l-insāna fī kabad",fr:"Vraiment Nous avons créé l'homme dans la peine"},
+]},
+{ num:91, id:"shams",     nom:"Ash-Shams",    arNom:"الشمس",      emoji:"☀️", couleur:"#FDD835", juz:30, versets:[
+{ar:"وَالشَّمْسِ وَضُحَاهَا",                                        ph:"Wa-sh-shamsi wa-ḍuḥāhā",fr:"Par le soleil et sa clarté matinale"},
+{ar:"وَالْقَمَرِ إِذَا تَلَاهَا",                                    ph:"Wa-l-qamari idhā talāhā",fr:"Et par la lune quand elle lui succède"},
+{ar:"وَالنَّهَارِ إِذَا جَلَّاهَا",                                  ph:"Wa-n-nahāri idhā jallāhā",fr:"Et par le jour qui la fait resplendir"},
+{ar:"وَاللَّيْلِ إِذَا يَغْشَاهَا",                                  ph:"Wa-l-layli idhā yaghshāhā",fr:"Et par la nuit quand elle l'enveloppe"},
+{ar:"وَالسَّمَاءِ وَمَا بَنَاهَا",                                   ph:"Wa-s-samāʾi wa-mā banāhā",fr:"Et par le ciel et Celui qui l'a édifié"},
+{ar:"وَالْأَرْضِ وَمَا طَحَاهَا",                                    ph:"Wa-l-arḍi wa-mā ṭaḥāhā",fr:"Et par la terre et Celui qui l'a étendue"},
+{ar:"وَنَفْسٍ وَمَا سَوَّاهَا",                                      ph:"Wa-nafsin wa-mā sawwāhā",fr:"Et par l'âme et Celui qui l'a harmonieusement formée"},
+]},
+{ num:92, id:"layl",      nom:"Al-Layl",      arNom:"الليل",      emoji:"🌙", couleur:"#3949AB", juz:30, versets:[
+{ar:"وَاللَّيْلِ إِذَا يَغْشَىٰ",                                   ph:"Wa-l-layli idhā yaghshā",fr:"Par la nuit quand elle enveloppe"},
+{ar:"وَالنَّهَارِ إِذَا تَجَلَّىٰ",                                  ph:"Wa-n-nahāri idhā tajallā",fr:"Et par le jour quand il se dévoile"},
+{ar:"وَمَا خَلَقَ الذَّكَرَ وَالْأُنثَىٰ",                          ph:"Wa-mā khalaqa dh-dhakara wa-l-unthā",fr:"Et par Celui qui a créé le mâle et la femelle"},
+{ar:"إِنَّ سَعْيَكُمْ لَشَتَّىٰ",                                   ph:"Inna saʿyakum la-shattā",fr:"Certes, vos efforts sont dispersés"},
+]},
+{ num:93, id:"duha",      nom:"Ad-Duha",      arNom:"الضحى",      emoji:"🌤️", couleur:"#FFB300", juz:30, versets:[
+{ar:"وَالضُّحَىٰ",                                                   ph:"Wa-ḍ-ḍuḥā",fr:"Par la clarté du jour"},
+{ar:"وَاللَّيْلِ إِذَا سَجَىٰ",                                     ph:"Wa-l-layli idhā sajā",fr:"Et par la nuit quand elle s'étend"},
+{ar:"مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",                           ph:"Mā waddaʿaka rabbuka wa-mā qalā",fr:"Ton Seigneur ne t'a pas abandonné et ne te hait pas"},
+{ar:"وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ",                   ph:"Wa-la-l-ākhiratu khayrun laka mina l-ūlā",fr:"Et certes l'au-delà est meilleur pour toi que la vie présente"},
+{ar:"وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ",                      ph:"Wa-la-sawfa yuʿṭīka rabbuka fa-tarḍā",fr:"Ton Seigneur te donnera, et tu seras satisfait"},
+{ar:"أَلَمْ يَجِدْكَ يَتِيمًا فَآوَىٰ",                              ph:"A-lam yajidka yatīman fa-āwā",fr:"Ne t'a-t-Il pas trouvé orphelin et t'a accordé asile ?"},
+{ar:"وَوَجَدَكَ ضَالًّا فَهَدَىٰ",                                   ph:"Wa-wajadaka ḍāllan fa-hadā",fr:"Et t'a trouvé égaré et t'a guidé ?"},
+{ar:"وَوَجَدَكَ عَائِلًا فَأَغْنَىٰ",                                ph:"Wa-wajadaka ʿāʾilan fa-aghnā",fr:"Et t'a trouvé pauvre et t'a enrichi ?"},
+{ar:"فَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ",                            ph:"Fa-ammā l-yatīma fa-lā taqhar",fr:"Ne maltraite donc pas l'orphelin"},
+{ar:"وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ",                            ph:"Wa-ammā s-sāʾila fa-lā tanhar",fr:"Et ne repousse pas le mendiant"},
+{ar:"وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ",                        ph:"Wa-ammā bi-niʿmati rabbika fa-ḥaddith",fr:"Et parle des bienfaits de ton Seigneur"},
+]},
+{ num:94, id:"inshirah",  nom:"Ash-Sharh",    arNom:"الشرح",      emoji:"💫", couleur:"#4DD0E1", juz:30, versets:[
+{ar:"أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ",                                 ph:"A-lam nashraḥ laka ṣadrak",fr:"N'avons-Nous pas mis ton cœur dans la sérénité ?"},
+{ar:"وَوَضَعْنَا عَنكَ وِزْرَكَ",                                    ph:"Wa-waḍaʿnā ʿanka wizrak",fr:"Et n'avons-Nous pas allégé ton fardeau"},
+{ar:"الَّذِي أَنقَضَ ظَهْرَكَ",                                      ph:"Alladhī anqaḍa ẓahrak",fr:"Qui accablait ton dos ?"},
+{ar:"وَرَفَعْنَا لَكَ ذِكْرَكَ",                                     ph:"Wa-rafaʿnā laka dhikrak",fr:"Et n'avons-Nous pas élevé ta renommée ?"},
+{ar:"فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",                                ph:"Fa-inna maʿa l-ʿusri yusrā",fr:"Car avec la difficulté vient certes la facilité"},
+{ar:"إِنَّ مَعَ الْعُسْرِ يُسْرًا",                                  ph:"Inna maʿa l-ʿusri yusrā",fr:"Oui, avec la difficulté vient certes la facilité"},
+{ar:"فَإِذَا فَرَغْتَ فَانصَبْ",                                     ph:"Fa-idhā faraghta fa-nṣab",fr:"Lors donc que tu te libères, travaille avec ardeur"},
+{ar:"وَإِلَىٰ رَبِّكَ فَارْغَب",                                     ph:"Wa-ilā rabbika fa-rghab",fr:"Et aspire à ton Seigneur"},
+]},
+{ num:95, id:"tin",       nom:"At-Tin",       arNom:"التين",      emoji:"🫒", couleur:"#8BC34A", juz:30, versets:[
+{ar:"وَالتِّينِ وَالزَّيْتُونِ",                                     ph:"Wa-t-tīni wa-z-zaytūn",fr:"Par le figuier et l'olivier"},
+{ar:"وَطُورِ سِينِينَ",                                              ph:"Wa-ṭūri sīnīn",fr:"Et par le mont Sinaï"},
+{ar:"وَهَٰذَا الْبَلَدِ الْأَمِينِ",                                 ph:"Wa-hādhā l-baladi l-amīn",fr:"Et par cette cité sûre"},
+{ar:"لَقَدْ خَلَقْنَا الْإِنسَانَ فِي أَحْسَنِ تَقْوِيمٍ",          ph:"La-qad khalaqnā l-insāna fī aḥsani taqwīm",fr:"Nous avons créé l'homme dans la meilleure forme"},
+{ar:"ثُمَّ رَدَدْنَاهُ أَسْفَلَ سَافِلِينَ",                         ph:"Thumma radadnāhu asfala sāfilīn",fr:"Puis Nous l'avons ramené au niveau le plus bas"},
+{ar:"إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ",            ph:"Illā lladhīna āmanū wa-ʿamilū ṣ-ṣāliḥāt",fr:"Sauf ceux qui croient et accomplissent de bonnes œuvres"},
+{ar:"فَلَهُمْ أَجْرٌ غَيْرُ مَمْنُونٍ",                              ph:"Fa-lahum ajrun ghayru mamnūn",fr:"Ceux-là auront une récompense ininterrompue"},
+{ar:"فَمَا يُكَذِّبُكَ بَعْدُ بِالدِّينِ",                           ph:"Fa-mā yukadhdhibuka baʿdu bi-d-dīn",fr:"Qu'est-ce qui après cela te fait nier le Jugement ?"},
+{ar:"أَلَيْسَ اللَّهُ بِأَحْكَمِ الْحَاكِمِينَ",                    ph:"A-laysa Llāhu bi-aḥkami l-ḥākimīn",fr:"Allah n'est-Il pas le plus Juste des juges ?"},
+]},
+{ num:96, id:"alaq",      nom:"Al-'Alaq",     arNom:"العلق",      emoji:"📖", couleur:"#7B1FA2", juz:30, versets:[
+{ar:"اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ",                       ph:"Iqraʾ bi-smi rabbika lladhī khalaq",fr:"Lis au nom de ton Seigneur qui a créé"},
+{ar:"خَلَقَ الْإِنسَانَ مِنْ عَلَقٍ",                               ph:"Khalaqa l-insāna min ʿalaq",fr:"Il a créé l'homme d'une adhérence"},
+{ar:"اقْرَأْ وَرَبُّكَ الْأَكْرَمُ",                                 ph:"Iqraʾ wa-rabbuka l-akram",fr:"Lis, ton Seigneur est le Très Noble"},
+{ar:"الَّذِي عَلَّمَ بِالْقَلَمِ",                                   ph:"Alladhī ʿallama bi-l-qalam",fr:"Qui a enseigné par le calame"},
+{ar:"عَلَّمَ الْإِنسَانَ مَا لَمْ يَعْلَمْ",                        ph:"ʿAllama l-insāna mā lam yaʿlam",fr:"Il a enseigné à l'homme ce qu'il ne savait pas"},
+]},
+{ num:97, id:"qadr",      nom:"Al-Qadr",      arNom:"القدر",      emoji:"✨", couleur:"#4ECDC4", juz:30, versets:[
+{ar:"إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ",                   ph:"Innā anzalnāhu fī laylati l-qadr",fr:"Nous l'avons révélé durant la Nuit du Destin"},
+{ar:"وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ",                       ph:"Wa-mā adrāka mā laylatu l-qadr",fr:"Sais-tu ce qu'est la Nuit du Destin ?"},
+{ar:"لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ",               ph:"Laylatu l-qadri khayrun min alfi shahr",fr:"La Nuit du Destin vaut mille mois"},
+{ar:"تَنَزَّلُ الْمَلَائِكَةُ وَالرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍ", ph:"Tanazzalu l-malāikatu wa-r-rūḥu fīhā bi-idhni rabbihim min kulli amr",fr:"Les anges et l'Esprit y descendent avec la permission de leur Seigneur pour tout ordre"},
+{ar:"سَلَامٌ هِيَ حَتَّىٰ مَطْلَعِ الْفَجْرِ",                      ph:"Salāmun hiya ḥattā maṭlaʿi l-fajr",fr:"C'est la paix jusqu'au lever de l'aurore"},
+]},
+{ num:98, id:"bayyina",   nom:"Al-Bayyina",   arNom:"البينة",     emoji:"📜", couleur:"#26A69A", juz:30, versets:[
+{ar:"لَمْ يَكُنِ الَّذِينَ كَفَرُوا مِنْ أَهْلِ الْكِتَابِ وَالْمُشْرِكِينَ مُنفَكِّينَ", ph:"Lam yakuni lladhīna kafarū min ahli l-kitābi wa-l-mushrikīna munfakkīn",fr:"Ceux qui ne croient pas parmi les Gens du Livre et les associateurs n'allaient pas cesser leur incroyance"},
+{ar:"حَتَّىٰ تَأْتِيَهُمُ الْبَيِّنَةُ",                            ph:"Ḥattā tatiyahumu l-bayyina",fr:"Jusqu'à ce que leur vînt la preuve évidente"},
+{ar:"رَسُولٌ مِّنَ اللَّهِ يَتْلُو صُحُفًا مُّطَهَّرَةً",          ph:"Rasūlun mina Llāhi yatlū ṣuḥufan muṭahhara",fr:"Un messager d'Allah récitant des feuilles purifiées"},
+]},
+{ num:99, id:"zalzala",   nom:"Az-Zalzala",   arNom:"الزلزلة",    emoji:"🌍", couleur:"#795548", juz:30, versets:[
+{ar:"إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا",                      ph:"Idhā zulzilati l-arḍu zilzālahā",fr:"Quand la terre sera secouée de son violent séisme"},
+{ar:"وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا",                          ph:"Wa-akhrajati l-arḍu athqālahā",fr:"Et que la terre expulsera ses fardeaux"},
+{ar:"وَقَالَ الْإِنسَانُ مَا لَهَا",                                 ph:"Wa-qāla l-insānu mā lahā",fr:"Et que l'homme dira : Qu'a-t-elle ?"},
+{ar:"يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا",                            ph:"Yawmaʾidhin tuḥaddithu akhbārahā",fr:"Ce jour-là, elle rapportera ses nouvelles"},
+{ar:"بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا",                               ph:"Bi-anna rabbaka awḥā lahā",fr:"Parce que ton Seigneur lui aura inspiré"},
+{ar:"يَوْمَئِذٍ يَصْدُرُ النَّاسُ أَشْتَاتًا",                      ph:"Yawmaʾidhin yaṣduru n-nāsu ashtātā",fr:"Ce jour-là, les gens sortiront en groupes dispersés"},
+{ar:"فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ",              ph:"Fa-man yaʿmal mithqāla dharratin khayran yarah",fr:"Quiconque aura fait un atome de bien le verra"},
+{ar:"وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ",               ph:"Wa-man yaʿmal mithqāla dharratin sharran yarah",fr:"Et quiconque aura fait un atome de mal le verra"},
+]},
+{ num:100,id:"adiyat",    nom:"Al-'Adiyat",   arNom:"العاديات",   emoji:"🐎", couleur:"#FF5722", juz:30, versets:[
+{ar:"وَالْعَادِيَاتِ ضَبْحًا",                                       ph:"Wa-l-ʿādiyāti ḍabḥā",fr:"Par les cavales qui courent en soufflant"},
+{ar:"فَالْمُورِيَاتِ قَدْحًا",                                       ph:"Fa-l-mūriyāti qadḥā",fr:"Et qui font jaillir des étincelles par leurs sabots"},
+{ar:"فَالْمُغِيرَاتِ صُبْحًا",                                       ph:"Fa-l-mughīrāti ṣubḥā",fr:"Et qui attaquent au matin"},
+{ar:"فَأَثَرْنَ بِهِ نَقْعًا",                                       ph:"Fa-atharna bihi naqʿā",fr:"Et soulèvent ainsi un nuage de poussière"},
+{ar:"فَوَسَطْنَ بِهِ جَمْعًا",                                       ph:"Fa-wasaṭna bihi jamʿā",fr:"Et pénètrent au cœur d'un groupe d'hommes"},
+]},
+{ num:101,id:"qaria",     nom:"Al-Qari'a",    arNom:"القارعة",    emoji:"💥", couleur:"#D32F2F", juz:30, versets:[
+{ar:"الْقَارِعَةُ",                                                  ph:"Al-qāriʿa",fr:"Le Fracas"},
+{ar:"مَا الْقَارِعَةُ",                                              ph:"Mā l-qāriʿa",fr:"Qu'est-ce que le Fracas ?"},
+{ar:"وَمَا أَدْرَاكَ مَا الْقَارِعَةُ",                              ph:"Wa-mā adrāka mā l-qāriʿa",fr:"Et qui te dira ce qu'est le Fracas ?"},
+{ar:"يَوْمَ يَكُونُ النَّاسُ كَالْفَرَاشِ الْمَبْثُوثِ",            ph:"Yawma yakūnu n-nāsu ka-l-farāshi l-mabthūth",fr:"Le jour où les hommes seront comme des papillons épars"},
+{ar:"وَتَكُونُ الْجِبَالُ كَالْعِهْنِ الْمَنفُوشِ",                 ph:"Wa-takūnu l-jibālu ka-l-ʿihni l-manfūsh",fr:"Et les montagnes comme de la laine cardée"},
+]},
+{ num:102,id:"takathur",  nom:"At-Takathur",  arNom:"التكاثر",    emoji:"🏆", couleur:"#455A64", juz:30, versets:[
+{ar:"أَلْهَاكُمُ التَّكَاثُرُ",                                      ph:"Alhākumu t-takāthur",fr:"La course aux richesses vous distrait"},
+{ar:"حَتَّىٰ زُرْتُمُ الْمَقَابِرَ",                                 ph:"Ḥattā zurtumu l-maqābir",fr:"Jusqu'à ce que vous visitiez les tombeaux"},
+{ar:"كَلَّا سَوْفَ تَعْلَمُونَ",                                     ph:"Kallā sawfa taʿlamūn",fr:"Certes non ! Vous saurez bientôt"},
+{ar:"ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ",                               ph:"Thumma kallā sawfa taʿlamūn",fr:"Encore une fois, certes non ! Vous saurez bientôt"},
+{ar:"كَلَّا لَوْ تَعْلَمُونَ عِلْمَ الْيَقِينِ",                    ph:"Kallā law taʿlamūna ʿilma l-yaqīn",fr:"Certes non ! Si vous saviez d'une science certaine"},
+{ar:"لَتَرَوُنَّ الْجَحِيمَ",                                        ph:"La-tarawunna l-jaḥīm",fr:"Vous verrez sûrement l'Enfer"},
+{ar:"ثُمَّ لَتَرَوُنَّهَا عَيْنَ الْيَقِينِ",                        ph:"Thumma la-tarawunnahā ʿayna l-yaqīn",fr:"Puis vous le verrez de la certitude même"},
+{ar:"ثُمَّ لَتُسْأَلُنَّ يَوْمَئِذٍ عَنِ النَّعِيمِ",               ph:"Thumma la-tusʾalunna yawmaʾidhin ʿani n-naʿīm",fr:"Puis ce jour-là, vous serez interrogés sur les bienfaits"},
+]},
+{ num:103,id:"asr",       nom:"Al-'Asr",      arNom:"العصر",      emoji:"⏳", couleur:"#FF8C42", juz:30, versets:[
+{ar:"وَالْعَصْرِ",                                                   ph:"Wa-l-ʿaṣr",fr:"Par le Temps"},
+{ar:"إِنَّ الْإِنسَانَ لَفِي خُسْرٍ",                               ph:"Inna l-insāna la-fī khusr",fr:"L'homme est vraiment en perdition"},
+{ar:"إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ", ph:"Illā lladhīna āmanū wa-ʿamilū ṣ-ṣāliḥāti wa-tawāṣaw bi-l-ḥaqqi wa-tawāṣaw bi-ṣ-ṣabr",fr:"Sauf ceux qui croient, font de bonnes œuvres, s'enjoignent mutuellement la vérité et la patience"},
+]},
+{ num:104,id:"humaza",    nom:"Al-Humaza",    arNom:"الهمزة",     emoji:"🗣️", couleur:"#C62828", juz:30, versets:[
+{ar:"وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ",                           ph:"Waylun li-kulli humazatin lumazа",fr:"Malheur à tout calomniateur et médisant"},
+{ar:"الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ",                            ph:"Alladhī jamaʿa mālan wa-ʿaddadah",fr:"Qui amasse des richesses et les compte"},
+{ar:"يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ",                            ph:"Yaḥsabu anna mālahu akhladah",fr:"Il croit que sa fortune le rendra immortel"},
+{ar:"كَلَّا لَيُنبَذَنَّ فِي الْحُطَمَةِ",                          ph:"Kallā la-yunbadhanna fī l-ḥuṭama",fr:"Certes non ! Il sera précipité dans al-Hutama"},
+{ar:"وَمَا أَدْرَاكَ مَا الْحُطَمَةُ",                              ph:"Wa-mā adrāka mā l-ḥuṭama",fr:"Et qui te dira ce qu'est al-Hutama ?"},
+{ar:"نَارُ اللَّهِ الْمُوقَدَةُ",                                    ph:"Nāru Llāhi l-mūqada",fr:"C'est le feu d'Allah allumé"},
+]},
+{ num:105,id:"fil",       nom:"Al-Fil",       arNom:"الفيل",      emoji:"🐘", couleur:"#5D4037", juz:30, versets:[
+{ar:"أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ",      ph:"A-lam tara kayfa faʿala rabbuka bi-aṣḥābi l-fīl",fr:"N'as-tu pas vu comment ton Seigneur a agi avec les gens de l'Éléphant ?"},
+{ar:"أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ",                    ph:"A-lam yajʿal kaydahum fī taḍlīl",fr:"N'a-t-Il pas rendu vain leur stratagème ?"},
+{ar:"وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ",                     ph:"Wa-arsala ʿalayhim ṭayran abābīl",fr:"Et il envoya contre eux des oiseaux en escadrilles"},
+{ar:"تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ",                        ph:"Tarmīhim bi-ḥijāratin min sijjīl",fr:"Qui leur lançaient des pierres d'argile"},
+{ar:"فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ",                             ph:"Fa-jaʿalahum ka-ʿaṣfin maʾkūl",fr:"Et les rendit pareils à de la paille mâchée"},
+]},
+{ num:106,id:"quraysh",   nom:"Quraysh",      arNom:"قريش",       emoji:"🕌", couleur:"#1565C0", juz:30, versets:[
+{ar:"لِإِيلَافِ قُرَيْشٍ",                                          ph:"Li-īlāfi quraysh",fr:"Pour la sécurité des Quraysh"},
+{ar:"إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ",                ph:"Īlāfihim riḥlata sh-shitāʾi wa-ṣ-ṣayf",fr:"Leur sécurité dans les voyages d'hiver et d'été"},
+{ar:"فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ",                        ph:"Fa-l-yaʿbudū rabba hādhā l-bayt",fr:"Qu'ils adorent donc le Seigneur de cette Maison"},
+{ar:"الَّذِي أَطْعَمَهُم مِّن جُوعٍ وَآمَنَهُم مِّنْ خَوْفٍ",      ph:"Alladhī aṭʿamahum min jūʿin wa-āmanahum min khawf",fr:"Qui les a nourris contre la faim et les a sécurisés contre la crainte"},
+]},
+{ num:107,id:"maun",      nom:"Al-Ma'un",     arNom:"الماعون",    emoji:"🤲", couleur:"#00897B", juz:30, versets:[
+{ar:"أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ",                      ph:"A-raʾayta lladhī yukadhdhibu bi-d-dīn",fr:"Vois-tu celui qui traite de mensonge la Rétribution ?"},
+{ar:"فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ",                         ph:"Fa-dhālika lladhī yaduʿʿu l-yatīm",fr:"C'est lui qui repousse l'orphelin"},
+{ar:"وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ",                    ph:"Wa-lā yaḥuḍḍu ʿalā ṭaʿāmi l-miskīn",fr:"Et qui n'encourage pas à nourrir le pauvre"},
+{ar:"فَوَيْلٌ لِّلْمُصَلِّينَ",                                     ph:"Fa-waylun li-l-muṣallīn",fr:"Malheur donc à ceux qui font la prière"},
+{ar:"الَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ",                      ph:"Alladhīna hum ʿan ṣalātihim sāhūn",fr:"Qui sont distraits de leur prière"},
+{ar:"الَّذِينَ هُمْ يُرَاءُونَ",                                     ph:"Alladhīna hum yurāʾūn",fr:"Qui font de l'ostentation"},
+{ar:"وَيَمْنَعُونَ الْمَاعُونَ",                                     ph:"Wa-yamnaʿūna l-māʿūn",fr:"Et qui refusent l'ustensile de service"},
+]},
+{ num:108,id:"kawthar",   nom:"Al-Kawthar",   arNom:"الكوثر",     emoji:"🌊", couleur:"#1E88E5", juz:30, versets:[
+{ar:"إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",                              ph:"Innā aʿṭaynāka l-kawthar",fr:"Nous t'avons accordé l'Abondance"},
+{ar:"فَصَلِّ لِرَبِّكَ وَانْحَرْ",                                   ph:"Fa-ṣalli li-rabbika wa-nḥar",fr:"Accomplis donc la prière pour ton Seigneur et sacrifie"},
+{ar:"إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ",                              ph:"Inna shāniʾaka huwa l-abtar",fr:"C'est bien ton ennemi qui sera sans postérité"},
+]},
+{ num:109,id:"kafirun",   nom:"Al-Kafirun",   arNom:"الكافرون",   emoji:"🕊️", couleur:"#5BA4CF", juz:30, versets:[
+{ar:"قُلْ يَا أَيُّهَا الْكَافِرُونَ",                              ph:"Qul yā ayyuhā l-kāfirūn",fr:"Dis : Ô vous les mécréants"},
+{ar:"لَا أَعْبُدُ مَا تَعْبُدُونَ",                                 ph:"Lā aʿbudu mā taʿbudūn",fr:"Je n'adore pas ce que vous adorez"},
+{ar:"وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ",                        ph:"Wa-lā antum ʿābidūna mā aʿbud",fr:"Et vous n'adorez pas ce que j'adore"},
+{ar:"وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ",                          ph:"Wa-lā anā ʿābidun mā ʿabadtum",fr:"Je n'ai jamais adoré ce que vous adorez"},
+{ar:"وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ",                        ph:"Wa-lā antum ʿābidūna mā aʿbud",fr:"Et vous n'adorez pas ce que j'adore"},
+{ar:"لَكُمْ دِينُكُمْ وَلِيَ دِينِ",                                ph:"Lakum dīnukum wa-liya dīn",fr:"À vous votre religion, à moi la mienne"},
+]},
+{ num:110,id:"nasr",      nom:"An-Nasr",      arNom:"النصر",      emoji:"🏳️", couleur:"#43A047", juz:30, versets:[
+{ar:"إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ",                      ph:"Idhā jāʾa naṣru Llāhi wa-l-fatḥ",fr:"Quand arrive le secours d'Allah et la victoire"},
+{ar:"وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا", ph:"Wa-raʾayta n-nāsa yadkhulūna fī dīni Llāhi afwājā",fr:"Et que tu vois les gens entrer en foule dans la religion d'Allah"},
+{ar:"فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ إِنَّهُ كَانَ تَوَّابًا", ph:"Fa-sabbiḥ bi-ḥamdi rabbika wa-staghfirhu innahu kāna tawwābā",fr:"Célèbre la gloire et les louanges de ton Seigneur, et implore Son pardon. Car Il est certes le Repentant"},
+]},
+{ num:111,id:"masad",     nom:"Al-Masad",     arNom:"المسد",      emoji:"🔥", couleur:"#E53935", juz:30, versets:[
+{ar:"تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ",                          ph:"Tabbat yadā Abī Lahabin wa-tabb",fr:"Que périssent les deux mains d'Abou Lahab et qu'il périsse lui-même !"},
+{ar:"مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ",                    ph:"Mā aghnā ʿanhu māluhu wa-mā kasab",fr:"Sa fortune et ce qu'il a acquis ne lui ont servi à rien"},
+{ar:"سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ",                              ph:"Sa-yaṣlā nāran dhāta lahab",fr:"Il brûlera dans un feu plein de flammes"},
+{ar:"وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ",                          ph:"Wa-mraʾatuhu ḥammālata l-ḥaṭab",fr:"Ainsi que sa femme, la porteuse de bois"},
+{ar:"فِي جِيدِهَا حَبْلٌ مِّن مَّسَدٍ",                            ph:"Fī jīdihā ḥablun min masad",fr:"À son cou, une corde de fibres de palmier"},
+]},
+{ num:112,id:"ikhlas",    nom:"Al-Ikhlas",    arNom:"الإخلاص",    emoji:"☝️", couleur:"#FFD700", juz:30, versets:[
+{ar:"قُلْ هُوَ اللَّهُ أَحَدٌ",                                     ph:"Qul huwa Allāhu aḥad",fr:"Dis : Il est Allah, l'Unique"},
+{ar:"اللَّهُ الصَّمَدُ",                                            ph:"Allāhu ṣ-ṣamad",fr:"Allah, l'Absolu, le Seul recours"},
+{ar:"لَمْ يَلِدْ وَلَمْ يُولَدْ",                                   ph:"Lam yalid wa-lam yūlad",fr:"Il n'a pas engendré et n'a pas été engendré"},
+{ar:"وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",                            ph:"Wa-lam yakun lahu kufuwan aḥad",fr:"Et nul n'est égal à Lui"},
+]},
+{ num:113,id:"falaq",     nom:"Al-Falaq",     arNom:"الفلق",      emoji:"🌅", couleur:"#FF8C42", juz:30, versets:[
+{ar:"قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",                               ph:"Qul aʿūdhu bi-rabbi l-falaq",fr:"Dis : Je cherche refuge auprès du Seigneur de l'Aube"},
+{ar:"مِن شَرِّ مَا خَلَقَ",                                         ph:"Min sharri mā khalaq",fr:"Contre le mal de ce qu'Il a créé"},
+{ar:"وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",                             ph:"Wa-min sharri ghāsiqin idhā waqab",fr:"Contre le mal de l'obscurité quand elle s'étend"},
+{ar:"وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ",                     ph:"Wa-min sharri n-naffāthāti fī l-ʿuqad",fr:"Contre le mal des souffleuses sur les nœuds"},
+{ar:"وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",                             ph:"Wa-min sharri ḥāsidin idhā ḥasad",fr:"Contre le mal de l'envieux quand il envie"},
+]},
+{ num:114,id:"nas",       nom:"An-Nas",       arNom:"الناس",      emoji:"🌙", couleur:"#9B8BE8", juz:30, versets:[
+{ar:"قُلْ أَعُوذُ بِرَبِّ النَّاسِ",                                ph:"Qul aʿūdhu bi-rabbi n-nās",fr:"Dis : Je cherche refuge auprès du Seigneur des hommes"},
+{ar:"مَلِكِ النَّاسِ",                                              ph:"Maliki n-nās",fr:"Le Roi des hommes"},
+{ar:"إِلَٰهِ النَّاسِ",                                             ph:"Ilāhi n-nās",fr:"Le Dieu des hommes"},
+{ar:"مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ",                          ph:"Min sharri l-waswāsi l-khannās",fr:"Contre le mal du tentateur discret"},
+{ar:"الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ",                      ph:"Alladhī yuwaswisu fī ṣudūri n-nās",fr:"Qui souffle le mal dans les cœurs des hommes"},
+{ar:"مِنَ الْجِنَّةِ وَالنَّاسِ",                                   ph:"Mina l-jinnati wa-n-nās",fr:"Qu'il soit d'entre les djinns ou les hommes"},
+]},
+];
+
+// Sourates 2–77 : titres seulement (à compléter)
+const STUBS = [
+{num:2,id:"baqara",nom:"Al-Baqara",arNom:"البقرة",emoji:"🐄",couleur:"#26A69A",juz:1},
+{num:3,id:"imran",nom:"Ali 'Imran",arNom:"آل عمران",emoji:"👨‍👩‍👧",couleur:"#5C6BC0",juz:3},
+{num:4,id:"nisa",nom:"An-Nisa",arNom:"النساء",emoji:"👩",couleur:"#EC407A",juz:4},
+{num:5,id:"maida",nom:"Al-Ma'ida",arNom:"المائدة",emoji:"🍽️",couleur:"#8BC34A",juz:6},
+{num:6,id:"anam",nom:"Al-An'am",arNom:"الأنعام",emoji:"🐑",couleur:"#FF7043",juz:7},
+{num:7,id:"araf",nom:"Al-A'raf",arNom:"الأعراف",emoji:"⛰️",couleur:"#6D4C41",juz:8},
+{num:8,id:"anfal",nom:"Al-Anfal",arNom:"الأنفال",emoji:"⚔️",couleur:"#546E7A",juz:9},
+{num:9,id:"tawba",nom:"At-Tawba",arNom:"التوبة",emoji:"🙏",couleur:"#1565C0",juz:10},
+{num:10,id:"yunus",nom:"Yunus",arNom:"يونس",emoji:"🐋",couleur:"#00838F",juz:11},
+{num:11,id:"hud",nom:"Hud",arNom:"هود",emoji:"🏠",couleur:"#F57F17",juz:11},
+{num:12,id:"yusuf",nom:"Yusuf",arNom:"يوسف",emoji:"⭐",couleur:"#FDD835",juz:12},
+{num:13,id:"rad",nom:"Ar-Ra'd",arNom:"الرعد",emoji:"⛈️",couleur:"#455A64",juz:13},
+{num:14,id:"ibrahim",nom:"Ibrahim",arNom:"إبراهيم",emoji:"🔥",couleur:"#E64A19",juz:13},
+{num:15,id:"hijr",nom:"Al-Hijr",arNom:"الحجر",emoji:"🪨",couleur:"#8D6E63",juz:14},
+{num:16,id:"nahl",nom:"An-Nahl",arNom:"النحل",emoji:"🐝",couleur:"#FBC02D",juz:14},
+{num:17,id:"isra",nom:"Al-Isra",arNom:"الإسراء",emoji:"🌙",couleur:"#3949AB",juz:15},
+{num:18,id:"kahf",nom:"Al-Kahf",arNom:"الكهف",emoji:"🏔️",couleur:"#00695C",juz:15},
+{num:19,id:"maryam",nom:"Maryam",arNom:"مريم",emoji:"🌹",couleur:"#E91E63",juz:16},
+{num:20,id:"taha",nom:"Ta-Ha",arNom:"طه",emoji:"📜",couleur:"#7B1FA2",juz:16},
+{num:21,id:"anbiya",nom:"Al-Anbiya",arNom:"الأنبياء",emoji:"👨‍✈️",couleur:"#F9A825",juz:17},
+{num:22,id:"hajj",nom:"Al-Hajj",arNom:"الحج",emoji:"🕌",couleur:"#33691E",juz:17},
+{num:23,id:"muminun",nom:"Al-Mu'minun",arNom:"المؤمنون",emoji:"🤲",couleur:"#1B5E20",juz:18},
+{num:24,id:"nur",nom:"An-Nur",arNom:"النور",emoji:"💡",couleur:"#F57F17",juz:18},
+{num:25,id:"furqan",nom:"Al-Furqan",arNom:"الفرقان",emoji:"⚖️",couleur:"#006064",juz:18},
+{num:26,id:"shuara",nom:"Ash-Shu'ara",arNom:"الشعراء",emoji:"🖊️",couleur:"#AD1457",juz:19},
+{num:27,id:"naml",nom:"An-Naml",arNom:"النمل",emoji:"🐜",couleur:"#FF6F00",juz:19},
+{num:28,id:"qasas",nom:"Al-Qasas",arNom:"القصص",emoji:"📖",couleur:"#1565C0",juz:20},
+{num:29,id:"ankabut",nom:"Al-'Ankabut",arNom:"العنكبوت",emoji:"🕷️",couleur:"#37474F",juz:20},
+{num:30,id:"rum",nom:"Ar-Rum",arNom:"الروم",emoji:"🏛️",couleur:"#C62828",juz:21},
+{num:31,id:"luqman",nom:"Luqman",arNom:"لقمان",emoji:"👴",couleur:"#558B2F",juz:21},
+{num:32,id:"sajda",nom:"As-Sajda",arNom:"السجدة",emoji:"🧎",couleur:"#6A1B9A",juz:21},
+{num:33,id:"ahzab",nom:"Al-Ahzab",arNom:"الأحزاب",emoji:"🛡️",couleur:"#1565C0",juz:21},
+{num:34,id:"saba",nom:"Saba",arNom:"سبأ",emoji:"👑",couleur:"#BF360C",juz:22},
+{num:35,id:"fatir",nom:"Fatir",arNom:"فاطر",emoji:"🌌",couleur:"#4527A0",juz:22},
+{num:36,id:"yasin",nom:"Ya-Sin",arNom:"يس",emoji:"💚",couleur:"#2E7D32",juz:22},
+{num:37,id:"saffat",nom:"As-Saffat",arNom:"الصافات",emoji:"👼",couleur:"#0277BD",juz:23},
+{num:38,id:"sad",nom:"Sad",arNom:"ص",emoji:"📝",couleur:"#558B2F",juz:23},
+{num:39,id:"zumar",nom:"Az-Zumar",arNom:"الزمر",emoji:"🌐",couleur:"#00695C",juz:23},
+{num:40,id:"ghafir",nom:"Ghafir",arNom:"غافر",emoji:"🙌",couleur:"#1565C0",juz:24},
+{num:41,id:"fussilat",nom:"Fussilat",arNom:"فصلت",emoji:"📡",couleur:"#6A1B9A",juz:24},
+{num:42,id:"shura",nom:"Ash-Shura",arNom:"الشورى",emoji:"🤝",couleur:"#0277BD",juz:25},
+{num:43,id:"zukhruf",nom:"Az-Zukhruf",arNom:"الزخرف",emoji:"✨",couleur:"#F9A825",juz:25},
+{num:44,id:"dukhan",nom:"Ad-Dukhan",arNom:"الدخان",emoji:"💨",couleur:"#546E7A",juz:25},
+{num:45,id:"jathiya",nom:"Al-Jathiya",arNom:"الجاثية",emoji:"🧎",couleur:"#4E342E",juz:25},
+{num:46,id:"ahqaf",nom:"Al-Ahqaf",arNom:"الأحقاف",emoji:"🏜️",couleur:"#E65100",juz:26},
+{num:47,id:"muhammad",nom:"Muhammad",arNom:"محمد",emoji:"🌙",couleur:"#1A237E",juz:26},
+{num:48,id:"fath",nom:"Al-Fath",arNom:"الفتح",emoji:"🔓",couleur:"#33691E",juz:26},
+{num:49,id:"hujurat",nom:"Al-Hujurat",arNom:"الحجرات",emoji:"🚪",couleur:"#880E4F",juz:26},
+{num:50,id:"qaf",nom:"Qaf",arNom:"ق",emoji:"🌿",couleur:"#1B5E20",juz:26},
+{num:51,id:"dhariyat",nom:"Adh-Dhariyat",arNom:"الذاريات",emoji:"🌬️",couleur:"#0277BD",juz:26},
+{num:52,id:"tur",nom:"At-Tur",arNom:"الطور",emoji:"⛰️",couleur:"#4E342E",juz:27},
+{num:53,id:"najm",nom:"An-Najm",arNom:"النجم",emoji:"⭐",couleur:"#F57F17",juz:27},
+{num:54,id:"qamar",nom:"Al-Qamar",arNom:"القمر",emoji:"🌕",couleur:"#1565C0",juz:27},
+{num:55,id:"rahman",nom:"Ar-Rahman",arNom:"الرحمن",emoji:"💚",couleur:"#2E7D32",juz:27},
+{num:56,id:"waqia",nom:"Al-Waqi'a",arNom:"الواقعة",emoji:"💥",couleur:"#C62828",juz:27},
+{num:57,id:"hadid",nom:"Al-Hadid",arNom:"الحديد",emoji:"⚙️",couleur:"#546E7A",juz:27},
+{num:58,id:"mujadala",nom:"Al-Mujadala",arNom:"المجادلة",emoji:"💬",couleur:"#880E4F",juz:28},
+{num:59,id:"hashr",nom:"Al-Hashr",arNom:"الحشر",emoji:"🌿",couleur:"#33691E",juz:28},
+{num:60,id:"mumtahina",nom:"Al-Mumtahina",arNom:"الممتحنة",emoji:"🔍",couleur:"#1565C0",juz:28},
+{num:61,id:"saff",nom:"As-Saff",arNom:"الصف",emoji:"⚔️",couleur:"#B71C1C",juz:28},
+{num:62,id:"jumua",nom:"Al-Jumu'a",arNom:"الجمعة",emoji:"🕌",couleur:"#1B5E20",juz:28},
+{num:63,id:"munafiqun",nom:"Al-Munafiqun",arNom:"المنافقون",emoji:"🎭",couleur:"#37474F",juz:28},
+{num:64,id:"taghabun",nom:"At-Taghabun",arNom:"التغابن",emoji:"📊",couleur:"#4527A0",juz:28},
+{num:65,id:"talaq",nom:"At-Talaq",arNom:"الطلاق",emoji:"📃",couleur:"#6D4C41",juz:28},
+{num:66,id:"tahrim",nom:"At-Tahrim",arNom:"التحريم",emoji:"🚫",couleur:"#B71C1C",juz:28},
+{num:67,id:"mulk",nom:"Al-Mulk",arNom:"الملك",emoji:"👑",couleur:"#6A1B9A",juz:29},
+{num:68,id:"qalam",nom:"Al-Qalam",arNom:"القلم",emoji:"🖊️",couleur:"#37474F",juz:29},
+{num:69,id:"haqqa",nom:"Al-Haqqa",arNom:"الحاقة",emoji:"⚖️",couleur:"#C62828",juz:29},
+{num:70,id:"maarij",nom:"Al-Ma'arij",arNom:"المعارج",emoji:"🪜",couleur:"#0277BD",juz:29},
+{num:71,id:"nuh",nom:"Nuh",arNom:"نوح",emoji:"⛵",couleur:"#00695C",juz:29},
+{num:72,id:"jinn",nom:"Al-Jinn",arNom:"الجن",emoji:"👻",couleur:"#4527A0",juz:29},
+{num:73,id:"muzzammil",nom:"Al-Muzzammil",arNom:"المزمل",emoji:"🌙",couleur:"#1A237E",juz:29},
+{num:74,id:"muddaththir",nom:"Al-Muddaththir",arNom:"المدثر",emoji:"🧣",couleur:"#4E342E",juz:29},
+{num:75,id:"qiyama",nom:"Al-Qiyama",arNom:"القيامة",emoji:"🌅",couleur:"#E65100",juz:29},
+{num:76,id:"insan",nom:"Al-Insan",arNom:"الإنسان",emoji:"🧍",couleur:"#33691E",juz:29},
+{num:77,id:"mursalat",nom:"Al-Mursalat",arNom:"المرسلات",emoji:"💨",couleur:"#0288D1",juz:29},
+];
+
+// Merge: full sourates override stubs
+const ALL_SOURATES = (() => {
+const byId = {};
+STUBS.forEach(s => byId[s.id] = {...s, versets:[]});
+SOURATES.forEach(s => byId[s.id] = s);
+return Object.values(byId).sort((a,b) => a.num - b.num);
+})();
+
+// ── SVG Avatar ───────────────────────────────────────
+const AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="88" height="88"> <defs><radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#FF8C42"/></radialGradient></defs> <circle cx="50" cy="50" r="50" fill="url(#bg)"/> <ellipse cx="50" cy="88" rx="22" ry="14" fill="#C8763A"/> <ellipse cx="50" cy="80" rx="18" ry="12" fill="#9B8BE8"/> <rect x="44" y="60" width="12" height="10" rx="4" fill="#C8854A"/> <ellipse cx="50" cy="52" rx="18" ry="20" fill="#C8854A"/> <ellipse cx="50" cy="34" rx="19" ry="14" fill="#2D1A0E"/> <circle cx="30" cy="43" r="8" fill="#2D1A0E"/><circle cx="70" cy="43" r="8" fill="#2D1A0E"/> <circle cx="28" cy="37" r="7" fill="#2D1A0E"/><circle cx="72" cy="37" r="7" fill="#2D1A0E"/> <circle cx="34" cy="32" r="7" fill="#2D1A0E"/><circle cx="66" cy="32" r="7" fill="#2D1A0E"/> <circle cx="42" cy="27" r="7" fill="#2D1A0E"/><circle cx="58" cy="27" r="7" fill="#2D1A0E"/> <circle cx="50" cy="25" r="7" fill="#2D1A0E"/> <ellipse cx="32" cy="53" rx="4" ry="5" fill="#C8854A"/><ellipse cx="68" cy="53" rx="4" ry="5" fill="#C8854A"/> <ellipse cx="42" cy="52" rx="5" ry="5.5" fill="white"/><ellipse cx="58" cy="52" rx="5" ry="5.5" fill="white"/> <circle cx="42" cy="53" r="3.5" fill="#5D3A1A"/><circle cx="58" cy="53" r="3.5" fill="#5D3A1A"/> <circle cx="43.5" cy="51.5" r="1.2" fill="white"/><circle cx="59.5" cy="51.5" r="1.2" fill="white"/> <path d="M37 46 Q42 44 47 46" stroke="#2D1A0E" stroke-width="1.8" fill="none" stroke-linecap="round"/> <path d="M53 46 Q58 44 63 46" stroke="#2D1A0E" stroke-width="1.8" fill="none" stroke-linecap="round"/> <ellipse cx="50" cy="59" rx="3" ry="2" fill="#B5703A"/> <path d="M43 65 Q50 71 57 65" stroke="#8B4513" stroke-width="2" fill="none" stroke-linecap="round"/> <ellipse cx="37" cy="62" rx="5" ry="3" fill="#E8956D" opacity="0.5"/> <ellipse cx="63" cy="62" rx="5" ry="3" fill="#E8956D" opacity="0.5"/> </svg>`;
+
+// ── Storage ──────────────────────────────────────────
+const STATUSES = ['none','todo','learning','done']; // none=pas encore, todo=à apprendre, learning=en cours, done=acquise
+const STATUS_LABEL = {none:'Pas encore',todo:'À apprendre',learning:'En cours',done:'Acquise'};
+const STATUS_COLOR = {none:'s-none',todo:'s-todo',learning:'s-learn',done:'s-done'};
+const STATUS_DOT   = {none:'⬜',todo:'🔖',learning:'🔄',done:'✅'};
+
+function loadData(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveData(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let state = {
+page:'accueil', sourate:null, idx:0, shown:false,
+checked:[], quizOptions:[], quizReponse:null, quizScore:0, resultEtoiles:0,
+filter:'all',  // all | pinned | todo | learning | done | none
+search:'',
+progression: loadData('sourates_prog',{}),
+statuses:    loadData('sourates_status',{}),
+pinned:      loadData('sourates_pinned',[]),
+streak:      loadData('sourates_streak',{count:0,last:''}),
+showPinModal:false,
+parentMode:false,
+parentAction:null,
+};
+
+function save(){
+saveData('sourates_prog',state.progression);
+saveData('sourates_status',state.statuses);
+saveData('sourates_pinned',state.pinned);
+saveData('sourates_streak',state.streak);
+}
+function setState(p){Object.assign(state,p);render()}
+
+function updateStreak(){
+const today=new Date().toDateString();
+const s=state.streak;
+if(s.last===today)return;
+const yesterday=new Date(Date.now()-86400000).toDateString();
+s.count=(s.last===yesterday)?s.count+1:1;
+s.last=today;
+state.streak=s;
+saveData('sourates_streak',s);
+}
+
+function confetti(){
+const c=['#FFD700','#FF8C42','#9B8BE8','#4ECDC4','#FF6B9D','#81C784'];
+for(let i=0;i<40;i++){
+const el=document.createElement('div');
+el.className='cp';
+const sz=7+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[Math.floor(Math.random()*6)]};animation-delay:${Math.random()*.6}s;`;
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),2800);
+}
+}
+
+function toast(msg){
+const el=document.createElement('div');
+el.className='toast';el.textContent=msg;
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),2000);
+}
+
+function makeOptions(s,i){
+const correct=s.versets[i];
+const others=s.versets.filter((_,j)=>j!==i).sort(()=>Math.random()-.5).slice(0,3);
+return [correct,...others].sort(()=>Math.random()-.5);
+}
+
+// ── RENDER ───────────────────────────────────────────
+function render(){
+const app=document.getElementById('app');
+const {page,sourate,idx,shown,checked,quizOptions,quizReponse,quizScore,resultEtoiles,
+progression,statuses,pinned,streak,filter,search,showPinModal} = state;
+
+// ─ ACCUEIL ─
+if(page==='accueil'){
+const done_count = ALL_SOURATES.filter(s=>statuses[s.id]==='done').length;
+const learn_count = ALL_SOURATES.filter(s=>statuses[s.id]==='learning').length;
+const stars_total = Object.values(progression).reduce((a,b)=>a+b,0);
+
+
+// Build list
+let list = [...ALL_SOURATES];
+// Pinned first
+list.sort((a,b)=>{
+  const pa=pinned.includes(a.id)?0:1, pb=pinned.includes(b.id)?0:1;
+  return pa-pb || a.num-b.num;
+});
+// Filter
+const FILTER_MAP={all:null,pinned:s=>pinned.includes(s.id),todo:s=>statuses[s.id]==='todo',learning:s=>statuses[s.id]==='learning',done:s=>statuses[s.id]==='done',none:s=>!statuses[s.id]||statuses[s.id]==='none'};
+if(FILTER_MAP[filter]) list=list.filter(FILTER_MAP[filter]);
+// Search
+if(search.trim()) list=list.filter(s=>s.nom.toLowerCase().includes(search.toLowerCase())||s.arNom.includes(search)||String(s.num).includes(search));
+
+const filterBtns = [
+  {k:'all',   label:`Toutes (${ALL_SOURATES.length})`},
+  {k:'pinned',label:`📌 Épinglées (${pinned.length})`},
+  {k:'todo',  label:`🔖 À apprendre`},
+  {k:'learning',label:`🔄 En cours`},
+  {k:'done',  label:`✅ Acquises (${done_count})`},
+  {k:'none',  label:`⬜ Pas encore`},
+];
+
+app.innerHTML=`
+<div class="accueil">
+  <div class="hero">
+    <div class="hero-avatar">${AVATAR_SVG}</div>
+    <h1>✨ Mes Sourates</h1>
+    <p class="sub">La classe d'Aliya & Amira</p>
+    ${streak.count>=2?`<div class="streak-badge">🔥 ${streak.count} jours de suite !</div>`:''}
+  </div>
+
+  <div class="prog-box">
+    <div class="lbl">
+      <span>📊 Progression</span>
+      <span>${done_count} acquises · ${learn_count} en cours · ${stars_total}⭐</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.round(done_count/ALL_SOURATES.length*100)}%"></div></div>
+    <div style="display:flex;gap:6px;margin-top:10px;font-size:11px;opacity:.5;flex-wrap:wrap">
+      <span>📖 ${ALL_SOURATES.length} sourates</span>
+      <span>·</span><span>${done_count} ✅ acquises</span>
+      <span>·</span><span>${learn_count} 🔄 en cours</span>
+    </div>
+  </div>
+
+  <div class="filters">
+    ${filterBtns.map(f=>`<button class="filter-btn ${filter===f.k?'active':''}" onclick="setFilter('${f.k}')">${f.label}</button>`).join('')}
+  </div>
+
+  <div class="search-box">
+    <span class="ic">🔍</span>
+    <input type="text" placeholder="Chercher une sourate..." value="${search}" oninput="setSearch(this.value)"/>
+  </div>
+
+  <div class="sourates-list">
+    ${list.length===0?`<div style="text-align:center;opacity:.4;padding:40px 0;font-size:14px">Aucune sourate trouvée</div>`:''}
+    ${list.map((s,i)=>{
+      const e=progression[s.id]||0;
+      const st=statuses[s.id]||'none';
+      const isPinned=pinned.includes(s.id);
+      const hasVersets=s.versets&&s.versets.length>0;
+      return `<div class="sourate-card" onclick="openSourate('${s.id}')"
+        style="animation-delay:${Math.min(i,.2)*0.06}s;${st==='done'?`border-color:${s.couleur}55;background:${s.couleur}12;`:st==='learning'?`border-color:${s.couleur}44;background:${s.couleur}09;`:''}"
+      >
+        <button class="pin-btn ${isPinned?'pinned':''}" onclick="event.stopPropagation();togglePin('${s.id}')" title="${isPinned?'Désépingler':'Épingler'}">📌</button>
+        <span class="num">${s.num}</span>
+        <span class="emoji-wrap">${s.emoji}</span>
+        <div class="info">
+          <div class="name" style="${st==='done'||st==='learning'?`color:${s.couleur}`:''}">${s.nom}</div>
+          <div class="ar-name">${s.arNom}</div>
+          <div class="sub">${hasVersets?s.versets.length+' versets':'Versets à venir'}</div>
+        </div>
+        <div class="right">
+          ${hasVersets&&e>0?`<div class="stars">${[0,1,2].map(j=>`<span class="star ${j<e?'':'off'}">⭐</span>`).join('')}</div>`:''}
+          <span class="status-badge ${STATUS_COLOR[st]}" onclick="event.stopPropagation();cycleStatus('${s.id}')" title="Changer le statut">${STATUS_DOT[st]} ${STATUS_LABEL[st]}</span>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+  <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+</div>
+
+${showPinModal?renderPinModal():''}
+`;
+
+
+}
+
+// ─ MENU SOURATE ─
+else if(page==='sourate-menu'){
+const e=progression[sourate.id]||0;
+const st=statuses[sourate.id]||'none';
+const hasV=sourate.versets&&sourate.versets.length>0;
+const SP = STATUSES.map(s=>`<button class="sp-btn ${st===s?'active':''}" onclick="setStatus('${sourate.id}','${s}')" style="${st===s?`background:${sourate.couleur};color:#fff`:''}">${STATUS_DOT[s]} ${STATUS_LABEL[s]}</button>`).join('');
+
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="goAccueil()">← Accueil</button>
+  <div class="s-header">
+    <span class="emoji">${sourate.emoji}</span>
+    <h2 style="color:${sourate.couleur}">${sourate.nom}</h2>
+    <div class="ar-title">${sourate.arNom}</div>
+    <div class="sub">${hasV?sourate.versets.length+' versets · Sourate '+sourate.num:'Sourate '+sourate.num+' · versets à venir'}</div>
+    ${e>0?`<div class="stars-row">${[0,1,2].map(j=>`<span class="star ${j<e?'':'off'}" style="font-size:18px">⭐</span>`).join('')}</div>`:''}
+  </div>
+  <div class="status-picker">${SP}</div>
+  ${hasV?`<div class="modes-list">
+    ${[
+      {id:'ecoute',    label:'🎧 Écouter les versets',     desc:'Lis et découvre chaque verset'},
+      {id:'repetition',label:'🎤 S\'entraîner à répéter',  desc:'Répète à voix haute verset par verset'},
+      {id:'quiz',      label:'🧠 Tester ma mémoire',       desc:'Quiz de traduction → gagne des étoiles !'},
+    ].map(m=>`<button class="mode-btn" onclick="startMode('${m.id}')" style="border-color:${sourate.couleur}44">
+      <span class="mode-title">${m.label}</span>
+      <span class="mode-desc">${m.desc}</span>
+    </button>`).join('')}
+  </div>`:`<div style="text-align:center;opacity:.45;padding:30px 20px;font-size:14px;line-height:1.6">
+    <div style="font-size:40px;margin-bottom:12px">📥</div>
+    Les versets de cette sourate seront disponibles prochainement.<br/>
+    <span style="font-size:12px">Tu peux déjà marquer ton statut ci-dessus !</span>
+  </div>`}
+</div>`;
+
+
+}
+
+// ─ ÉCOUTE ─
+else if(page==='ecoute'){
+const v=sourate.versets[idx];
+const last=idx===sourate.versets.length-1;
+// versetNumber in Quran = sum of previous surahs + idx+1
+// We use the sourate.num for the API
+app.innerHTML=` <div class="page"> <button class="back-btn" onclick="setState({page:'sourate-menu',idx:0})">← Retour</button> <div class="s-header"><span class="emoji">${sourate.emoji}</span><h2 style="color:${sourate.couleur}">${sourate.nom}</h2></div> <div class="section-title">🎧 Écoute</div> <div class="verset-card"> <div class="verset-num">Verset ${idx+1} / ${sourate.versets.length}</div> <div class="verset-ar">${v.ar}</div> ${v.ph?`<div class="verset-ph">🔤 ${v.ph}</div>`:''} <div class="verset-fr">${v.fr}</div> </div> <button class="audio-btn" id="audio-btn" onclick="playAudio(${sourate.num},${idx+1})"> 🔊 Écouter ce verset </button> <div id="audio-err" class="audio-err" style="display:none"></div> <div class="btns-row"> <button class="btn btn-ghost" onclick="stopAudio();setState({idx:${idx-1}})" ${idx===0?'disabled':''}>← Préc.</button> ${last ?`<button class="btn" style="background:${sourate.couleur}" onclick="stopAudio();setState({page:'sourate-menu',idx:0})">J'ai écouté ✓</button>` :`<button class="btn" style="background:${sourate.couleur}" onclick="stopAudio();setState({idx:${idx+1}})">Suivant →</button>`} </div> <div class="dots">${sourate.versets.map((_,i)=>`<div class="dot" onclick="stopAudio();setState({idx:${i}})" style="background:${i===idx?sourate.couleur:'rgba(255,255,255,0.2)'}"></div>`).join('')}</div> </div>`;
+}
+
+// ─ RÉPÉTITION ─
+else if(page==='repetition'){
+const v=sourate.versets[idx];
+const last=idx===sourate.versets.length-1;
+app.innerHTML=` <div class="page"> <button class="back-btn" onclick="stopAudio();setState({page:'sourate-menu',idx:0,checked:[],shown:false})">← Retour</button> <div class="s-header"><span class="emoji">${sourate.emoji}</span><h2 style="color:${sourate.couleur}">${sourate.nom}</h2></div> <div class="section-title">🎤 Répète à voix haute</div> <div class="verset-card" onclick="toggleShown()" style="cursor:pointer"> <div class="verset-num">Verset ${idx+1} / ${sourate.versets.length}</div> <div class="verset-ar">${v.ar}</div> ${v.ph?`<div class="verset-ph">🔤 ${v.ph}</div>`:''} ${shown?`<div class="verset-fr">${v.fr}</div>`:`<div class="show-hint">👆 Appuie pour la traduction</div>`} </div> <button class="audio-btn" id="audio-btn" onclick="playAudio(${sourate.num},${idx+1})"> 🔊 Écouter d'abord </button> <div id="audio-err" class="audio-err" style="display:none"></div> <p style="font-size:14px;text-align:center;opacity:.7;margin-bottom:14px">🎤 Répète, puis :</p> <div class="btns-row"> <button class="btn" style="background:${sourate.couleur}" onclick="stopAudio();validerRep()"> ${last?"Bravo, j'ai fini ! 🎉":"Je l'ai dit ! ✓"} </button> </div> <div class="checklist">${sourate.versets.map((_,i)=>`<span>${checked.includes(i)?'✅':'⬜'}</span>`).join('')}</div> </div>`;
+}
+
+// ─ QUIZ ─
+else if(page==='quiz'){
+const v=sourate.versets[idx];
+app.innerHTML=`<div class="page"> <button class="back-btn" onclick="setState({page:'sourate-menu',idx:0,quizScore:0,quizReponse:null})">← Retour</button> <div class="s-header"><span class="emoji">${sourate.emoji}</span><h2 style="color:${sourate.couleur}">${sourate.nom}</h2></div> <div class="section-title">🧠 Question ${idx+1} / ${sourate.versets.length}</div> <div class="quiz-question"> <div class="quiz-hint">Quelle est la traduction de ce verset ?</div> <div class="verset-ar" style="font-size:26px">${v.ar}</div> </div> <div class="quiz-options"> ${quizOptions.map((opt,i)=>{ const correct=opt.ar===v.ar; let cls=''; if(quizReponse!==null) cls=correct?'correct':'wrong'; return`<button class="quiz-option ${cls}" onclick="choisir(${i})">${opt.fr}</button>`; }).join('')} </div> </div>`;
+}
+
+// ─ RÉSULTAT ─
+else if(page==='result'){
+const msgs=['Continue comme ça ! 💪','Bien joué ! Tu progresses 🌟','Parfaite ! Tu es une championne ! 🏆'];
+app.innerHTML=` <div class="page"> <div class="result-screen"> <div class="big-emoji">🎉</div> <div style="font-size:21px;font-weight:800">${quizScore} / ${sourate.versets.length}</div> <div style="font-size:14px;opacity:.7;text-align:center">${msgs[Math.min(resultEtoiles-1,2)]}</div> <div class="stars" style="transform:scale(1.4);margin:6px 0"> ${[0,1,2].map(j=>`<span class="star ${j<resultEtoiles?'':'off'}">⭐</span>`).join('')} </div> ${resultEtoiles===3?`<div style="font-size:13px;color:#81C784;font-weight:700">Sourate marquée "Acquise" ✅</div>`:''} <button class="btn" style="background:${sourate.couleur};margin-top:8px" onclick="setState({page:'sourate-menu',idx:0,quizScore:0,quizReponse:null})">Continuer →</button> </div> </div>`;
+confetti();
+}
+}
+
+function renderPinModal(){
+return `<div class="modal-bg" onclick="setState({showPinModal:false})">
+<div class="modal" onclick="event.stopPropagation()">
+<h3>🔒 Mode Parental</h3>
+<p style="font-size:12px;opacity:.5;margin-bottom:12px">Code PIN (défaut : 1234)</p>
+<input type="password" id="pinInput" maxlength="6" placeholder="••••" onkeydown="if(event.key==='Enter')checkPin()"/>
+<div class="modal-btns">
+<button class="btn btn-ghost" style="flex:1" onclick="setState({showPinModal:false})">Annuler</button>
+<button class="btn" style="background:#FFD700;color:#1a1a2e;flex:1" onclick="checkPin()">Entrer</button>
+</div>
+</div>
+
+  </div>`;
+}
+
+// ── Actions ──────────────────────────────────────────
+function openSourate(id){
+const s=ALL_SOURATES.find(x=>x.id===id);
+setState({page:'sourate-menu',sourate:s,idx:0,shown:false,checked:[],quizScore:0,quizReponse:null});
+}
+function goAccueil(){setState({page:'accueil'})}
+function setFilter(f){setState({filter:f})}
+function setSearch(v){setState({search:v})}
+
+function togglePin(id){
+const p=[...state.pinned];
+const i=p.indexOf(id);
+if(i>=0)p.splice(i,1); else p.unshift(id);
+state.pinned=p; save(); render();
+toast(i>=0?'📌 Désépinglée':'📌 Épinglée en haut !');
+}
+
+function cycleStatus(id){
+const cur=state.statuses[id]||'none';
+const next=STATUSES[(STATUSES.indexOf(cur)+1)%STATUSES.length];
+state.statuses[id]=next; save(); render();
+toast(STATUS_DOT[next]+' '+STATUS_LABEL[next]);
+}
+
+function setStatus(id,st){
+state.statuses[id]=st; save();
+// If done, update progression to 3 stars minimum
+if(st==='done'&&(state.progression[id]||0)<3){state.progression[id]=3;save();}
+setState({page:'sourate-menu',sourate:ALL_SOURATES.find(s=>s.id===id)});
+toast(STATUS_DOT[st]+' '+STATUS_LABEL[st]);
+}
+
+function startMode(mode){
+if(mode==='quiz') setState({page:'quiz',idx:0,quizOptions:makeOptions(state.sourate,0),quizReponse:null,quizScore:0});
+else setState({page:mode,idx:0,shown:false,checked:[]});
+}
+function toggleShown(){setState({shown:!state.shown})}
+
+function validerRep(){
+const {idx,sourate,checked}=state;
+const last=idx===sourate.versets.length-1;
+if(last) setState({page:'sourate-menu',idx:0,checked:[],shown:false});
+else setState({idx:idx+1,checked:[...checked,idx],shown:false});
+}
+
+function choisir(i){
+if(state.quizReponse!==null)return;
+const {sourate,idx,quizOptions,quizScore}=state;
+const ok=quizOptions[i].ar===sourate.versets[idx].ar;
+const score=ok?quizScore+1:quizScore;
+setState({quizReponse:ok?'bon':'faux',quizScore:score});
+setTimeout(()=>{
+const last=idx===sourate.versets.length-1;
+if(last){
+const e=score>=sourate.versets.length?3:score>=Math.ceil(sourate.versets.length/2)?2:1;
+state.progression[sourate.id]=Math.max(state.progression[sourate.id]||0,e);
+if(e===3){state.statuses[sourate.id]='done';}
+else if(e>=1&&(!state.statuses[sourate.id]||state.statuses[sourate.id]==='none')){state.statuses[sourate.id]='learning';}
+save(); updateStreak();
+setState({page:'result',resultEtoiles:e});
+} else {
+const ni=idx+1;
+setState({idx:ni,quizOptions:makeOptions(sourate,ni),quizReponse:null});
+}
+},900);
+}
+
+function checkPin(){
+const pin=document.getElementById('pinInput')?.value;
+if(pin==='1234'){state.showPinModal=false;state.parentMode=true;toast("👑 Mode parental activé");render();}
+else toast("❌ Code incorrect");
+}
+
+// ── Audio ─────────────────────────────────────────
+// everyayah.com — gratuit, pas de clé API, récitateur : Mishary Al-Afasy
+// URL : https://everyayah.com/data/Alafasy_128kbps/SSSAAA.mp3
+let _audio = null;
+
+function stopAudio(){
+if(_audio){ _audio.pause(); _audio.src=''; _audio=null; }
+const btn=document.getElementById('audio-btn');
+if(btn){ btn.className='audio-btn'; btn.innerHTML="🔊 Écouter ce verset"; }
+const err=document.getElementById('audio-err');
+if(err) err.style.display='none';
+}
+
+function playAudio(suraNr, ayaNr){
+const btn=document.getElementById('audio-btn');
+const errEl=document.getElementById('audio-err');
+
+// Si déjà en lecture → stop
+if(_audio && !_audio.paused){ stopAudio(); return; }
+
+const sura=String(suraNr).padStart(3,'0');
+const aya=String(ayaNr).padStart(3,'0');
+const url=`https://everyayah.com/data/Alafasy_128kbps/${sura}${aya}.mp3`;
+
+if(btn){ btn.className='audio-btn loading'; btn.innerHTML='⏳ Chargement...'; }
+if(errEl) errEl.style.display='none';
+
+stopAudio();
+_audio=new Audio(url);
+
+_audio.oncanplay=()=>{
+_audio.play().catch(()=>{
+if(btn){ btn.className='audio-btn'; btn.innerHTML="🔊 Écouter ce verset"; }
+if(errEl){ errEl.style.display='block'; errEl.textContent="⚠️ Connexion internet nécessaire pour l'audio"; }
+});
+if(btn){ btn.className='audio-btn playing'; btn.innerHTML='⏸ En lecture...'; }
+};
+_audio.onended=()=>{ if(btn){ btn.className='audio-btn'; btn.innerHTML="🔊 Écouter à nouveau"; } _audio=null; };
+_audio.onerror=()=>{
+if(btn){ btn.className='audio-btn'; btn.innerHTML="🔊 Écouter ce verset"; }
+if(errEl){ errEl.style.display='block'; errEl.textContent="⚠️ Audio indisponible — vérifiez votre connexion internet"; }
+_audio=null;
+};
+}
+
+render();
+</script>
+
+</body>
+</html>

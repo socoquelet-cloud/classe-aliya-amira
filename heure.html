@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>✨ L'Heure</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif;background:#FFF8F0}
+#app{min-height:100vh}
+
+:root{
+--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+--purple:#9B59B6;--teal:#1ABC9C;--red:#E74C3C;
+--bg:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);
+--num:'Baloo 2',cursive;
+}
+
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes tickle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 4px rgba(255,149,0,.2)}50%{box-shadow:0 0 0 8px rgba(255,149,0,.35)}}
+@keyframes correctPulse{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* ── HOME ── */
+.home{min-height:100vh;background:var(--bg);padding:22px 16px 60px}
+.hero{text-align:center;margin-bottom:22px;animation:fadeDown .5s ease both}
+.hero-emoji{font-size:58px;display:block;animation:tickle 3s infinite;margin-bottom:6px}
+.hero-title{font-size:25px;font-weight:900;background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* level toggle */
+.level-toggle{display:flex;background:#fff;border-radius:22px;padding:4px;gap:4px;max-width:300px;margin:0 auto 20px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.lv-btn{flex:1;border:none;border-radius:18px;padding:9px 10px;font-weight:800;font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;line-height:1.2;text-align:center}
+.lv-btn.active{color:#fff}
+.lv-btn:not(.active){background:transparent;color:#bbb}
+
+/* module grid */
+.mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:440px;margin:0 auto}
+.mod-card{background:#fff;border-radius:20px;padding:18px 14px;text-align:center;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .2s;animation:fadeUp .4s ease both}
+.mod-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.mod-card:active{transform:scale(.96)}
+.mod-icon{font-size:36px;margin-bottom:8px}
+.mod-title{font-weight:900;font-size:14px;margin-bottom:3px}
+.mod-desc{font-size:10px;color:#aaa;line-height:1.4}
+
+/* progress strip */
+.prog-strip{background:#fff;border-radius:16px;padding:13px 16px;max-width:440px;margin:0 auto 18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px;font-weight:700;color:#888}
+.prog-row span:last-child{color:var(--gold)}
+.bar-track{background:#F0F0F0;border-radius:99px;height:9px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .6s}
+
+/* ── PAGE ── */
+.page{min-height:100vh;background:var(--bg);padding:16px 14px 56px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.07);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;color:#666;margin-bottom:14px;font-weight:700}
+.page-title{font-size:17px;font-weight:900;color:#555;margin-bottom:18px;text-align:center}
+
+/* ── CLOCK ── */
+.clock-wrap{position:relative;width:220px;height:220px;margin:0 auto 20px}
+.clock-face{width:220px;height:220px;border-radius:50%;background:linear-gradient(135deg,#fff 0%,#F8F0FF 100%);box-shadow:0 8px 30px rgba(0,0,0,.12),inset 0 2px 6px rgba(255,255,255,.8),0 0 0 6px #fff,0 0 0 10px rgba(149,0,255,.08);position:relative;animation:glow 3s ease-in-out infinite}
+.clock-center{position:absolute;width:14px;height:14px;background:var(--gold);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.clock-number{position:absolute;font-family:var(--num);font-size:14px;font-weight:800;color:#555;transform:translate(-50%,-50%)}
+.clock-tick{position:absolute;background:#E0E0E0;transform-origin:bottom center;border-radius:2px;left:50%;top:50%}
+.hand{position:absolute;transform-origin:bottom center;left:50%;border-radius:6px 6px 2px 2px;transition:transform .4s cubic-bezier(.4,2.2,.6,.9)}
+.hand-hour{background:linear-gradient(to top,#555,#333);width:8px;height:70px;margin-left:-4px;bottom:50%}
+.hand-minute{background:linear-gradient(to top,var(--blue),#2980b9);width:5px;height:90px;margin-left:-2.5px;bottom:50%}
+.hand-second{background:linear-gradient(to top,var(--pink),#c0392b);width:3px;height:96px;margin-left:-1.5px;bottom:50%}
+
+/* digital display */
+.digital-display{background:#fff;border-radius:20px;padding:14px 20px;text-align:center;width:100%;max-width:360px;box-shadow:0 4px 16px rgba(0,0,0,.08);margin-bottom:16px}
+.digital-time{font-family:var(--num);font-size:52px;font-weight:800;color:var(--blue);letter-spacing:2px;line-height:1}
+.digital-words{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.dw-row{font-size:14px;font-weight:700;color:#555}
+.dw-row .flag{font-size:16px;margin-right:5px}
+.dw-darija{font-size:13px;color:#888}
+
+/* time translations card */
+.trans-card{background:#fff;border-radius:18px;padding:14px 18px;width:100%;max-width:360px;box-shadow:0 3px 12px rgba(0,0,0,.07);margin-bottom:14px}
+.tc-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F5F5F5}
+.tc-row:last-child{border-bottom:none}
+.tc-flag{font-size:18px;width:26px;flex-shrink:0}
+.tc-text{font-size:14px;font-weight:700;color:#444;flex:1}
+.tc-sub{font-size:11px;color:#aaa}
+
+/* ── ROUTINE ── */
+.routine-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px}
+.routine-item{background:#fff;border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:0 3px 10px rgba(0,0,0,.07);cursor:pointer;border:2.5px solid transparent;transition:all .18s;animation:fadeUp .35s ease both}
+.routine-item:active{transform:scale(.97)}
+.routine-item.active-item{border-color:var(--gold);background:#FFF8E1}
+.ri-clock-mini{flex-shrink:0}
+.ri-emoji{font-size:32px;flex-shrink:0}
+.ri-info{flex:1}
+.ri-activity{font-weight:800;font-size:15px;color:#444}
+.ri-time-fr{font-size:13px;color:#888;margin-top:2px}
+.ri-time-more{font-size:11px;color:#bbb;margin-top:2px}
+
+/* ── QUIZ ── */
+.quiz-card{background:#fff;border-radius:22px;padding:22px 18px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:14px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:380px}
+.q-opt{background:#F8F8F8;border:2.5px solid #EEE;border-radius:16px;padding:14px 8px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;text-align:center;transition:all .2s;color:#444}
+.q-opt:active{transform:scale(.95)}
+.q-opt.correct{background:#E8F5E9;border-color:var(--green);color:#2E7D32;animation:correctPulse .4s ease}
+.q-opt.wrong{background:#FFEBEE;border-color:var(--red);color:#C62828;animation:shake .4s ease}
+.q-opt .opt-clock{margin-bottom:6px}
+
+/* buttons */
+.btn{border:none;border-radius:14px;padding:12px 24px;font-weight:800;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.feedback{min-height:40px;font-size:24px;font-weight:900;text-align:center;margin:8px 0}
+
+/* result */
+.result{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:slideUp .4s ease both;padding-top:24px}
+.result-big{font-size:70px;animation:pop .5s ease both}
+.stars-row{display:flex;gap:5px;font-size:26px}
+
+/* dots nav */
+.dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;max-width:300px;margin-top:8px}
+.dot{width:9px;height:9px;border-radius:50%;cursor:pointer;transition:background .25s}
+
+/* small clock for quiz */
+.mini-clock{display:inline-block;width:80px;height:80px;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.1);position:relative;border:3px solid #E8E8E8;vertical-align:middle}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════
+
+// Routine data
+const ROUTINE = [
+{h:7,  m:30, activity:'Lever',    emoji:'☀️', color:'#FF9500',
+fr:'sept heures et demie',       darija:'Sb3a w nus',        en:'half past seven'},
+{h:8,  m:30, activity:'École',    emoji:'🎒', color:'#4A90D9',
+fr:'huit heures et demie',       darija:'Tmnya w nus',       en:'half past eight'},
+{h:12, m:0,  activity:'Déjeuner', emoji:'🍽️', color:'#4CAF50',
+fr:'midi',                       darija:'Druk',              en:'noon / twelve o\'clock'},
+{h:16, m:0,  activity:'Goûter',   emoji:'🍪', color:'#FF6B9D',
+fr:'seize heures',               darija:'Stash d\'swiya',    en:'four o\'clock'},
+{h:19, m:30, activity:'Dîner',    emoji:'🌙', color:'#9B59B6',
+fr:'dix-neuf heures trente',     darija:'Ts3oud w nus',      en:'half past seven (pm)'},
+{h:20, m:0,  activity:'Dodo',     emoji:'😴', color:'#3F51B5',
+fr:'vingt heures',               darija:'3shrin d\'swiya',   en:'eight o\'clock (pm)'},
+];
+
+// All study times -- extended beyond routine
+const STUDY_TIMES = [
+// Pile
+{h:1,m:0},{h:2,m:0},{h:3,m:0},{h:4,m:0},{h:5,m:0},{h:6,m:0},
+{h:7,m:0},{h:8,m:0},{h:9,m:0},{h:10,m:0},{h:11,m:0},{h:12,m:0},
+// Demie
+{h:1,m:30},{h:2,m:30},{h:3,m:30},{h:4,m:30},{h:5,m:30},{h:6,m:30},
+{h:7,m:30},{h:8,m:30},{h:9,m:30},{h:10,m:30},{h:11,m:30},
+// Quart
+{h:1,m:15},{h:2,m:15},{h:3,m:15},{h:4,m:15},{h:5,m:15},{h:6,m:15},
+{h:7,m:15},{h:8,m:15},{h:9,m:15},{h:10,m:15},{h:11,m:15},{h:12,m:15},
+// Moins le quart
+{h:1,m:45},{h:2,m:45},{h:3,m:45},{h:4,m:45},{h:5,m:45},{h:6,m:45},
+{h:7,m:45},{h:8,m:45},{h:9,m:45},{h:10,m:45},{h:11,m:45},{h:12,m:45},
+];
+
+const PETITE_TIMES = STUDY_TIMES.filter(t=>t.m===0); // only o\'clock
+
+// Hour names FR
+function frTime(h,m){
+const names=['minuit','une','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','midi',
+'une','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze'];
+const hi=h%12===0?(h===12?12:0):h%12;
+const n=names[h<=12?h:h-12+12];
+if(m===0) return h===0?'minuit':h===12?'midi':`${n} heure${hi!==1?'s':''}`;
+if(m===30) return h===0?'minuit et demie':h===12?'midi et demi':`${n} heure${hi!==1?'s':''} et demie`;
+if(m===15) return `${n} heure${hi!==1?'s':''} et quart`;
+if(m===45){
+const nextH=(h+1)%24;
+const nn=names[nextH<=12?nextH:nextH-12+12];
+return `${nn} heure${(nextH%12)!==1?'s':''} moins le quart`;
+}
+return `${n} heure${hi!==1?'s':''} ${m<10?'0'+m:m}`;
+}
+
+function enTime(h,m){
+const n=['twelve','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const hi=h%12;
+if(m===0) return h===0?'midnight':h===12?'noon':`${n[hi]} o\'clock`;
+if(m===30) return `half past ${n[hi===0?12:hi]}`;
+if(m===15) return `quarter past ${n[hi===0?12:hi]}`;
+if(m===45) return `quarter to ${n[(hi+1)%13===0?1:(hi+1)%13]}`;
+return `${n[hi===0?12:hi]} ${m<10?'0'+m:m}`;
+}
+
+function darijaTime(h,m){
+const n=['nus lil','wahed','juj','tlata','rb3a','khamsa','stta','sb3a','tmnya','ts3oud','3ashra','hd3ach','nuss nhar'];
+const hi=h%12===0?(h===0?0:12):h%12;
+const base=n[hi];
+if(m===0) return h===0?'nus lil':h===12?'nuss nhar':`${base} d swiya`;
+if(m===30) return `${base} w nus`;
+if(m===15) return `${base} w rub3`;
+if(m===45){const nn=n[(hi+1)%13===0?1:(hi+1)%13];return `${nn} ghir rub3`;}
+return `${base} w ${m}`;
+}
+
+function digitalStr(h,m){return`${h<10?'0'+h:h}:${m<10?'0'+m:m}`}
+
+// ── Storage ──────────────────────────────────────
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+// ── State ─────────────────────────────────────────
+let ST={
+page:'home',
+level:loadLS('heure_level','petite'),
+// discover
+discoverIdx:0,
+// quiz
+quizPool:[],quizIdx:0,quizAns:null,quizScore:0,
+feedback:'',
+// routine
+routineActive:null,
+// learned
+learned:loadLS('heure_learned',{}),
+stars:loadLS('heure_stars',0),
+// live clock
+liveInterval:null,
+};
+
+function setState(p){Object.assign(ST,p);render()}
+function save(){saveLS('heure_learned',ST.learned);saveLS('heure_stars',ST.stars);saveLS('heure_level',ST.level)}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#9B59B6'];
+for(let i=0;i<42;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=6+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.7}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+function toast(msg){
+const el=document.createElement('div');el.className='toast';el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+// ── Clock SVG builder ─────────────────────────────
+function buildClock(h, m, size=220, animated=false, showSecond=false, s=0){
+const r=size/2;
+const cx=r, cy=r;
+// Angles
+const secDeg = s*6;
+const minDeg = m*6 + s*0.1;
+const hourDeg = (h%12)*30 + m*0.5;
+
+// Numbers positions
+const nums=Array.from({length:12},(_,i)=>{
+const a=(i+1)*30-90;
+const rad=a*Math.PI/180;
+const nr=r*0.75;
+return{n:i+1,x:cx+nr*Math.cos(rad),y:cy+nr*Math.sin(rad)};
+});
+
+// Tick marks
+const ticks=Array.from({length:60},(_,i)=>{
+const a=i*6-90;const rad=a*Math.PI/180;
+const isMajor=i%5===0;
+const r1=r*0.88, r2=r*(isMajor?0.78:0.84);
+return{x1:cx+r1*Math.cos(rad),y1:cy+r1*Math.sin(rad),
+x2:cx+r2*Math.cos(rad),y2:cy+r2*Math.sin(rad),major:isMajor};
+});
+
+const hLen=r*0.52, mLen=r*0.72, sLen=r*0.80;
+function handXY(deg,len){
+const rad=(deg-90)*Math.PI/180;
+return{x:cx+len*Math.cos(rad),y:cy+len*Math.sin(rad)};
+}
+const hP=handXY(hourDeg,hLen);
+const mP=handXY(minDeg,mLen);
+const sP=handXY(secDeg,sLen);
+
+// Back nub (opposite direction)
+function nubXY(deg,len){
+const rad=(deg-90+180)*Math.PI/180;
+return{x:cx+len*Math.cos(rad),y:cy+len*Math.sin(rad)};
+}
+const hN=nubXY(hourDeg,r*0.12);
+const mN=nubXY(minDeg,r*0.15);
+
+return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+<!-- Face -->
+<circle cx="${cx}" cy="${cy}" r="${r-2}" fill="white" />
+<circle cx="${cx}" cy="${cy}" r="${r-2}" fill="none" stroke="#E8E0F0" stroke-width="4"/>
+<!-- Decoration ring -->
+<circle cx="${cx}" cy="${cy}" r="${r-8}" fill="none" stroke="#F3EEF9" stroke-width="2"/>
+
+
+<!-- Ticks -->
+${ticks.map(t=>`<line x1="${t.x1}" y1="${t.y1}" x2="${t.x2}" y2="${t.y2}"
+  stroke="${t.major?'#9B59B6':'#D0D0D0'}" stroke-width="${t.major?2.5:1.5}" stroke-linecap="round"/>`).join('')}
+
+<!-- Numbers -->
+${nums.map(n=>`<text x="${n.x}" y="${n.y}" text-anchor="middle" dominant-baseline="central"
+  font-family="'Baloo 2',sans-serif" font-size="${r*0.13}" font-weight="700"
+  fill="${[12,3,6,9].includes(n.n)?'#9B59B6':'#888'}">${n.n}</text>`).join('')}
+
+<!-- Hour hand -->
+<line x1="${hN.x}" y1="${hN.y}" x2="${hP.x}" y2="${hP.y}"
+  stroke="#444" stroke-width="${r*0.05}" stroke-linecap="round"
+  ${animated?`style="transition:all .4s cubic-bezier(.4,0,.2,1)"`:''} />
+
+<!-- Minute hand -->
+<line x1="${mN.x}" y1="${mN.y}" x2="${mP.x}" y2="${mP.y}"
+  stroke="#4A90D9" stroke-width="${r*0.035}" stroke-linecap="round"
+  ${animated?`style="transition:all .4s cubic-bezier(.4,0,.2,1)"`:''} />
+
+${showSecond?`<!-- Second hand -->
+<line x1="${cx}" y1="${cy}" x2="${sP.x}" y2="${sP.y}"
+  stroke="#FF6B9D" stroke-width="${r*0.018}" stroke-linecap="round"/>`:''  }
+
+<!-- Center dot -->
+<circle cx="${cx}" cy="${cy}" r="${r*0.065}" fill="#FF9500"/>
+<circle cx="${cx}" cy="${cy}" r="${r*0.03}" fill="#fff"/>
+
+
+</svg>`;
+}
+
+// Mini clock for quiz options
+function miniClock(h,m,size=76){
+return buildClock(h,m,size,false,false,0);
+}
+
+// ── Quiz generator ────────────────────────────────
+function makeQuiz(level){
+const pool=level==='petite'?PETITE_TIMES:STUDY_TIMES.filter(t=>[0,15,30,45].includes(t.m));
+const q=shuffle(pool).slice(0,10);
+return q.map(t=>{
+const wrongPool=pool.filter(x=>!(x.h===t.h&&x.m===t.m));
+const wrongs=shuffle(wrongPool).slice(0,3);
+return{h:t.h,m:t.m,opts:shuffle([t,...wrongs])};
+});
+}
+
+// ── Discover times list ───────────────────────────
+function getDiscoverList(level){
+if(level==='petite') return PETITE_TIMES.slice(0,12);
+return STUDY_TIMES.filter(t=>[0,30,15,45].includes(t.m)).slice(0,24);
+}
+
+// ══════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════
+function render(){
+const app=document.getElementById('app');
+clearInterval(ST.liveInterval);
+
+const {page,level,discoverIdx,quizPool,quizIdx,quizAns,quizScore,feedback,routineActive,learned,stars}=ST;
+const isGrande=level==='grande';
+const learnedCount=Object.keys(learned).length;
+
+// ─ HOME ─
+if(page==='home'){
+app.innerHTML=`
+<div class="home">
+<div class="hero">
+<span class="hero-emoji">🕐</span>
+<div class="hero-title">L\'Heure</div>
+<div class="hero-sub">La classe d\'Aliya & Amira · 🇫🇷 🇲🇦 🇬🇧</div>
+</div>
+
+
+  <div class="level-toggle">
+    <button class="lv-btn ${!isGrande?'active':''}" onclick="setLevel('petite')"
+      style="${!isGrande?'background:linear-gradient(135deg,#FF9A9E,#FF6B9D)':''}">
+      🌱 Petite<br/><span style="font-size:9px;opacity:.8">Heures pile</span>
+    </button>
+    <button class="lv-btn ${isGrande?'active':''}" onclick="setLevel('grande')"
+      style="${isGrande?'background:linear-gradient(135deg,#4FC3F7,#4A90D9)':''}">
+      🌟 Grande CP<br/><span style="font-size:9px;opacity:.8">Demie · quart</span>
+    </button>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-row"><span>⭐ Heures apprises</span><span>${learnedCount} · ${stars}⭐</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.min(learnedCount/(isGrande?24:12)*100,100)}%"></div></div>
+  </div>
+
+  <div class="mod-grid">
+    ${[
+      {id:'liveclock', icon:'🕐', title:'Maintenant',     desc:'L\'heure qu\'il est !',       color:'#FF9500'},
+      {id:'discover',  icon:'👀', title:'Découverte',     desc:'Explore chaque heure',         color:'#4A90D9'},
+      {id:'routine',   icon:'📅', title:'Ma journée',     desc:'Lever, école, dîner...',         color:'#4CAF50'},
+      {id:'quiz',      icon:'🎯', title:'Quiz',           desc:'Quelle heure est-il ?',        color:'#FF6B9D'},
+    ].map((m,i)=>`<div class="mod-card" onclick="openModule('${m.id}')"
+      style="animation-delay:${i*.07}s;border-color:${m.color}33">
+      <div class="mod-icon">${m.icon}</div>
+      <div class="mod-title" style="color:${m.color}">${m.title}</div>
+      <div class="mod-desc">${m.desc}</div>
+    </div>`).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ LIVE CLOCK ─
+else if(page==='liveclock'){
+const now=new Date();
+const lh=now.getHours(),lm=now.getMinutes(),ls=now.getSeconds();
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+<div class="page-title">🕐 Il est...</div>
+
+
+  <div id="live-clock-svg" style="margin-bottom:16px">${buildClock(lh,lm,230,true,true,ls)}</div>
+
+  <div class="digital-display">
+    <div id="live-digital" class="digital-time">${digitalStr(lh,lm)}</div>
+    <div class="digital-words">
+      <div class="dw-row"><span class="flag">🇫🇷</span><span id="live-fr">${frTime(lh,lm)}</span></div>
+      <div class="dw-row dw-darija"><span class="flag">🇲🇦</span><span id="live-dr">${darijaTime(lh,lm)}</span></div>
+      <div class="dw-row"><span class="flag">🇬🇧</span><span id="live-en">${enTime(lh,lm)}</span></div>
+    </div>
+  </div>
+</div>`;
+
+// Live update every second
+ST.liveInterval=setInterval(()=>{
+  const n=new Date();
+  const ch=n.getHours(),cm=n.getMinutes(),cs=n.getSeconds();
+  const svgEl=document.getElementById('live-clock-svg');
+  const digEl=document.getElementById('live-digital');
+  const frEl=document.getElementById('live-fr');
+  const drEl=document.getElementById('live-dr');
+  const enEl=document.getElementById('live-en');
+  if(svgEl) svgEl.innerHTML=buildClock(ch,cm,230,true,true,cs);
+  if(digEl) digEl.textContent=digitalStr(ch,cm);
+  if(frEl) frEl.textContent=frTime(ch,cm);
+  if(drEl) drEl.textContent=darijaTime(ch,cm);
+  if(enEl) enEl.textContent=enTime(ch,cm);
+},1000);
+
+
+}
+
+// ─ DISCOVER ─
+else if(page==='discover'){
+const list=getDiscoverList(level);
+const t=list[discoverIdx];
+const h=t.h,m=t.m;
+const isLearned=!!learned[`${h}:${m}`];
+const prev=discoverIdx>0, next=discoverIdx<list.length-1;
+
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+  <div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:12px">${discoverIdx+1} / ${list.length}</div>
+
+  <div style="margin-bottom:16px">${buildClock(h,m,220,false,false,0)}</div>
+
+  <div class="digital-display" style="border-top:4px solid var(--blue)">
+    <div class="digital-time">${digitalStr(h,m)}</div>
+    <div class="digital-words">
+      <div class="dw-row"><span class="flag">🇫🇷</span> ${frTime(h,m)}</div>
+      <div class="dw-row dw-darija"><span class="flag">🇲🇦</span> ${darijaTime(h,m)}</div>
+      <div class="dw-row"><span class="flag">🇬🇧</span> ${enTime(h,m)}</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="setState({discoverIdx:${discoverIdx-1}})" ${prev?'':'disabled'}>← Préc.</button>
+    <button class="btn" style="background:${isLearned?'var(--green)':'var(--blue)'}" onclick="markLearned(${h},${m})">
+      ${isLearned?'✅ Je sais !':'⭐ Je la connais !'}
+    </button>
+    <button class="btn btn-ghost" onclick="setState({discoverIdx:${discoverIdx+1}})" ${next?'':'disabled'}>Suiv. →</button>
+  </div>
+
+  <div class="dots">
+    ${list.map((_,i)=>`<div class="dot" onclick="setState({discoverIdx:${i}})"
+      style="background:${i===discoverIdx?'var(--blue)':learned[`${list[i].h}:${list[i].m}`]?'var(--green)':'#DDD'}"></div>`).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ ROUTINE ─
+else if(page==='routine'){
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home',routineActive:null})">← Retour</button>
+<div class="page-title">📅 Ma journée</div>
+
+
+  <div class="routine-list">
+    ${ROUTINE.map((r,i)=>{
+      const isActive=routineActive===i;
+      return`<div class="routine-item ${isActive?'active-item':''}"
+        onclick="setState({routineActive:${isActive?'null':i}})"
+        style="animation-delay:${i*.07}s;${isActive?`border-color:${r.color};background:${r.color}12`:''}"
+      >
+        <div class="ri-clock-mini">${buildClock(r.h,r.m,64,false,false,0)}</div>
+        <div class="ri-emoji">${r.emoji}</div>
+        <div class="ri-info">
+          <div class="ri-activity" style="${isActive?`color:${r.color}`:''}">${r.activity}</div>
+          <div class="ri-time-fr" style="${isActive?`color:${r.color}`:''}">${digitalStr(r.h,r.m)} · ${r.fr}</div>
+          ${isActive?`<div class="ri-time-more">🇲🇦 ${r.darija}</div>
+          <div class="ri-time-more">🇬🇧 ${r.en}</div>`:''}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ QUIZ ─
+else if(page==='quiz'){
+if(!quizPool.length){
+const pool=makeQuiz(level);
+setState({quizPool:pool,quizIdx:0,quizAns:null,quizScore:0,feedback:''});
+return;
+}
+const Q=quizPool[quizIdx];
+if(!Q){showResult();return;}
+
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',quizPool:[],quizScore:0,quizAns:null,feedback:''})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:12px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${quizIdx+1}/${quizPool.length}</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
+
+  <div class="quiz-card">
+    <div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:14px">Quelle heure est-il ?</div>
+    <div style="display:flex;justify-content:center">${buildClock(Q.h,Q.m,180,false,false,0)}</div>
+  </div>
+
+  <div class="feedback">${feedback==='correct'?['🎉 Bravo !','⭐ Exact !','✅ Super !'][~~(Math.random()*3)]:feedback==='wrong'?'💪 Presque !':''}</div>
+
+  <div class="quiz-opts">
+    ${Q.opts.map((o,i)=>{
+      const isCorrect=o.h===Q.h&&o.m===Q.m;
+      const isChosen=quizAns!==null&&quizAns===i;
+      let cls='';
+      if(quizAns!==null){
+        if(isCorrect) cls='correct';
+        else if(isChosen&&!isCorrect) cls='wrong';
+      }
+      // Petite → digital only  |  Grande → French words only
+      const label = isGrande
+        ? `<div style="font-size:15px;font-weight:900;line-height:1.3">${frTime(o.h,o.m)}</div>`
+        : `<div style="font-family:'Baloo 2',cursive;font-size:30px;font-weight:800;color:${isChosen||quizAns===null?'var(--blue)':'inherit'}">${digitalStr(o.h,o.m)}</div>`;
+      return`<button class="q-opt ${cls}" onclick="answerQuiz(${i},${isCorrect?1:0})"
+        style="padding:18px 10px;display:flex;align-items:center;justify-content:center;min-height:70px">
+        ${label}
+      </button>`;
+    }).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ RESULT ─
+else if(page==='result'){
+const pct=Math.round(quizScore/quizPool.length*100);
+const s=pct>=80?3:pct>=50?2:1;
+app.innerHTML=` <div class="page"> <div class="result"> <div class="result-big">${s===3?'🏆':s===2?'⭐':'💪'}</div> <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / ${quizPool.length}</div> <div class="stars-row">${[0,1,2].map(j=>`<span>${j<s?'⭐':'☆'}</span>`).join('')}</div> <div style="font-size:14px;color:#888;text-align:center">${s===3?'Parfait ! Tu connais toutes les heures ! 🎉':s===2?'Très bien ! Encore un peu et tu maîtrises tout 😊':'Continue, tu vas y arriver ! 💪'}</div> <div class="btn-row" style="margin-top:8px"> <button class="btn" style="background:var(--gold)" onclick="setState({quizPool:[],quizIdx:0,quizScore:0,quizAns:null,page:'quiz',feedback:''})">🔄 Rejouer</button> <button class="btn btn-ghost" onclick="setState({page:'home',quizPool:[],feedback:''})">🏠 Accueil</button> </div> </div> </div>`;
+confetti();
+}
+}
+
+// ── Actions ───────────────────────────────────────
+function setLevel(l){
+clearInterval(ST.liveInterval);
+ST.level=l;save();setState({page:'home'});
+}
+
+function openModule(id){
+clearInterval(ST.liveInterval);
+if(id==='liveclock') setState({page:'liveclock'});
+else if(id==='discover') setState({page:'discover',discoverIdx:0});
+else if(id==='routine') setState({page:'routine',routineActive:null});
+else if(id==='quiz') setState({page:'quiz',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+}
+
+function markLearned(h,m){
+const k=`${h}:${m}`;
+if(!ST.learned[k]){
+ST.learned[k]=true;
+ST.stars=Math.min(ST.stars+1,99);
+save();toast('⭐ Heure apprise !');
+render();
+}
+}
+
+function answerQuiz(optIdx,isCorrect){
+if(ST.quizAns!==null) return;
+const score=isCorrect?ST.quizScore+1:ST.quizScore;
+if(isCorrect){
+const Q=ST.quizPool[ST.quizIdx];
+markLearned(Q.h,Q.m);
+}
+ST.quizAns=optIdx;ST.quizScore=score;
+ST.feedback=isCorrect?'correct':'wrong';
+render();
+setTimeout(()=>{
+const next=ST.quizIdx+1;
+if(next>=ST.quizPool.length){showResult();return;}
+ST.quizIdx=next;ST.quizAns=null;ST.feedback='';
+render();
+},1200);
+}
+
+function showResult(){
+const pct=Math.round(ST.quizScore/ST.quizPool.length*100);
+const s=pct>=80?3:pct>=50?2:1;
+ST.stars=Math.max(ST.stars,s);
+save();setState({page:'result'});confetti();
+}
+
+render();
+</script>
+
+</body>
+</html>

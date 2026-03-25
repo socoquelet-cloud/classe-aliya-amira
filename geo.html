@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>✨ Géographie</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif}
+#app{min-height:100vh}
+:root{
+  --pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+  --purple:#9B59B6;--teal:#1ABC9C;--red:#E74C3C;
+  --bg:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);
+  --ar:'Noto Naskh Arabic',serif;
+}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes appear{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* ── HOME ── */
+.home{min-height:100vh;background:var(--bg);padding:20px 16px 60px}
+.hero{text-align:center;margin-bottom:20px;animation:fadeDown .5s ease both}
+.hero-emoji{font-size:54px;display:block;animation:bounce 2.5s infinite;margin-bottom:6px}
+.hero-title{font-size:24px;font-weight:900;background:linear-gradient(90deg,#1565C0,#2E7D32);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* country cards */
+.country-cards{display:flex;flex-direction:column;gap:13px;max-width:440px;margin:0 auto 20px}
+.country-card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.09);cursor:pointer;transition:all .2s;animation:fadeUp .4s ease both;border:3px solid transparent}
+.country-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.13)}
+.country-card:active{transform:scale(.97)}
+.cc-header{padding:16px 18px;display:flex;align-items:center;gap:14px}
+.cc-flag{font-size:44px;flex-shrink:0}
+.cc-info{flex:1}
+.cc-name{font-size:20px;font-weight:900;margin-bottom:2px}
+.cc-sub{font-size:12px;opacity:.7;font-weight:700}
+.cc-ar{font-family:var(--ar);font-size:14px;direction:rtl;margin-top:2px}
+.cc-cities{padding:0 18px 14px;display:flex;flex-wrap:wrap;gap:6px}
+.city-pill{border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;border:none;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s}
+.city-pill:active{transform:scale(.93)}
+
+/* continents section */
+.continents-section{max-width:440px;margin:0 auto}
+.section-title{font-weight:900;color:#555;font-size:14px;margin-bottom:11px}
+.continents-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.continent-card{background:#fff;border-radius:18px;padding:14px 12px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .2s;animation:fadeUp .4s ease both}
+.continent-card:hover{transform:translateY(-3px)}
+.continent-card:active{transform:scale(.96)}
+.continent-card.learned{border-color:var(--green)}
+.ct-emoji{font-size:30px;margin-bottom:6px}
+.ct-name{font-size:13px;font-weight:900;margin-bottom:2px}
+.ct-sub{font-size:10px;color:#aaa}
+
+/* quiz button */
+.quiz-launch{background:linear-gradient(135deg,#FF9500,#FF6B9D);border-radius:20px;padding:16px 20px;max-width:440px;margin:0 auto 20px;cursor:pointer;text-align:center;box-shadow:0 6px 18px rgba(255,149,0,.35);border:none;width:100%;font-family:'Nunito',sans-serif;transition:transform .15s;display:block}
+.quiz-launch:active{transform:scale(.97)}
+.ql-title{font-size:18px;font-weight:900;color:#fff;margin-bottom:3px}
+.ql-sub{font-size:12px;color:rgba(255,255,255,.8)}
+
+/* ── COUNTRY PAGE ── */
+.page{min-height:100vh;background:var(--bg);padding:16px 14px 56px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.07);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;color:#666;margin-bottom:12px;font-weight:700}
+
+/* country hero card */
+.country-hero{width:100%;max-width:420px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.1);margin-bottom:16px}
+.ch-banner{padding:20px 18px;display:flex;align-items:center;gap:14px}
+.ch-flag-big{font-size:52px}
+.ch-info{flex:1}
+.ch-name{font-size:24px;font-weight:900;margin-bottom:3px}
+.ch-langs{display:flex;flex-direction:column;gap:3px}
+.ch-lang-row{font-size:12px;font-weight:700;color:#666}
+.ch-ar{font-family:var(--ar);font-size:14px;direction:rtl}
+.ch-facts{padding:0 18px 16px;display:flex;flex-wrap:wrap;gap:8px}
+.fact-chip{background:#F8F8F8;border-radius:12px;padding:7px 12px;font-size:12px;font-weight:700;color:#555;display:flex;align-items:center;gap:5px}
+
+/* map SVG container */
+.map-container{width:100%;max-width:420px;background:#fff;border-radius:20px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.08);margin-bottom:16px;text-align:center}
+.map-title{font-size:13px;font-weight:800;color:#888;margin-bottom:10px}
+.map-svg{width:100%;max-width:340px;height:auto;display:block;margin:0 auto}
+
+/* cities list */
+.cities-section{width:100%;max-width:420px;margin-bottom:14px}
+.cities-title{font-size:14px;font-weight:900;color:#555;margin-bottom:10px}
+.city-card{background:#fff;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:8px;animation:fadeUp .3s ease both;border:2px solid transparent;transition:all .18s}
+.city-card.capital{border-color:var(--gold)}
+.city-card.special{border-color:var(--pink)}
+.city-emoji{font-size:26px;flex-shrink:0}
+.city-info{flex:1}
+.city-name{font-size:15px;font-weight:900}
+.city-desc{font-size:11px;color:#aaa;margin-top:1px}
+.city-badge{font-size:9px;font-weight:900;border-radius:8px;padding:2px 7px}
+.badge-capital{background:#FFF3E0;color:#FF9500}
+.badge-special{background:#FCE4EC;color:var(--pink)}
+.badge-north{background:#E3F2FD;color:#1565C0}
+.badge-south{background:#E8F5E9;color:#2E7D32}
+.badge-family{background:#F3E5F5;color:#7B1FA2}
+
+/* ── QUIZ ── */
+.quiz-q{background:#fff;border-radius:20px;padding:20px 16px;text-align:center;width:100%;max-width:380px;box-shadow:0 5px 16px rgba(0,0,0,.08);margin-bottom:12px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:380px}
+.q-opt{background:#F8F8F8;border:2.5px solid #EEE;border-radius:14px;padding:13px 8px;cursor:pointer;font-weight:800;font-size:13px;text-align:center;transition:all .2s;color:#444;font-family:'Nunito',sans-serif}
+.q-opt:active{transform:scale(.95)}
+.q-opt.correct{background:#E8F5E9;border-color:var(--green);color:#2E7D32;animation:pop .35s ease}
+.q-opt.wrong{background:#FFEBEE;border-color:var(--red);color:#C62828;animation:shake .35s ease}
+.feedback{min-height:36px;font-size:22px;font-weight:900;text-align:center;margin:5px 0}
+
+/* buttons */
+.btn{border:none;border-radius:14px;padding:11px 22px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.result{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:slideUp .4s ease both;padding-top:22px}
+.result-big{font-size:70px;animation:pop .5s ease both}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════
+
+const COUNTRIES = {
+france: {
+id:'france', flag:'🇫🇷', name:'France',
+en:'France', darija:'Fransa', ar:'فَرَنْسَا',
+capital:'Paris', continent:'Europe',
+color:'#1565C0', colorLight:'#E3F2FD',
+desc:'Le pays où vous vivez 🏠',
+descEn:'The country where you live',
+facts:['🗼 Tour Eiffel à Paris','🥐 Les croissants','⚽ Les Bleus','🐓 Le coq gaulois'],
+cities:[
+{name:'Paris',     emoji:'🗼', desc:'La capitale, la ville lumière',     badge:'capital',  lat:48.85, lng:2.35},
+{name:'Lyon',      emoji:'🦁', desc:'Grande ville du centre',            badge:'north',    lat:45.75, lng:4.83},
+{name:'Marseille', emoji:'🌊', desc:'Grand port sur la Méditerranée',    badge:'south',    lat:43.30, lng:5.37},
+{name:'Bordeaux',  emoji:'🍷', desc:'Ville du sud-ouest, du vin',        badge:'south',    lat:44.84, lng:-0.58},
+{name:'Toulouse',  emoji:'✈️', desc:'La ville rose, Airbus',             badge:'south',    lat:43.60, lng:1.44},
+{name:'Nice',      emoji:'☀️', desc:'Au bord de la mer, Côte d\'Azur',   badge:'south',    lat:43.70, lng:7.27},
+{name:'Pau',       emoji:'🏔️', desc:'Au pied des Pyrénées',              badge:'special',  lat:43.30, lng:-0.37},
+{name:'Biarritz',  emoji:'🏄', desc:'Au bord de l\'Atlantique, surf !',  badge:'special',  lat:43.48, lng:-1.56},
+],
+},
+maroc: {
+id:'maroc', flag:'🇲🇦', name:'Maroc',
+en:'Morocco', darija:'Lmaghrib', ar:'المَغْرِب',
+capital:'Rabat', continent:'Afrique',
+color:'#C62828', colorLight:'#FFEBEE',
+desc:'Notre pays, on habite à Martil 🏠',
+descEn:'The family\'s country',
+facts:['🌙 L\'étoile verte','🫖 Le thé à la menthe','🏔️ Les montagnes du Rif','🌊 Deux mers : Atlantique & Méditerranée'],
+cities:[
+{name:'Casablanca', emoji:'🏙️', desc:'La plus grande ville du Maroc',      badge:'north',   lat:33.59, lng:-7.62},
+{name:'Rabat',      emoji:'👑', desc:'La capitale, ville royale',          badge:'capital', lat:34.02, lng:-6.84},
+{name:'Marrakech',  emoji:'🌹', desc:'La ville rouge, les souks',          badge:'south',   lat:31.63, lng:-8.00},
+{name:'Fès',        emoji:'🕌', desc:'La vieille ville, la medina',        badge:'north',   lat:34.04, lng:-5.00},
+{name:'Tanger',     emoji:'⛵', desc:'Port sur le détroit de Gibraltar',   badge:'north',   lat:35.76, lng:-5.80},
+{name:'Martil',     emoji:'🏠', desc:'Notre maison, au bord de la Méditerranée', badge:'special', lat:35.62, lng:-5.27},
+{name:'Ketama / Taounate', emoji:'🏔️', desc:'Dans les montagnes du Rif',   badge:'family',  lat:34.96, lng:-4.57},
+{name:'Taza',       emoji:'🌿', desc:'Entre le Rif et le Moyen Atlas',     badge:'family',  lat:34.21, lng:-4.01},
+],
+},
+espagne: {
+id:'espagne', flag:'🇪🇸', name:'Espagne',
+en:'Spain', darija:'Spanya', ar:'إِسْبَانِيَا',
+capital:'Madrid', continent:'Europe',
+color:'#C62828', colorLight:'#FFF3E0',
+desc:'Le pays voisin de la France 🌞',
+descEn:'France\'s neighbour',
+facts:['💃 Le flamenco','⚽ Le foot & Barcelone','🍊 Les oranges','🌞 Il fait très chaud l\'été'],
+cities:[
+{name:'Madrid',    emoji:'👑', desc:'La capitale au centre du pays',    badge:'capital', lat:40.42, lng:-3.70},
+{name:'Barcelone', emoji:'🏖️', desc:'Bord de mer, Gaudi, FC Barça',    badge:'north',   lat:41.39, lng:2.15},
+{name:'Séville',   emoji:'💃', desc:'La ville du flamenco et du soleil',badge:'south',   lat:37.39, lng:-5.99},
+],
+},
+};
+
+const CONTINENTS = [
+{name:'Europe',        emoji:'🇪🇺', color:'#1565C0', en:'Europe',        ar:'أُورُوبَّا',   pays:'France, Espagne, Italie...', pop:'750 millions'},
+{name:'Afrique',       emoji:'🌍', color:'#2E7D32', en:'Africa',         ar:'أَفْرِيقِيَا', pays:'Maroc, Égypte, Sénégal...', pop:'1,4 milliard'},
+{name:'Asie',          emoji:'🌏', color:'#C62828', en:'Asia',           ar:'آسِيَا',       pays:'Chine, Inde, Japon...',      pop:'4,6 milliards'},
+{name:'Amériques',     emoji:'🌎', color:'#FF9500', en:'Americas',       ar:'أَمْرِيكَا',   pays:'Brésil, Canada, USA...',     pop:'1 milliard'},
+{name:'Océanie',       emoji:'🦘', color:'#00897B', en:'Oceania',        ar:'أُوقْيَانُوسِيَا',pays:'Australie, N.-Zélande...', pop:'43 millions'},
+{name:'Antarctique',   emoji:'🐧', color:'#546E7A', en:'Antarctica',     ar:'القُطْبُ الجَنُوبِي',pays:'Que des manchots !',   pop:'🐧 uniquement'},
+];
+
+// ── SVG Maps (simplified outline paths) ──────────
+const MAPS = {
+france: `<svg viewBox="0 0 200 200" class="map-svg"> <path d="M60,20 L80,15 L110,18 L140,25 L155,45 L160,70 L155,95 L145,115 L130,140 L115,165 L100,175 L85,168 L65,150 L50,130 L38,105 L35,80 L40,55 Z" fill="#BBDEFB" stroke="#1565C0" stroke-width="2.5" stroke-linejoin="round"/> <!-- Ville dot markers --> <circle cx="105" cy="62" r="5" fill="#1565C0"/> <text x="112" y="66" font-size="9" font-family="Nunito" font-weight="800" fill="#1565C0">Paris</text> <circle cx="108" cy="90" r="3.5" fill="#546E7A"/> <text x="114" y="93" font-size="7.5" font-family="Nunito" fill="#555">Lyon</text> <circle cx="95" cy="130" r="3.5" fill="#546E7A"/> <text x="98" y="133" font-size="7.5" font-family="Nunito" fill="#555">Marseille</text> <circle cx="58" cy="118" r="3.5" fill="#546E7A"/> <text x="35" y="116" font-size="7.5" font-family="Nunito" fill="#555">Bordeaux</text> <circle cx="80" cy="122" r="3.5" fill="#546E7A"/> <text x="68" y="132" font-size="7.5" font-family="Nunito" fill="#555">Toulouse</text> <circle cx="130" cy="122" r="3.5" fill="#546E7A"/> <text x="133" y="122" font-size="7.5" font-family="Nunito" fill="#555">Nice</text> <!-- Pau & Biarritz --> <circle cx="55" cy="130" r="4" fill="#FF6B9D"/> <text x="34" y="140" font-size="7" font-family="Nunito" font-weight="800" fill="#FF6B9D">Pau</text> <circle cx="44" cy="126" r="4" fill="#FF6B9D"/> <text x="22" y="126" font-size="7" font-family="Nunito" font-weight="800" fill="#FF6B9D">Biarritz</text> <!-- Corsica --> <ellipse cx="150" cy="148" rx="8" ry="13" fill="#BBDEFB" stroke="#1565C0" stroke-width="1.5"/> <text x="135" y="178" font-size="7" font-family="Nunito" fill="#888">Corse</text> <!-- Legend --> <circle cx="20" cy="185" r="4" fill="#1565C0"/> <text x="27" y="189" font-size="7.5" font-family="Nunito" fill="#555">Capitale</text> <circle cx="80" cy="185" r="4" fill="#FF6B9D"/> <text x="87" y="189" font-size="7.5" font-family="Nunito" fill="#FF6B9D">Nos villes ♥</text> </svg>`,
+
+maroc: `<svg viewBox="0 0 200 200" class="map-svg"> <!-- Main body --> <path d="M30,20 L120,15 L145,22 L160,40 L165,60 L155,80 L150,100 L140,130 L120,165 L95,185 L70,182 L50,170 L35,150 L25,120 L20,90 L20,55 Z" fill="#FFCDD2" stroke="#C62828" stroke-width="2.5" stroke-linejoin="round"/> <!-- Sahara zone --> <path d="M25,120 L35,150 L50,170 L70,182 L95,185 L120,165 L140,130 L150,100" fill="#FFECB3" opacity="0.5"/> <!-- Rif mountains hint --> <path d="M50,30 Q80,22 110,28 Q120,32 115,38 Q80,30 50,36 Z" fill="#B71C1C" opacity=".2"/> <!-- Cities --> <circle cx="58" cy="50" r="4" fill="#C62828"/> <text x="64" y="54" font-size="8" font-family="Nunito" font-weight="800" fill="#C62828">Rabat ★</text> <circle cx="45" cy="62" r="3.5" fill="#546E7A"/> <text x="18" y="62" font-size="7.5" font-family="Nunito" fill="#555">Casablanca</text> <circle cx="75" cy="130" r="3.5" fill="#546E7A"/> <text x="78" y="130" font-size="7.5" font-family="Nunito" fill="#555">Marrakech</text> <circle cx="88" cy="42" r="3.5" fill="#546E7A"/> <text x="92" y="42" font-size="7.5" font-family="Nunito" fill="#555">Fès</text> <circle cx="55" cy="28" r="3.5" fill="#546E7A"/> <text x="38" y="26" font-size="7.5" font-family="Nunito" fill="#555">Tanger</text> <!-- Family cities --> <circle cx="76" cy="24" r="5" fill="#FF6B9D"/> <text x="80" y="22" font-size="7" font-family="Nunito" font-weight="800" fill="#FF6B9D">Martil 🏠</text> <circle cx="100" cy="32" r="4.5" fill="#FF6B9D"/> <text x="103" y="30" font-size="7" font-family="Nunito" font-weight="800" fill="#FF6B9D">Ketama</text> <circle cx="115" cy="45" r="4.5" fill="#FF6B9D"/> <text x="118" y="43" font-size="7" font-family="Nunito" font-weight="800" fill="#FF6B9D">Taza</text> <!-- Med sea label --> <text x="80" y="14" font-size="7" font-family="Nunito" fill="#4A90D9" font-style="italic">Méditerranée</text> <!-- Legend --> <circle cx="20" cy="193" r="3.5" fill="#C62828"/> <text x="26" y="196" font-size="7.5" font-family="Nunito" fill="#555">Capitale</text> <circle cx="80" cy="193" r="3.5" fill="#FF6B9D"/> <text x="86" y="196" font-size="7.5" font-family="Nunito" fill="#FF6B9D">Notre famille ♥</text> </svg>`,
+
+espagne: `<svg viewBox="0 0 200 200" class="map-svg"> <path d="M15,50 L40,35 L75,28 L110,25 L140,30 L165,45 L175,65 L170,90 L155,110 L135,130 L110,145 L80,148 L55,140 L35,125 L18,105 L12,80 Z" fill="#FFCCBC" stroke="#C62828" stroke-width="2.5" stroke-linejoin="round"/> <!-- Balearic islands --> <ellipse cx="155" cy="95" rx="10" ry="6" fill="#FFCCBC" stroke="#C62828" stroke-width="1.5"/> <!-- Cities --> <circle cx="88" cy="82" r="5" fill="#C62828"/> <text x="95" y="86" font-size="8.5" font-family="Nunito" font-weight="800" fill="#C62828">Madrid ★</text> <circle cx="140" cy="52" r="4" fill="#546E7A"/> <text x="143" y="50" font-size="7.5" font-family="Nunito" fill="#555">Barcelone</text> <circle cx="68" cy="128" r="4" fill="#546E7A"/> <text x="45" y="128" font-size="7.5" font-family="Nunito" fill="#555">Séville</text> <!-- Pyrenees hint --> <path d="M55,32 Q90,22 125,28" stroke="#888" stroke-width="2" fill="none" stroke-dasharray="3,2"/> <text x="65" y="22" font-size="7" font-family="Nunito" fill="#888" font-style="italic">Pyrénées</text> <text x="60" y="165" font-size="7" font-family="Nunito" fill="#4A90D9" font-style="italic">Méditerranée</text> <text x="10" y="155" font-size="7" font-family="Nunito" fill="#4A90D9" font-style="italic">Atlantique</text> </svg>`,
+};
+
+// ── Quiz questions ────────────────────────────────
+function makeQuiz(){
+const qs = [];
+// Flag → Country name
+Object.values(COUNTRIES).forEach(c=>{
+const others=Object.values(COUNTRIES).filter(x=>x.id!==c.id);
+qs.push({type:'flag-to-name', correct:c, opts:shuffle([c,...others]),
+q:`Quel est ce pays ?`, display:c.flag, displaySize:72});
+});
+// Country → Capital
+Object.values(COUNTRIES).forEach(c=>{
+const others=Object.values(COUNTRIES).filter(x=>x.id!==c.id);
+qs.push({type:'country-to-capital', correct:c, opts:shuffle([c,...others]),
+q:`Quelle est la capitale de la ${c.name} ?`,
+display:c.flag+' '+c.name, answer:'capital'});
+});
+// City → Country
+const allCities=[];
+Object.values(COUNTRIES).forEach(c=>{
+c.cities.forEach(city=>allCities.push({city,country:c}));
+});
+shuffle(allCities).slice(0,6).forEach(({city,country})=>{
+const others=Object.values(COUNTRIES).filter(x=>x.id!==country.id);
+qs.push({type:'city-to-country', correct:country, opts:shuffle([country,...others]),
+q:`Dans quel pays se trouve ${city.name} ?`,
+display:city.emoji+' '+city.name});
+});
+// Continent → country
+Object.values(COUNTRIES).forEach(c=>{
+qs.push({type:'country-to-continent', correct:c,
+opts:shuffle(Object.values(COUNTRIES)),
+q:`Sur quel continent est la ${c.name} ?`,
+display:c.flag, isFreeText:true, answer:c.continent});
+});
+return shuffle(qs).slice(0,10);
+}
+
+// ── Storage ───────────────────────────────────────
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let ST={
+page:'home', countryId:null,
+quizPool:[], quizIdx:0, quizAns:null, quizScore:0, feedback:'',
+learned: loadLS('geo_learned',{}),
+stars:   loadLS('geo_stars',0),
+};
+
+function setState(p){Object.assign(ST,p);render()}
+function save(){saveLS('geo_learned',ST.learned);saveLS('geo_stars',ST.stars)}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#9B59B6'];
+for(let i=0;i<40;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=6+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.6}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+function toast(msg){
+const el=document.createElement('div');el.className='toast';el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+function markLearned(key){
+if(!ST.learned[key]){ST.learned[key]=true;ST.stars++;save();}
+}
+
+const BADGE_LABELS={capital:'★ Capitale',special:'♥ Nos villes',north:'Nord',south:'Sud',family:'♥ Famille'};
+const BADGE_COLORS={capital:'badge-capital',special:'badge-special',north:'badge-north',south:'badge-south',family:'badge-family'};
+
+// ══════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════
+function render(){
+const app=document.getElementById('app');
+const {page,countryId,quizPool,quizIdx,quizAns,quizScore,feedback,learned,stars}=ST;
+
+// ─ HOME ─
+if(page==='home'){
+app.innerHTML=`
+<div class="home">
+<div class="hero">
+<span class="hero-emoji">🌍</span>
+<div class="hero-title">Géographie</div>
+<div class="hero-sub">La classe d\'Aliya & Amira · Nos pays 🇫🇷 🇲🇦 🇪🇸</div>
+</div>
+
+
+  <button class="quiz-launch" onclick="startQuiz()">
+    <div class="ql-title">🎯 Quiz Géographie</div>
+    <div class="ql-sub">Drapeaux · Capitales · Villes · Continents</div>
+  </button>
+
+  <div class="country-cards">
+    ${Object.values(COUNTRIES).map((c,i)=>`
+    <div class="country-card" onclick="openCountry('${c.id}')"
+      style="animation-delay:${i*.1}s;border-color:${c.color}33">
+      <div class="cc-header" style="background:${c.colorLight}">
+        <div class="cc-flag">${c.flag}</div>
+        <div class="cc-info">
+          <div class="cc-name" style="color:${c.color}">${c.name}</div>
+          <div class="cc-sub">${c.desc}</div>
+          <div class="cc-sub">🇲🇦 ${c.darija} · 🇬🇧 ${c.en}</div>
+          <div class="cc-ar" style="color:${c.color}">${c.ar}</div>
+        </div>
+      </div>
+      <div class="cc-cities">
+        ${c.cities.slice(0,5).map(city=>`
+        <span class="city-pill" style="background:${city.badge==='family'?'#F3E5F5':city.badge==='capital'?'#FFF3E0':'#F0F4FF'};color:${city.badge==='family'?'#7B1FA2':city.badge==='capital'?c.color:'#555'}">
+          ${city.emoji} ${city.name}${city.badge==='capital'?' ★':''}${city.badge==='special'||city.badge==='family'?' ♥':''}
+        </span>`).join('')}
+        ${c.cities.length>5?`<span style="font-size:10px;color:#bbb;align-self:center">+${c.cities.length-5} →</span>`:''}
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <div class="continents-section">
+    <div class="section-title">🌐 Les continents</div>
+    <div class="continents-grid">
+      ${CONTINENTS.map((ct,i)=>`
+      <div class="continent-card ${learned['cont_'+ct.name]?'learned':''}"
+        onclick="openContinent(${i})"
+        style="animation-delay:${i*.06}s;border-color:${learned['cont_'+ct.name]?ct.color+'55':'transparent'};background:${learned['cont_'+ct.name]?ct.color+'10':'#fff'}">
+        <div class="ct-emoji">${ct.emoji}</div>
+        <div class="ct-name" style="color:${ct.color}">${ct.name}</div>
+        <div class="ct-sub">${ct.en}</div>
+        <div style="font-family:var(--ar);font-size:12px;color:${ct.color};direction:rtl;margin-top:2px">${ct.ar}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`;
+
+
+}
+
+// ─ COUNTRY PAGE ─
+else if(page==='country'){
+const c=COUNTRIES[countryId];
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+
+
+  <div class="country-hero">
+    <div class="ch-banner" style="background:${c.colorLight}">
+      <div class="ch-flag-big">${c.flag}</div>
+      <div class="ch-info">
+        <div class="ch-name" style="color:${c.color}">${c.name}</div>
+        <div class="ch-langs">
+          <div class="ch-lang-row">🇲🇦 <strong>${c.darija}</strong></div>
+          <div class="ch-lang-row">🇬🇧 <strong>${c.en}</strong></div>
+          <div class="ch-ar" style="color:${c.color}">${c.ar}</div>
+        </div>
+      </div>
+    </div>
+    <div class="ch-facts">
+      ${c.facts.map(f=>`<div class="fact-chip">${f}</div>`).join('')}
+      <div class="fact-chip">★ Capitale : ${c.capital}</div>
+      <div class="fact-chip">🌍 ${c.continent}</div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-container">
+    <div class="map-title">🗺️ Carte de la ${c.name}</div>
+    ${MAPS[c.id]||'<p style="color:#bbb;font-size:13px">Carte disponible bientôt</p>'}
+  </div>
+
+  <!-- CITIES -->
+  <div class="cities-section">
+    <div class="cities-title">📍 Les villes</div>
+    ${c.cities.map((city,i)=>`
+    <div class="city-card ${city.badge}" style="animation-delay:${i*.05}s;border-color:${city.badge==='family'?'#CE93D8':city.badge==='capital'?'#FFD700':city.badge==='special'?'#F48FB1':'transparent'}"
+      onclick="markLearned('city_${c.id}_${city.name}')">
+      <div class="city-emoji">${city.emoji}</div>
+      <div class="city-info">
+        <div class="city-name" style="color:${city.badge==='family'?'#7B1FA2':city.badge==='capital'?c.color:city.badge==='special'?'#E91E63':'#444'}">${city.name}</div>
+        <div class="city-desc">${city.desc}</div>
+      </div>
+      <span class="city-badge ${BADGE_COLORS[city.badge]||''}">${BADGE_LABELS[city.badge]||''}</span>
+      ${learned['city_'+c.id+'_'+city.name]?'<span style="font-size:18px;margin-left:4px">✅</span>':''}
+    </div>`).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ CONTINENT DETAIL ─
+else if(page==='continent'){
+const ct=CONTINENTS[ST.ctIdx];
+app.innerHTML=` <div class="page"> <button class="back-btn" onclick="setState({page:'home'})">← Retour</button> <div style="background:#fff;border-radius:24px;padding:24px 20px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 20px rgba(0,0,0,.1);margin-bottom:16px;border-top:5px solid ${ct.color}"> <div style="font-size:64px;margin-bottom:10px">${ct.emoji}</div> <div style="font-size:26px;font-weight:900;color:${ct.color};margin-bottom:4px">${ct.name}</div> <div style="font-size:16px;color:#888;margin-bottom:4px">🇬🇧 ${ct.en}</div> <div style="font-family:var(--ar);font-size:18px;color:${ct.color};direction:rtl;margin-bottom:14px">${ct.ar}</div> <div style="display:flex;flex-direction:column;gap:8px"> <div style="background:#F8F8F8;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:#555;text-align:left"> 🌍 Quelques pays : ${ct.pays} </div> <div style="background:#F8F8F8;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:#555;text-align:left"> 👥 Population : ${ct.pop} </div> ${ct.name==='Europe'?`<div style="background:#E3F2FD;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:#1565C0;text-align:left">🏠 La France et l\'Espagne sont en Europe !</div>`:''} ${ct.name==='Afrique'?`<div style="background:#FFEBEE;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:#C62828;text-align:left">🌙 Le Maroc est en Afrique -- et nous on habite à Martil ! 🏠</div>`:''} </div> </div> <div class="btn-row"> <button class="btn" style="background:${ct.color}" onclick="markLearned('cont_${ct.name}');toast('⭐ ${ct.name} appris !')"> ${learned['cont_'+ct.name]?'✅ Appris !':'⭐ Je le sais !'} </button> <button class="btn btn-ghost" onclick="setState({page:'home'})">← Retour</button> </div> </div>`;
+}
+
+// ─ QUIZ ─
+else if(page==='quiz'){
+if(!quizPool.length){setState({quizPool:makeQuiz(),quizIdx:0,quizAns:null,quizScore:0,feedback:''});return;}
+const Q=quizPool[quizIdx];
+if(!Q){showResult();return;}
+
+
+let qContent='';
+if(Q.type==='flag-to-name'){
+  qContent=`<div style="font-size:70px;margin-bottom:6px">${Q.display}</div>
+    <div style="font-size:12px;color:#bbb;font-weight:700">${Q.q}</div>`;
+} else if(Q.type==='country-to-capital'){
+  qContent=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:8px">${Q.q}</div>
+    <div style="font-size:40px">${Q.correct.flag}</div>
+    <div style="font-size:20px;font-weight:900;color:${Q.correct.color};margin-top:4px">${Q.correct.name}</div>`;
+} else if(Q.type==='city-to-country'){
+  qContent=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:8px">${Q.q}</div>
+    <div style="font-size:32px;font-weight:900;color:#444">${Q.display}</div>`;
+} else {
+  qContent=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:8px">${Q.q}</div>
+    <div style="font-size:50px">${Q.display}</div>`;
+}
+
+// Options display
+let optsHTML='';
+if(Q.type==='country-to-continent'){
+  // Free text -- show 4 continent options
+  const continentOpts=shuffle(CONTINENTS).slice(0,4);
+  if(!continentOpts.find(x=>x.name===Q.correct.continent)){
+    continentOpts[0]=CONTINENTS.find(x=>x.name===Q.correct.continent);
+  }
+  const shuffled=shuffle(continentOpts);
+  optsHTML=shuffled.map((ct,i)=>{
+    const isC=ct.name===Q.correct.continent;
+    const isCh=quizAns!==null&&quizAns===i;
+    let cls=''; if(quizAns!==null){if(isC)cls='correct';else if(isCh)cls='wrong';}
+    return`<button class="q-opt ${cls}" onclick="answerContinent(${i},'${ct.name}','${Q.correct.continent}')"
+      style="font-size:15px;font-weight:900">${ct.emoji} ${ct.name}</button>`;
+  }).join('');
+} else {
+  optsHTML=Q.opts.map((o,i)=>{
+    const isC=o.id===Q.correct.id;
+    const isCh=quizAns!==null&&quizAns===i;
+    let cls=''; if(quizAns!==null){if(isC)cls='correct';else if(isCh)cls='wrong';}
+    const label=Q.type==='country-to-capital'?o.capital:o.name;
+    return`<button class="q-opt ${cls}" onclick="answerQuiz(${i})">
+      <span style="font-size:22px;display:block;margin-bottom:3px">${o.flag}</span>
+      <span style="font-size:13px;font-weight:900;color:${isCh||quizAns===null?o.color:'inherit'}">${label}</span>
+    </button>`;
+  }).join('');
+}
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',quizPool:[],quizScore:0,quizAns:null,feedback:''})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:12px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${quizIdx+1}/${quizPool.length}</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
+  <div class="quiz-q">${qContent}</div>
+  <div class="feedback">${feedback==='correct'?['🎉 Bravo !','⭐ Exact !','✅ Super !'][~~(Math.random()*3)]:feedback==='wrong'?'💪 Presque !':''}</div>
+  <div class="quiz-opts">${optsHTML}</div>
+</div>`;
+
+
+}
+
+// ─ RESULT ─
+else if(page==='result'){
+const pct=Math.round(quizScore/quizPool.length*100);
+const s=pct>=80?3:pct>=55?2:1;
+app.innerHTML=` <div class="page"> <div class="result"> <div class="result-big">${s===3?'🏆':s===2?'⭐':'💪'}</div> <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / ${quizPool.length}</div> <div style="display:flex;gap:5px;font-size:26px">${[0,1,2].map(j=>`<span>${j<s?'⭐':'☆'}</span>`).join('')}</div> <div style="font-size:13px;color:#888;text-align:center">${s===3?'Tu connais tes pays ! Géographe en herbe 🌍':s===2?'Très bien ! Tu apprends vite 😊':'Continue, tu vas y arriver ! 💪'}</div> <div class="btn-row" style="margin-top:10px"> <button class="btn" style="background:var(--gold)" onclick="startQuiz()">🔄 Rejouer</button> <button class="btn btn-ghost" onclick="setState({page:'home',quizPool:[],feedback:''})">🏠 Accueil</button> </div> </div> </div>`;
+if(s===3) confetti();
+}
+}
+
+// ── Actions ───────────────────────────────────────
+function openCountry(id){markLearned('country_'+id);setState({page:'country',countryId:id})}
+function openContinent(i){markLearned('cont_'+CONTINENTS[i].name);setState({page:'continent',ctIdx:i})}
+function startQuiz(){setState({page:'quiz',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''})}
+
+function answerQuiz(optIdx){
+if(ST.quizAns!==null) return;
+const Q=ST.quizPool[ST.quizIdx];
+const isC=Q.opts[optIdx].id===Q.correct.id;
+const score=isC?ST.quizScore+1:ST.quizScore;
+if(isC) markLearned('quiz_'+Q.correct.id);
+ST.quizAns=optIdx;ST.quizScore=score;ST.feedback=isC?'correct':'wrong';
+render();
+setTimeout(()=>{advance();},1100);
+}
+
+function answerContinent(optIdx,chosen,correct){
+if(ST.quizAns!==null) return;
+const isC=chosen===correct;
+const score=isC?ST.quizScore+1:ST.quizScore;
+ST.quizAns=optIdx;ST.quizScore=score;ST.feedback=isC?'correct':'wrong';
+render();
+setTimeout(()=>{advance();},1100);
+}
+
+function advance(){
+const next=ST.quizIdx+1;
+if(next>=ST.quizPool.length){showResult();return;}
+ST.quizIdx=next;ST.quizAns=null;ST.feedback='';render();
+}
+
+function showResult(){
+const pct=Math.round(ST.quizScore/ST.quizPool.length*100);
+const s=pct>=80?3:pct>=55?2:1;
+ST.stars=Math.max(ST.stars,s);save();
+setState({page:'result'});
+if(s===3) confetti();
+}
+
+render();
+</script>
+
+</body>
+</html>

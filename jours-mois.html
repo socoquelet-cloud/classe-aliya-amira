@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>✨ Jours & Mois</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif}
+#app{min-height:100vh}
+
+:root{
+--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+--purple:#9B59B6;--teal:#1ABC9C;--red:#E74C3C;--orange:#FF7043;
+--bg:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);
+--ar:'Noto Naskh Arabic',serif;
+--num:'Baloo 2',cursive;
+}
+
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes flipIn{from{opacity:0;transform:rotateX(-20deg) translateY(10px)}to{opacity:1;transform:none}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* ── HOME ── */
+.home{min-height:100vh;background:var(--bg);padding:20px 16px 60px}
+.hero{text-align:center;margin-bottom:20px;animation:fadeDown .5s ease both}
+.hero-emoji{font-size:54px;display:block;animation:bounce 2.5s infinite;margin-bottom:6px}
+.hero-title{font-size:24px;font-weight:900;background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* today banner */
+.today-banner{background:#fff;border-radius:20px;padding:16px 18px;max-width:440px;margin:0 auto 18px;box-shadow:0 4px 14px rgba(0,0,0,.08);animation:flipIn .5s ease both;border-left:5px solid var(--gold)}
+.tb-label{font-size:10px;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.tb-date{font-size:22px;font-weight:900;color:#444;margin-bottom:8px}
+.tb-langs{display:flex;flex-direction:column;gap:5px}
+.tb-row{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#555}
+.tb-flag{font-size:16px;width:22px;flex-shrink:0}
+.tb-ar{font-family:var(--ar);font-size:15px;direction:rtl}
+
+/* section tabs */
+.section-tabs{display:flex;background:#fff;border-radius:22px;padding:4px;gap:4px;max-width:440px;margin:0 auto 18px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.st-btn{flex:1;border:none;border-radius:18px;padding:8px 6px;font-weight:800;font-size:11px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;text-align:center}
+.st-btn.active{color:#fff}
+.st-btn:not(.active){background:transparent;color:#bbb}
+
+/* progress */
+.prog-strip{background:#fff;border-radius:16px;padding:11px 16px;max-width:440px;margin:0 auto 16px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;font-weight:700;color:#888}
+.prog-row span:last-child{color:var(--gold)}
+.bar-track{background:#F0F0F0;border-radius:99px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s}
+
+/* mode grid */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:440px;margin:0 auto 18px}
+.mode-card{background:#fff;border-radius:18px;padding:15px 12px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .2s;animation:fadeUp .4s ease both}
+.mode-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.11)}
+.mode-card:active{transform:scale(.96)}
+.mc-icon{font-size:32px;margin-bottom:6px}
+.mc-title{font-weight:900;font-size:13px;margin-bottom:2px}
+.mc-desc{font-size:10px;color:#aaa;line-height:1.4}
+
+/* mini grid preview */
+.mini-grid{display:grid;gap:7px;max-width:440px;margin:0 auto}
+.days-grid{grid-template-columns:repeat(7,1fr)}
+.months-grid{grid-template-columns:repeat(4,1fr)}
+.seasons-grid{grid-template-columns:repeat(4,1fr)}
+.mg-cell{background:#fff;border-radius:12px;padding:9px 4px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);border:2px solid transparent;transition:all .18s}
+.mg-cell:active{transform:scale(.9)}
+.mg-cell.learned{border-color:var(--green)}
+.mg-num{font-family:var(--num);font-size:11px;font-weight:800;color:#aaa;margin-bottom:1px}
+.mg-name{font-size:9px;font-weight:800;line-height:1.2}
+.mg-emoji{font-size:16px}
+.mg-dot{width:5px;height:5px;border-radius:50%;margin:2px auto 0}
+
+/* ── PAGE ── */
+.page{min-height:100vh;background:var(--bg);padding:16px 14px 56px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.07);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;color:#666;margin-bottom:12px;font-weight:700}
+.nav-counter{font-size:11px;color:#bbb;font-weight:700;margin-bottom:12px}
+
+/* flashcard */
+.flash-card{background:#fff;border-radius:26px;padding:24px 20px;text-align:center;width:100%;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.1);margin-bottom:16px;animation:flipIn .3s ease both;position:relative}
+.fc-emoji{font-size:64px;margin-bottom:10px;display:block}
+.fc-num{font-family:var(--num);font-size:13px;font-weight:800;color:#bbb;margin-bottom:6px}
+.fc-main{font-size:32px;font-weight:900;margin-bottom:10px}
+.fc-langs{display:flex;flex-direction:column;gap:7px;text-align:left;margin-top:4px}
+.fc-lang-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#F8F8F8;border-radius:12px}
+.fc-flag{font-size:16px;width:22px;flex-shrink:0}
+.fc-text{font-size:14px;font-weight:700;color:#444;flex:1}
+.fc-ar{font-family:var(--ar);font-size:17px;direction:rtl;text-align:right}
+.fc-today-badge{position:absolute;top:12px;right:12px;background:var(--gold);color:#fff;font-size:10px;font-weight:900;border-radius:10px;padding:3px 9px;animation:pulse 2s infinite}
+
+/* calendar view */
+.calendar-wrap{width:100%;max-width:420px}
+.cal-month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 4px}
+.cal-month-name{font-size:18px;font-weight:900;color:#444}
+.cal-nav{background:rgba(0,0,0,.07);border:none;border-radius:14px;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-day-header{font-size:9px;font-weight:800;color:#bbb;text-align:center;padding:4px 0}
+.cal-day{background:#fff;border-radius:10px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#444;box-shadow:0 1px 4px rgba(0,0,0,.05);cursor:pointer;transition:all .18s;border:2px solid transparent}
+.cal-day:active{transform:scale(.9)}
+.cal-day.today{background:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(255,149,0,.4);border-color:var(--gold)}
+.cal-day.other-month{opacity:.3}
+.cal-day.empty{background:transparent;box-shadow:none;cursor:default}
+
+/* quiz */
+.quiz-q{background:#fff;border-radius:20px;padding:20px 16px;text-align:center;width:100%;max-width:380px;box-shadow:0 5px 16px rgba(0,0,0,.08);margin-bottom:12px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:380px}
+.q-opt{background:#F8F8F8;border:2.5px solid #EEE;border-radius:14px;padding:12px 8px;cursor:pointer;font-weight:800;font-size:13px;text-align:center;transition:all .2s;color:#444;font-family:'Nunito',sans-serif;line-height:1.3}
+.q-opt:active{transform:scale(.95)}
+.q-opt.correct{background:#E8F5E9;border-color:var(--green);color:#2E7D32;animation:pop .35s ease}
+.q-opt.wrong{background:#FFEBEE;border-color:var(--red);color:#C62828;animation:shake .35s ease}
+.q-opt .ar-ans{font-family:var(--ar);font-size:18px;direction:rtl;display:block;margin-bottom:3px}
+
+/* feedback */
+.feedback{min-height:36px;font-size:22px;font-weight:900;text-align:center;margin:5px 0}
+
+/* buttons */
+.btn{border:none;border-radius:14px;padding:11px 22px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.dots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:320px;margin-top:6px}
+.dot{width:8px;height:8px;border-radius:50%;cursor:pointer;transition:background .25s}
+
+/* result */
+.result{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:slideUp .4s ease both;padding-top:22px}
+.result-big{font-size:70px;animation:pop .5s ease both}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════
+const DAYS = [
+  {num:1, fr:'Lundi',    en:'Monday',    darija:'Letnin',   ar:'الاثنين',   emoji:'🌸', color:'#FF6B9D'},
+  {num:2, fr:'Mardi',    en:'Tuesday',   darija:'Tlata',    ar:'الثلاثاء',  emoji:'🌟', color:'#FF9500'},
+  {num:3, fr:'Mercredi', en:'Wednesday', darija:'Larb3a',   ar:'الأربعاء',  emoji:'🌈', color:'#4A90D9'},
+  {num:4, fr:'Jeudi',    en:'Thursday',  darija:'Lkhmis',   ar:'الخميس',    emoji:'⭐', color:'#9B59B6'},
+  {num:5, fr:'Vendredi', en:'Friday',    darija:'Jm3a',     ar:'الجمعة',    emoji:'🕌', color:'#2ECC71'},
+  {num:6, fr:'Samedi',   en:'Saturday',  darija:'Sbt',      ar:'السبت',     emoji:'🎉', color:'#1ABC9C'},
+  {num:7, fr:'Dimanche', en:'Sunday',    darija:'Had',      ar:'الأحد',     emoji:'☀️', color:'#E74C3C'},
+];
+
+const MONTHS = [
+{num:1,  fr:'Janvier',   en:'January',   darija:'Yanayir',  ar:'يناير',    emoji:'❄️', color:'#4FC3F7', season:'Hiver'},
+{num:2,  fr:'Février',   en:'February',  darija:'Fbrayir',  ar:'فبراير',   emoji:'💝', color:'#FF6B9D', season:'Hiver'},
+{num:3,  fr:'Mars',      en:'March',     darija:'Mars',     ar:'مارس',     emoji:'🌱', color:'#81C784', season:'Printemps'},
+{num:4,  fr:'Avril',     en:'April',     darija:'Abril',    ar:'أبريل',    emoji:'🌸', color:'#FF9500', season:'Printemps'},
+{num:5,  fr:'Mai',       en:'May',       darija:'May',      ar:'ماي',      emoji:'🌺', color:'#E91E63', season:'Printemps'},
+{num:6,  fr:'Juin',      en:'June',      darija:'Yunyu',    ar:'يونيو',    emoji:'☀️', color:'#FDD835', season:'Été'},
+{num:7,  fr:'Juillet',   en:'July',      darija:'Yulyuz',   ar:'يوليوز',   emoji:'🏖️', color:'#FF7043', season:'Été'},
+{num:8,  fr:'Août',      en:'August',    darija:'Ghusht',   ar:'غشت',      emoji:'🌻', color:'#FF9500', season:'Été'},
+{num:9,  fr:'Septembre', en:'September', darija:'Shtanbir', ar:'شتنبر',    emoji:'🍂', color:'#8BC34A', season:'Automne'},
+{num:10, fr:'Octobre',   en:'October',   darija:'Uktubir',  ar:'أكتوبر',   emoji:'🎃', color:'#FF5722', season:'Automne'},
+{num:11, fr:'Novembre',  en:'November',  darija:'Nuwanbir', ar:'نونبر',    emoji:'🍁', color:'#795548', season:'Automne'},
+{num:12, fr:'Décembre',  en:'December',  darija:'Dujanbir', ar:'دجنبر',    emoji:'🎄', color:'#1565C0', season:'Hiver'},
+];
+
+const SEASONS = [
+{fr:'Hiver',     en:'Winter',  darija:'Shtaa',   ar:'الشتاء',  emoji:'❄️', color:'#4FC3F7',
+months:'Déc · Jan · Fév', desc:'Il fait froid, il neige parfois'},
+{fr:'Printemps', en:'Spring',  darija:'Rbi3',    ar:'الربيع',  emoji:'🌸', color:'#FF9500',
+months:'Mar · Avr · Mai', desc:'Les fleurs poussent, il fait doux'},
+{fr:'Été',       en:'Summer',  darija:'Sayf',    ar:'الصيف',   emoji:'☀️', color:'#FDD835',
+months:'Jun · Jul · Aoû', desc:'Il fait chaud, c\'est les vacances !'},
+{fr:'Automne',   en:'Autumn',  darija:'Kharif',  ar:'الخريف',  emoji:'🍂', color:'#FF5722',
+months:'Sep · Oct · Nov', desc:'Les feuilles tombent, il fait frais'},
+];
+
+// ── Helpers ───────────────────────────────────────
+function todayInfo(){
+const now = new Date();
+const dayIdx = (now.getDay()+6)%7; // 0=Mon
+const monthIdx = now.getMonth();   // 0=Jan
+const dayNum = now.getDate();
+const year = now.getFullYear();
+return { day: DAYS[dayIdx], month: MONTHS[monthIdx], dayNum, year, dayIdx, monthIdx };
+}
+
+function frDateFull(info){
+return `${info.day.fr} ${info.dayNum} ${info.month.fr} ${info.year}`;
+}
+
+function daysInMonth(year, month){ return new Date(year, month+1, 0).getDate(); }
+function firstDayOfMonth(year, month){
+const d = new Date(year, month, 1).getDay();
+return (d+6)%7; // 0=Mon
+}
+
+// ── Storage ───────────────────────────────────────
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+// ── State ─────────────────────────────────────────
+let ST = {
+page: 'home',
+section: 'days',     // days | months | seasons
+idx: 0,
+calYear: new Date().getFullYear(),
+calMonth: new Date().getMonth(),
+// quiz
+quizSection: null,
+quizPool: [], quizIdx: 0, quizAns: null, quizScore: 0,
+quizLang: 'fr',      // which language to test
+feedback: '',
+learned: loadLS('jours_learned', {}),
+stars: loadLS('jours_stars', 0),
+};
+
+function setState(p){Object.assign(ST,p);render()}
+function save(){saveLS('jours_learned',ST.learned);saveLS('jours_stars',ST.stars)}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#9B59B6'];
+for(let i=0;i<40;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=6+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.6}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+function toast(msg){
+const el=document.createElement('div');el.className='toast';el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+
+function markLearned(key, name){
+if(!ST.learned[key]){
+ST.learned[key]=true;
+ST.stars=Math.min(ST.stars+1,99);
+save(); toast('⭐ '+name+' appris !'); render();
+}
+}
+
+// ── Quiz builder ──────────────────────────────────
+function makeQuiz(section, lang){
+const pool = section==='days'?DAYS : section==='months'?MONTHS : SEASONS;
+const q = shuffle(pool).slice(0, Math.min(pool.length, 10));
+return q.map(correct => {
+const others = shuffle(pool.filter(x=>x.fr!==correct.fr)).slice(0,3);
+return { correct, opts: shuffle([correct,...others]), lang };
+});
+}
+
+// ══════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════
+function render(){
+const app = document.getElementById('app');
+const {page,section,idx,calYear,calMonth,quizPool,quizIdx,quizAns,quizScore,feedback,learned,stars} = ST;
+const today = todayInfo();
+const totalItems = 7+12+4;
+const learnedCount = Object.keys(learned).length;
+
+// ─ HOME ─
+if(page==='home'){
+const sectionData = section==='days'?DAYS:section==='months'?MONTHS:SEASONS;
+const sectionColors = {days:'#FF6B9D',months:'#4A90D9',seasons:'#FF9500'};
+const sc = sectionColors[section];
+
+
+app.innerHTML=`
+<div class="home">
+  <div class="hero">
+    <span class="hero-emoji">📅</span>
+    <div class="hero-title">Jours & Mois</div>
+    <div class="hero-sub">La classe d\'Aliya & Amira · 🇫🇷 🇲🇦 🇬🇧 🕌</div>
+  </div>
+
+  <!-- TODAY -->
+  <div class="today-banner">
+    <div class="tb-label">📍 Aujourd\'hui</div>
+    <div class="tb-date">${frDateFull(today)} ${today.day.emoji}</div>
+    <div class="tb-langs">
+      <div class="tb-row"><span class="tb-flag">🇲🇦</span><span>${today.day.darija} ${today.dayNum} ${today.month.darija}</span></div>
+      <div class="tb-row"><span class="tb-flag">🇬🇧</span><span>${today.day.en}, ${today.month.en} ${today.dayNum}</span></div>
+      <div class="tb-row"><span class="tb-flag">🕌</span><span class="tb-ar">${today.day.ar} · ${today.month.ar}</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION TABS -->
+  <div class="section-tabs">
+    ${[['days','📆 Jours','#FF6B9D'],['months','🗓️ Mois','#4A90D9'],['seasons','🍂 Saisons','#FF9500']].map(([k,lbl,col])=>
+      `<button class="st-btn ${section===k?'active':''}" onclick="setState({section:'${k}'})"
+        style="${section===k?`background:${col}`:''}">
+        ${lbl}
+      </button>`).join('')}
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-strip">
+    <div class="prog-row"><span>⭐ Appris</span><span>${learnedCount}/${totalItems}</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.round(learnedCount/totalItems*100)}%;background:linear-gradient(90deg,${sc},var(--purple))"></div></div>
+  </div>
+
+  <!-- MODES -->
+  <div class="mode-grid">
+    ${[
+      {id:'flashcard', icon:'🃏', title:'Flashcards',  desc:'Explore en 4 langues',  color:sc},
+      {id:'quiz',      icon:'🎯', title:'Quiz',         desc:'Teste ta mémoire !',    color:'#FF9500'},
+      {id:'calendar',  icon:'🗓️', title:'Calendrier',  desc:'Voir le mois en cours', color:'#4A90D9'},
+      {id:'all',       icon:'👀', title:'Tout voir',    desc:'Vue complète',          color:'#9B59B6'},
+    ].map((m,i)=>`<div class="mode-card" onclick="openMode('${m.id}')" style="animation-delay:${i*.07}s;border-color:${m.color}33">
+      <div class="mc-icon">${m.icon}</div>
+      <div class="mc-title" style="color:${m.color}">${m.title}</div>
+      <div class="mc-desc">${m.desc}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- MINI GRID -->
+  <div style="font-weight:900;color:#666;font-size:13px;max-width:440px;margin:0 auto 9px">
+    ${section==='days'?'📆 Les 7 jours':section==='months'?'🗓️ Les 12 mois':'🍂 Les 4 saisons'}
+  </div>
+  <div class="mini-grid ${section==='days'?'days-grid':section==='months'?'months-grid':'seasons-grid'}">
+    ${sectionData.map((item,i)=>{
+      const key=section+'_'+item.fr;
+      const isLearned=!!learned[key];
+      const isToday = section==='days'?today.dayIdx===i : section==='months'?today.monthIdx===i : false;
+      return`<div class="mg-cell ${isLearned?'learned':''}" onclick="openItem('${section}',${i})"
+        style="background:${isLearned?item.color+'12':'#fff'};border-color:${isToday?item.color:isLearned?item.color+'55':'transparent'}">
+        <div class="mg-emoji">${item.emoji}</div>
+        <div class="mg-name" style="color:${item.color};font-size:${section==='days'?'8px':'9px'}">${item.fr}</div>
+        <div class="mg-dot" style="background:${isLearned?item.color:isToday?item.color+'66':'#E0E0E0'}"></div>
+      </div>`;
+    }).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ FLASHCARD ─
+else if(page==='flashcard'){
+const pool = section==='days'?DAYS:section==='months'?MONTHS:SEASONS;
+const item = pool[idx];
+const key = section+'_'+item.fr;
+const isLearned = !!learned[key];
+const prev=idx>0, next=idx<pool.length-1;
+const isToday = section==='days'?today.dayIdx===idx:section==='months'?today.monthIdx===idx:false;
+
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+  <div class="nav-counter">${idx+1} / ${pool.length}</div>
+
+  <div class="flash-card" style="border-top:5px solid ${item.color}">
+    ${isToday?`<div class="fc-today-badge">Aujourd\'hui !</div>`:''}
+    <span class="fc-emoji">${item.emoji}</span>
+    ${section==='months'?`<div class="fc-num" style="color:${item.color}">Mois ${item.num} · ${item.season}</div>`:''}
+    ${section==='days'?`<div class="fc-num" style="color:${item.color}">Jour ${item.num}</div>`:''}
+    <div class="fc-main" style="color:${item.color}">${item.fr}</div>
+    <div class="fc-langs">
+      <div class="fc-lang-row"><span class="fc-flag">🇲🇦</span><span class="fc-text">${item.darija}</span></div>
+      <div class="fc-lang-row"><span class="fc-flag">🇬🇧</span><span class="fc-text">${item.en}</span></div>
+      <div class="fc-lang-row" style="background:#F1F8E9"><span class="fc-flag">🕌</span><span class="fc-text fc-ar">${item.ar}</span></div>
+      ${section==='seasons'?`<div class="fc-lang-row" style="background:#FFF8F0"><span class="fc-flag">📅</span><span class="fc-text" style="font-size:12px;color:#888">${item.months}</span></div>`:''}
+    </div>
+    ${section==='seasons'?`<div style="font-size:12px;color:#aaa;text-align:center;margin-top:10px;font-style:italic">${item.desc}</div>`:''}
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="setState({idx:${idx-1}})" ${prev?'':'disabled'}>← Préc.</button>
+    <button class="btn" style="background:${isLearned?'var(--green)':item.color}" onclick="markLearned('${key}','${item.fr}')">
+      ${isLearned?'✅ Appris !':'⭐ Je le sais !'}
+    </button>
+    <button class="btn btn-ghost" onclick="setState({idx:${idx+1}})" ${next?'':'disabled'}>Suiv. →</button>
+  </div>
+  <div class="dots">
+    ${pool.map((it,i)=>{const k=section+'_'+it.fr;return`<div class="dot" onclick="setState({idx:${i}})"
+      style="background:${i===idx?item.color:learned[k]?pool[i].color+'99':'#DDD'}"></div>`}).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ CALENDAR ─
+else if(page==='calendar'){
+const firstDay = firstDayOfMonth(calYear, calMonth);
+const totalDays = daysInMonth(calYear, calMonth);
+const monthData = MONTHS[calMonth];
+const todayMark = today.monthIdx===calMonth && new Date().getFullYear()===calYear;
+const todayDay = new Date().getDate();
+
+
+// Build cells
+const cells = [];
+for(let i=0;i<firstDay;i++) cells.push({empty:true});
+for(let d=1;d<=totalDays;d++) cells.push({d, isToday:todayMark&&d===todayDay});
+while(cells.length%7!==0) cells.push({empty:true});
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+
+  <!-- Month header info -->
+  <div class="flash-card" style="border-top:5px solid ${monthData.color};margin-bottom:14px;padding:16px 16px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:44px">${monthData.emoji}</span>
+      <div style="text-align:left">
+        <div style="font-size:20px;font-weight:900;color:${monthData.color}">${monthData.fr} ${calYear}</div>
+        <div style="font-size:12px;color:#888;margin-top:2px">
+          🇲🇦 ${monthData.darija} · 🇬🇧 ${monthData.en}
+        </div>
+        <div style="font-family:var(--ar);font-size:14px;color:${monthData.color};direction:rtl;margin-top:2px">${monthData.ar}</div>
+        <div style="font-size:11px;color:#bbb;margin-top:2px">${monthData.season} ${monthData.emoji}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar nav -->
+  <div class="calendar-wrap">
+    <div class="cal-month-header">
+      <button class="cal-nav" onclick="prevMonth()">←</button>
+      <div class="cal-month-name" style="color:${monthData.color}">${monthData.fr} ${calYear}</div>
+      <button class="cal-nav" onclick="nextMonth()">→</button>
+    </div>
+
+    <div class="cal-grid">
+      ${DAYS.map(d=>`<div class="cal-day-header" style="color:${d.color}">${d.fr.slice(0,3)}</div>`).join('')}
+      ${cells.map(c=>{
+        if(c.empty) return`<div class="cal-day empty"></div>`;
+        return`<div class="cal-day ${c.isToday?'today':''}">${c.d}</div>`;
+      }).join('')}
+    </div>
+
+    <!-- Days of week legend -->
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px">
+      ${DAYS.map(d=>{
+        const key='days_'+d.fr;
+        const isToday=today.dayIdx===DAYS.indexOf(d);
+        return`<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:${isToday?d.color+'15':'#fff'};border-radius:10px;border:1.5px solid ${isToday?d.color+'44':'transparent'}">
+          <span style="font-size:16px">${d.emoji}</span>
+          <span style="font-size:13px;font-weight:800;color:${d.color};min-width:80px">${d.fr}</span>
+          <span style="font-size:11px;color:#888">${d.en}</span>
+          <span style="font-size:11px;color:#aaa;margin-left:auto">${d.darija}</span>
+          <span style="font-family:var(--ar);font-size:13px;color:${d.color};direction:rtl">${d.ar}</span>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+</div>`;
+
+
+}
+
+// ─ ALL VIEW ─
+else if(page==='all'){
+const pool = section==='days'?DAYS:section==='months'?MONTHS:SEASONS;
+app.innerHTML=` <div class="page"> <button class="back-btn" onclick="setState({page:'home'})">← Retour</button> <div style="font-size:15px;font-weight:900;color:#555;margin-bottom:14px;text-align:center"> ${section==='days'?'📆 Les 7 jours':section==='months'?'🗓️ Les 12 mois':'🍂 Les 4 saisons'} </div> <div style="display:flex;flex-direction:column;gap:9px;width:100%;max-width:400px"> ${pool.map((item,i)=>{ const key=section+'_'+item.fr; const isLearned=!!learned[key]; const isToday=section==='days'?today.dayIdx===i:section==='months'?today.monthIdx===i:false; return`<div style="background:#fff;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:2px solid ${isToday?item.color:isLearned?item.color+'55':'transparent'};background:${isLearned?item.color+'10':'#fff'};cursor:pointer;animation:fadeUp .3s ${i*.04}s ease both"
+onclick="openItem('${section}',${i})">
+<span style="font-size:28px">${item.emoji}</span>
+<div style="flex:1">
+<div style="font-weight:900;font-size:14px;color:${item.color}">${item.fr}</div>
+<div style="font-size:11px;color:#888;margin-top:2px">
+🇲🇦 ${item.darija} · 🇬🇧 ${item.en}
+</div>
+<div style="font-family:var(--ar);font-size:13px;color:${item.color};direction:rtl;text-align:right;margin-top:1px">${item.ar}</div>
+</div>
+${isToday?`<span style="background:${item.color};color:#fff;font-size:9px;font-weight:900;border-radius:8px;padding:2px 8px">Aujourd\'hui</span>`:''}
+${isLearned?`<span style="font-size:16px">✅</span>`:
+`<button style="background:${item.color}22;border:none;border-radius:10px;padding:5px 10px;font-size:10px;font-weight:800;color:${item.color};cursor:pointer;font-family:'Nunito'" onclick="event.stopPropagation();markLearned('${key}','${item.fr}')">⭐</button>`}
+</div>`; }).join('')} </div> </div>`;
+}
+
+// ─ QUIZ ─
+else if(page==='quiz'){
+if(!quizPool.length){
+const pool=makeQuiz(section, ST.quizLang);
+setState({quizPool:pool,quizIdx:0,quizAns:null,quizScore:0,feedback:''});return;
+}
+const Q=quizPool[quizIdx];
+if(!Q){showResult();return;}
+const lang=Q.lang;
+const flagMap={fr:'🇫🇷',en:'🇬🇧',darija:'🇲🇦',ar:'🕌'};
+
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',quizPool:[],quizScore:0,quizAns:null,feedback:''})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:10px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${quizIdx+1}/${quizPool.length}</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
+
+  <!-- Language selector -->
+  <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;justify-content:center">
+    ${['fr','darija','en','ar'].map(l=>`<button
+      style="border:none;border-radius:14px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito';background:${ST.quizLang===l?'var(--gold)':'#F0F0F0'};color:${ST.quizLang===l?'#fff':'#888'}"
+      onclick="changeQuizLang('${l}')">${flagMap[l]}</button>`).join('')}
+  </div>
+
+  <div class="quiz-q" style="border-top:4px solid ${Q.correct.color}">
+    <div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:10px">
+      Comment dit-on <strong>${flagMap[lang]}</strong> ?
+    </div>
+    <div style="font-size:52px;margin-bottom:8px">${Q.correct.emoji}</div>
+    <div style="font-size:22px;font-weight:900;color:${Q.correct.color}">${Q.correct.fr}</div>
+    ${section==='months'?`<div style="font-size:12px;color:#bbb;margin-top:4px">Mois ${Q.correct.num}</div>`:''}
+  </div>
+
+  <div class="feedback">${feedback==='correct'?['🎉 Bravo !','⭐ Exact !','✅ Super !'][~~(Math.random()*3)]:feedback==='wrong'?'💪 Presque !':''}</div>
+
+  <div class="quiz-opts">
+    ${Q.opts.map((o,i)=>{
+      const isC=o.fr===Q.correct.fr;
+      const isCh=quizAns!==null&&quizAns===i;
+      let cls=''; if(quizAns!==null){if(isC)cls='correct';else if(isCh)cls='wrong';}
+      const ansText=lang==='ar'?o.ar:lang==='darija'?o.darija:lang==='en'?o.en:o.fr;
+      const isAr=lang==='ar';
+      return`<button class="q-opt ${cls}" onclick="answerQuiz(${i})">
+        ${isAr?`<span class="ar-ans" style="color:${isCh||quizAns===null?o.color:'inherit'}">${ansText}</span>`:
+          `<span style="font-size:14px;font-weight:900;color:${isCh||quizAns===null?o.color:'inherit'}">${ansText}</span>`}
+      </button>`;
+    }).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ RESULT ─
+else if(page==='result'){
+const pct=Math.round(quizScore/quizPool.length*100);
+const s=pct>=80?3:pct>=55?2:1;
+app.innerHTML=` <div class="page"> <div class="result"> <div class="result-big">${s===3?'🏆':s===2?'⭐':'💪'}</div> <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / ${quizPool.length}</div> <div style="display:flex;gap:5px;font-size:26px">${[0,1,2].map(j=>`<span>${j<s?'⭐':'☆'}</span>`).join('')}</div> <div style="font-size:13px;color:#888;text-align:center">${s===3?'Parfait ! Tu connais tout ! 🎉':s===2?'Très bien ! Continue 😊':'Encore un peu d\'entraînement 💪'}</div> <div class="btn-row" style="margin-top:10px"> <button class="btn" style="background:var(--gold)" onclick="replayQuiz()">🔄 Rejouer</button> <button class="btn btn-ghost" onclick="setState({page:'home',quizPool:[],feedback:''})">🏠 Accueil</button> </div> </div> </div>`;
+if(s===3) confetti();
+}
+}
+
+// ── Actions ───────────────────────────────────────
+function openMode(id){
+const {section}=ST;
+if(id==='flashcard') setState({page:'flashcard',idx:0});
+else if(id==='quiz')     setState({page:'quiz',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:'',quizLang:'fr'});
+else if(id==='calendar') setState({page:'calendar'});
+else if(id==='all')      setState({page:'all'});
+}
+
+function openItem(section, i){
+setState({page:'flashcard',section,idx:i});
+}
+
+function prevMonth(){
+let y=ST.calYear, m=ST.calMonth-1;
+if(m<0){m=11;y--;}
+setState({calYear:y,calMonth:m});
+}
+function nextMonth(){
+let y=ST.calYear, m=ST.calMonth+1;
+if(m>11){m=0;y++;}
+setState({calYear:y,calMonth:m});
+}
+
+function changeQuizLang(l){
+const pool=makeQuiz(ST.section, l);
+setState({quizLang:l,quizPool:pool,quizIdx:0,quizAns:null,quizScore:0,feedback:''});
+}
+
+function answerQuiz(optIdx){
+if(ST.quizAns!==null) return;
+const Q=ST.quizPool[ST.quizIdx];
+const isCorrect=Q.opts[optIdx].fr===Q.correct.fr;
+const score=isCorrect?ST.quizScore+1:ST.quizScore;
+if(isCorrect) markLearned(ST.section+'_'+Q.correct.fr, Q.correct.fr);
+ST.quizAns=optIdx; ST.quizScore=score; ST.feedback=isCorrect?'correct':'wrong';
+render();
+setTimeout(()=>{
+const next=ST.quizIdx+1;
+if(next>=ST.quizPool.length){showResult();return;}
+ST.quizIdx=next; ST.quizAns=null; ST.feedback=''; render();
+},1100);
+}
+
+function showResult(){
+const pct=Math.round(ST.quizScore/ST.quizPool.length*100);
+const s=pct>=80?3:pct>=55?2:1;
+ST.stars=Math.max(ST.stars,s); save();
+setState({page:'result'});
+if(s===3) confetti();
+}
+
+function replayQuiz(){
+const pool=makeQuiz(ST.section,ST.quizLang);
+setState({quizPool:pool,quizIdx:0,quizScore:0,quizAns:null,feedback:'',page:'quiz'});
+}
+
+render();
+</script>
+
+</body>
+</html>

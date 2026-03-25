@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>✨ Complétion de mots</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif}
+#app{min-height:100vh}
+
+:root{
+--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+--purple:#9B59B6;--teal:#1ABC9C;--red:#E74C3C;--orange:#FF7043;
+--bg:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);
+--word:'Baloo 2',cursive;
+}
+
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes popIn{from{opacity:0;transform:scale(.5) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+@keyframes letterPop{from{opacity:0;transform:scale(.3) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* ── HOME ── */
+.home{min-height:100vh;background:var(--bg);padding:22px 16px 60px}
+.hero{text-align:center;margin-bottom:22px;animation:fadeDown .5s ease both}
+.hero-emoji{font-size:58px;display:block;animation:wiggle 2s infinite;margin-bottom:6px}
+.hero-title{font-size:25px;font-weight:900;background:linear-gradient(90deg,var(--blue),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* level cards */
+.level-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:440px;margin:0 auto 22px}
+.lv-card{background:#fff;border-radius:20px;padding:20px 14px;text-align:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.08);border:3px solid transparent;transition:all .2s}
+.lv-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.lv-card:active{transform:scale(.96)}
+.lv-card.active{border-color:var(--gold)}
+.lv-icon{font-size:40px;margin-bottom:8px}
+.lv-title{font-weight:900;font-size:16px;margin-bottom:4px}
+.lv-desc{font-size:11px;color:#aaa;line-height:1.4}
+.lv-example{margin-top:10px;font-family:var(--word);font-size:20px;font-weight:700;letter-spacing:4px}
+
+/* stats */
+.stats-row{display:flex;gap:10px;max-width:440px;margin:0 auto 20px}
+.stat-box{flex:1;background:#fff;border-radius:16px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.stat-num{font-size:24px;font-weight:900;color:var(--gold);font-family:var(--word)}
+.stat-label{font-size:10px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* cat filter */
+.cat-filter{display:flex;gap:7px;max-width:440px;margin:0 auto 16px;overflow-x:auto;padding-bottom:4px}
+.cat-btn{border:none;border-radius:18px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:'Nunito',sans-serif;transition:all .18s}
+.cat-btn.active{background:linear-gradient(135deg,var(--gold),var(--pink));color:#fff}
+.cat-btn:not(.active){background:#F0F0F0;color:#888}
+
+/* word list preview */
+.words-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:440px;margin:0 auto}
+.wp-cell{background:#fff;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);border:2px solid transparent;transition:all .18s}
+.wp-cell:active{transform:scale(.93)}
+.wp-cell.done-easy{border-color:#4CAF5077}
+.wp-cell.done-hard{border-color:var(--gold)}
+.wp-emoji{font-size:24px}
+.wp-word{font-size:9px;font-weight:700;color:#888;margin-top:2px}
+.wp-badge{font-size:9px;margin-top:2px}
+
+/* ── GAME PAGE ── */
+.page{min-height:100vh;background:var(--bg);padding:16px 14px 16px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.07);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;color:#666;margin-bottom:12px;font-weight:700}
+
+/* level pill */
+.level-pill{border-radius:20px;padding:4px 14px;font-size:11px;font-weight:800;margin-bottom:12px;display:inline-block}
+
+/* word card */
+.word-card{background:#fff;border-radius:24px;padding:20px 18px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 20px rgba(0,0,0,.09);margin-bottom:16px;position:relative}
+.wc-emoji{font-size:72px;margin-bottom:8px;display:block;animation:bounce 2s infinite}
+.wc-cat{font-size:10px;color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.wc-hint{font-size:12px;color:#bbb;margin-bottom:8px}
+
+/* letter slots */
+.slots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.slot{width:38px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--word);font-size:22px;font-weight:700;transition:all .2s;flex-shrink:0}
+.slot.given{background:#F8F8F8;border:2px solid #E0E0E0;color:#444}
+.slot.blank{background:#FFF3E0;border:3px solid var(--gold);color:var(--gold);cursor:pointer}
+.slot.blank.filled{background:#FFF8E8;border-color:var(--orange)}
+.slot.blank.filled:hover{background:#FFE4B5;border-color:var(--orange)}
+.slot.correct{background:#E8F5E9;border:3px solid var(--green);color:var(--green);animation:letterPop .3s ease}
+.slot.wrong{background:#FFEBEE;border:3px solid var(--red);color:var(--red);animation:shake .4s ease}
+.slot.space{background:transparent;border:none;width:14px}
+
+/* translation hint */
+.trans-hint{font-size:11px;color:#bbb;text-align:center;margin-bottom:12px;font-style:italic}
+
+/* progress dots */
+.progress-dots{display:flex;gap:5px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.pdot{width:8px;height:8px;border-radius:50%;transition:background .25s}
+
+/* ── KEYBOARD ── */
+.keyboard{width:100%;max-width:400px;margin:0 auto}
+.kb-row{display:flex;gap:5px;justify-content:center;margin-bottom:5px}
+.key{background:#fff;border:2.5px solid #E8E8E8;border-radius:10px;width:32px;height:40px;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;color:#444;transition:all .15s;box-shadow:0 2px 4px rgba(0,0,0,.06);flex-shrink:0;position:relative}
+.key:active{transform:scale(.88)}
+.key.used-correct{background:#E8F5E9;border-color:var(--green);color:var(--green);opacity:.6}
+.key.used-wrong{background:#FFEBEE;border-color:#FFCDD2;color:#FFCDD2}
+.key.delete-btn{width:48px;background:#FFE4EC;border-color:#FFAACC;color:var(--pink);font-size:18px}
+.key.validate-btn{width:56px;background:linear-gradient(135deg,var(--green),#2ECC71);border-color:var(--green);color:#fff;font-size:18px}
+
+/* feedback */
+.feedback{min-height:44px;font-size:26px;font-weight:900;text-align:center;margin-bottom:8px}
+.fb-correct{animation:pop .4s ease;color:var(--green)}
+.fb-wrong{animation:shake .4s ease;color:var(--red)}
+
+/* action buttons */
+.btn{border:none;border-radius:14px;padding:10px 22px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+
+/* result screen */
+.result{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:slideUp .4s ease both;padding-top:24px;width:100%;max-width:380px}
+.result-big{font-size:72px;animation:pop .5s ease both}
+.result-word{font-family:var(--word);font-size:42px;font-weight:800}
+
+/* streak badge */
+.streak{background:rgba(255,149,0,.15);border:1.5px solid rgba(255,149,0,.4);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:800;color:var(--gold);display:inline-flex;align-items:center;gap:4px;margin-top:4px}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════
+// 📚 MOTS — tirés du vocabulaire multilingue
+// ══════════════════════════════════════════════════
+const WORDS = [
+  // Animaux
+  {fr:'Chat',      en:'cat',       darija:'Mich',     emoji:'🐱', cat:'Animaux'},
+  {fr:'Chien',     en:'dog',       darija:'Kelb',     emoji:'🐶', cat:'Animaux'},
+  {fr:'Lapin',     en:'rabbit',    darija:'Qniya',    emoji:'🐰', cat:'Animaux'},
+  {fr:'Lion',      en:'lion',      darija:'Sba3',     emoji:'🦁', cat:'Animaux'},
+  {fr:'Elephant',  en:'elephant',  darija:'Fil',      emoji:'🐘', cat:'Animaux'},
+  {fr:'Girafe',    en:'giraffe',   darija:'Zarafa',   emoji:'🦒', cat:'Animaux'},
+  {fr:'Oiseau',    en:'bird',      darija:'3sfour',   emoji:'🐦', cat:'Animaux'},
+  {fr:'Poisson',   en:'fish',      darija:'Hout',     emoji:'🐟', cat:'Animaux'},
+  {fr:'Tortue',    en:'turtle',    darija:'Fkroun',   emoji:'🐢', cat:'Animaux'},
+  {fr:'Canard',    en:'duck',      darija:'Batta',    emoji:'🦆', cat:'Animaux'},
+  {fr:'Vache',     en:'cow',       darija:'Bagra',    emoji:'🐄', cat:'Animaux'},
+  {fr:'Cheval',    en:'horse',     darija:'3oud',     emoji:'🐴', cat:'Animaux'},
+  {fr:'Mouton',    en:'sheep',     darija:'Kharouf',  emoji:'🐑', cat:'Animaux'},
+  {fr:'Grenouille',en:'frog',      darija:'Dafda3',   emoji:'🐸', cat:'Animaux'},
+  {fr:'Papillon',  en:'butterfly', darija:'Farfara',  emoji:'🦋', cat:'Animaux'},
+  {fr:'Singe',     en:'monkey',    darija:'Maimoun',  emoji:'🐒', cat:'Animaux'},
+  {fr:'Poule',     en:'hen',       darija:'Djaja',    emoji:'🐔', cat:'Animaux'},
+  {fr:'Souris',    en:'mouse',     darija:'Far',      emoji:'🐭', cat:'Animaux'},
+  // Nourriture
+  {fr:'Pomme',     en:'apple',     darija:'Tffah',    emoji:'🍎', cat:'Nourriture'},
+  {fr:'Banane',    en:'banana',    darija:'Banana',   emoji:'🍌', cat:'Nourriture'},
+  {fr:'Orange',    en:'orange',    darija:'Limo',     emoji:'🍊', cat:'Nourriture'},
+  {fr:'Fraise',    en:'strawberry',darija:'Fraise',   emoji:'🍓', cat:'Nourriture'},
+  {fr:'Raisin',    en:'grapes',    darija:'3nb',      emoji:'🍇', cat:'Nourriture'},
+  {fr:'Pain',      en:'bread',     darija:'Khobz',    emoji:'🍞', cat:'Nourriture'},
+  {fr:'Lait',      en:'milk',      darija:'Hlib',     emoji:'🥛', cat:'Nourriture'},
+  {fr:'Gateau',    en:'cake',      darija:'Halwa',    emoji:'🎂', cat:'Nourriture'},
+  {fr:'Carotte',   en:'carrot',    darija:'Khizou',   emoji:'🥕', cat:'Nourriture'},
+  {fr:'Tomate',    en:'tomato',    darija:'Matisha',  emoji:'🍅', cat:'Nourriture'},
+  {fr:'Citron',    en:'lemon',     darija:'Hamed',    emoji:'🍋', cat:'Nourriture'},
+  {fr:'Eau',       en:'water',     darija:'Ma',       emoji:'💧', cat:'Nourriture'},
+  // Couleurs
+  {fr:'Rouge',     en:'red',       darija:'Hmar',     emoji:'🔴', cat:'Couleurs'},
+  {fr:'Bleu',      en:'blue',      darija:'Zraq',     emoji:'🔵', cat:'Couleurs'},
+  {fr:'Vert',      en:'green',     darija:'Lkhdar',   emoji:'🟢', cat:'Couleurs'},
+  {fr:'Jaune',     en:'yellow',    darija:'Sfar',     emoji:'🟡', cat:'Couleurs'},
+  {fr:'Rose',      en:'pink',      darija:'Wardi',    emoji:'🌸', cat:'Couleurs'},
+  {fr:'Blanc',     en:'white',     darija:'Biad',     emoji:'⬜', cat:'Couleurs'},
+  {fr:'Noir',      en:'black',     darija:'Lkhal',    emoji:'⬛', cat:'Couleurs'},
+  {fr:'Violet',    en:'purple',    darija:'Banafsaji',emoji:'🟣', cat:'Couleurs'},
+  {fr:'Marron',    en:'brown',     darija:'Qhwi',     emoji:'🟤', cat:'Couleurs'},
+  // Famille
+  {fr:'Maman',     en:'mum',       darija:'Yamma',    emoji:'👩', cat:'Famille'},
+  {fr:'Papa',      en:'dad',       darija:'Baba',     emoji:'👨', cat:'Famille'},
+  {fr:'Bebe',      en:'baby',      darija:'Drari',    emoji:'👶', cat:'Famille'},
+  {fr:'Soeur',     en:'sister',    darija:'Okhti',    emoji:'👧', cat:'Famille'},
+  {fr:'Frere',     en:'brother',   darija:'Khoya',    emoji:'👦', cat:'Famille'},
+  {fr:'Ami',       en:'friend',    darija:'Sahbi',    emoji:'🤝', cat:'Famille'},
+  // Maison
+  {fr:'Maison',    en:'house',     darija:'Dar',      emoji:'🏠', cat:'Maison'},
+  {fr:'Porte',     en:'door',      darija:'Bab',      emoji:'🚪', cat:'Maison'},
+  {fr:'Lit',       en:'bed',       darija:'Naamiya',  emoji:'🛏️', cat:'Maison'},
+  {fr:'Table',     en:'table',     darija:'Tabla',    emoji:'🪑', cat:'Maison'},
+  {fr:'Jardin',    en:'garden',    darija:'Jnan',     emoji:'🌳', cat:'Maison'},
+  // Nature
+  {fr:'Soleil',    en:'sun',       darija:'Shems',    emoji:'☀️', cat:'Nature'},
+  {fr:'Lune',      en:'moon',      darija:'Qamar',    emoji:'🌙', cat:'Nature'},
+  {fr:'Etoile',    en:'star',      darija:'Nejma',    emoji:'⭐', cat:'Nature'},
+  {fr:'Fleur',     en:'flower',    darija:'Warda',    emoji:'🌸', cat:'Nature'},
+  {fr:'Arbre',     en:'tree',      darija:'Shajra',   emoji:'🌳', cat:'Nature'},
+  {fr:'Mer',       en:'sea',       darija:'Bhar',     emoji:'🌊', cat:'Nature'},
+  {fr:'Pluie',     en:'rain',      darija:'Shta',     emoji:'🌧️', cat:'Nature'},
+  // Transport
+  {fr:'Voiture',   en:'car',       darija:'Tomobil',  emoji:'🚗', cat:'Transport'},
+  {fr:'Bus',       en:'bus',       darija:'Tobis',    emoji:'🚌', cat:'Transport'},
+  {fr:'Train',     en:'train',     darija:'Tran',     emoji:'🚂', cat:'Transport'},
+  {fr:'Avion',     en:'plane',     darija:'Tiyara',   emoji:'✈️', cat:'Transport'},
+  {fr:'Velo',      en:'bike',      darija:'Bisklita', emoji:'🚲', cat:'Transport'},
+  {fr:'Bateau',    en:'boat',      darija:'Babur',    emoji:'⛵', cat:'Transport'},
+  // Ecole
+  {fr:'Livre',     en:'book',      darija:'Ktab',     emoji:'📚', cat:'École'},
+  {fr:'Crayon',    en:'pencil',    darija:'Qalam',    emoji:'✏️', cat:'École'},
+  {fr:'Ecole',     en:'school',    darija:'Madrasa',  emoji:'🏫', cat:'École'},
+  {fr:'Gomme',     en:'eraser',    darija:'Masha',    emoji:'🩹', cat:'École'},
+  {fr:'Regle',     en:'ruler',     darija:'Masatara', emoji:'📏', cat:'École'},
+  // Corps
+  {fr:'Tete',      en:'head',      darija:'Rass',     emoji:'🗣️', cat:'Corps'},
+  {fr:'Nez',       en:'nose',      darija:'Nif',      emoji:'👃', cat:'Corps'},
+  {fr:'Bouche',    en:'mouth',     darija:'Fomm',     emoji:'👄', cat:'Corps'},
+  {fr:'Main',      en:'hand',      darija:'Idayn',    emoji:'👐', cat:'Corps'},
+  {fr:'Pied',      en:'foot',      darija:'Rijlayn',  emoji:'🦶', cat:'Corps'},
+  {fr:'Dents',     en:'teeth',     darija:'Snane',    emoji:'🦷', cat:'Corps'},
+  // Jouets
+  {fr:'Ballon',    en:'ball',      darija:'Kura',     emoji:'⚽', cat:'Jouets'},
+  {fr:'Poupee',    en:'doll',      darija:'3arousa',  emoji:'🪆', cat:'Jouets'},
+  {fr:'Puzzle',    en:'puzzle',    darija:'Puzzle',   emoji:'🧩', cat:'Jouets'},
+  {fr:'Jeu',       en:'game',      darija:'L3ab',     emoji:'🎲', cat:'Jouets'},
+];
+
+const VOWELS = new Set(['A','E','I','O','U','Y']);
+const CATS = ['Tout', ...new Set(WORDS.map(w=>w.cat))];
+
+const KB_ROWS = [
+['A','Z','E','R','T','Y','U','I','O','P'],
+['Q','S','D','F','G','H','J','K','L','M'],
+['⌫','W','X','C','V','B','N','✓'],
+];
+
+const COLORS = ['#FF6B9D','#FF9500','#4A90D9','#9B59B6','#1ABC9C','#E74C3C','#F39C12','#3498DB'];
+
+// ── Storage ──────────────────────────────────────
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+// ── State ─────────────────────────────────────────
+let ST = {
+page: 'home',            // home | game | result
+level: loadLS('comp_level','easy'),   // easy | hard
+cat: 'Tout',
+wordIdx: 0,
+word: null,              // current word object
+slots: [],               // array: {letter, isBlank, filled:'', state:'idle'}
+blankFocus: 0,           // index in blanks array of current focus
+usedKeys: {},            // {A:'correct'|'wrong'|'unused'}
+feedback: '',            // '' | 'correct' | 'wrong' | 'done'
+streak: 0,
+score: 0,
+total: 0,
+done: loadLS('comp_done',{}),  // {wordId_level: true}
+history: [],             // [{word,correct}]
+};
+
+function setState(p){Object.assign(ST,p);render()}
+function save(){saveLS('comp_done',ST.done);saveLS('comp_level',ST.level)}
+
+// ── Helpers ───────────────────────────────────────
+function wordId(w,lv){return w.fr+'_'+lv}
+
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#9B59B6'];
+for(let i=0;i<44;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=6+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.7}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),3000);
+}
+}
+
+function toast(msg){
+const el=document.createElement('div');el.className='toast';el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+
+// Build slots from a word + level
+function buildSlots(word, level){
+const letters = word.fr.toUpperCase().split('');
+const slots = letters.map(l => ({letter:l, isBlank:false, filled:'', state:'idle', isSpace:l===' '}));
+
+if(level==='easy'){
+// Reveal vowels + first letter; blank consonants (except first)
+slots.forEach((s,i) => {
+if(s.isSpace) return;
+if(i===0) return; // first letter always given
+if(!VOWELS.has(s.letter)) s.isBlank=true; // blank consonants
+});
+// If too few blanks (short word), also blank some vowels
+const blanks = slots.filter(s=>s.isBlank).length;
+if(blanks===0 && letters.length>2){
+// blank middle letters
+for(let i=1;i<slots.length-1;i++){
+if(!slots[i].isSpace){slots[i].isBlank=true;break;}
+}
+}
+} else {
+// hard: only first letter given, everything else is blank
+slots.forEach((s,i) => {
+if(s.isSpace) return;
+if(i===0) return;
+s.isBlank = true;
+});
+}
+return slots;
+}
+
+function getBlanks(slots){return slots.map((s,i)=>({...s,idx:i})).filter(s=>s.isBlank)}
+
+function getFilteredWords(){
+return ST.cat==='Tout'?WORDS:WORDS.filter(w=>w.cat===ST.cat);
+}
+
+// ── RENDER ────────────────────────────────────────
+function render(){
+const app=document.getElementById('app');
+const {page,level,cat,word,slots,blankFocus,usedKeys,feedback,streak,score,total,done} = ST;
+
+const doneEasy = Object.keys(done).filter(k=>k.endsWith('_easy')).length;
+const doneHard = Object.keys(done).filter(k=>k.endsWith('_hard')).length;
+
+// ─ HOME ─
+if(page==='home'){
+const filtered = getFilteredWords();
+app.innerHTML=`
+<div class="home">
+<div class="hero">
+<span class="hero-emoji">🔤</span>
+<div class="hero-title">Complétion de mots</div>
+<div class="hero-sub">La classe d’Aliya & Amira · Trouve les lettres manquantes !</div>
+</div>
+
+  <div class="level-cards">
+    <div class="lv-card ${level==='easy'?'active':''}" onclick="setLevel('easy')" style="${level==='easy'?'border-color:var(--gold);background:#FFFDF0':''}">
+      <div class="lv-icon">🟡</div>
+      <div class="lv-title" style="color:var(--gold)">Facile</div>
+      <div class="lv-desc">Voyelles données<br/>Consonnes à trouver</div>
+      <div class="lv-example" style="color:var(--gold)">C_AT</div>
+      <div style="font-size:10px;color:var(--green);margin-top:6px;font-weight:700">${doneEasy} / ${WORDS.length} ✅</div>
+    </div>
+    <div class="lv-card ${level==='hard'?'active':''}" onclick="setLevel('hard')" style="${level==='hard'?'border-color:var(--red);background:#FFF8F8':''}">
+      <div class="lv-icon">🔴</div>
+      <div class="lv-title" style="color:var(--red)">Difficile</div>
+      <div class="lv-desc">1ère lettre donnée<br/>Tout le reste à trouver</div>
+      <div class="lv-example" style="color:var(--red)">C___</div>
+      <div style="font-size:10px;color:var(--green);margin-top:6px;font-weight:700">${doneHard} / ${WORDS.length} ✅</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num">${doneEasy+doneHard}</div><div class="stat-label">Mots complétés</div></div>
+    <div class="stat-box"><div class="stat-num">${WORDS.length}</div><div class="stat-label">Mots au total</div></div>
+    <div class="stat-box"><div class="stat-num">${Math.round((doneEasy+doneHard)/(WORDS.length*2)*100)}%</div><div class="stat-label">Progression</div></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;max-width:440px;margin:0 auto 12px">
+    <div class="cat-filter" style="margin:0;flex:1">
+      ${CATS.map(c=>`<button class="cat-btn ${cat===c?'active':''}" onclick="setCat('${c}')">${c}</button>`).join('')}
+    </div>
+  </div>
+
+  <div style="text-align:right;max-width:440px;margin:0 auto 10px">
+    <button class="btn" style="background:linear-gradient(135deg,var(--blue),var(--purple))" onclick="startGame()">
+      ▶ Jouer ${cat==='Tout'?'':'· '+cat} · ${level==='easy'?'🟡 Facile':'🔴 Difficile'}
+    </button>
+  </div>
+
+  <div class="words-preview">
+    ${filtered.map(w=>{
+      const de=done[wordId(w,'easy')],dh=done[wordId(w,'hard')];
+      return`<div class="wp-cell ${dh?'done-hard':de?'done-easy':''}" onclick="playWord('${w.fr}')">
+        <div class="wp-emoji">${w.emoji}</div>
+        <div class="wp-word">${w.fr}</div>
+        <div class="wp-badge">${dh?'⭐⭐':de?'⭐':''}</div>
+      </div>`;
+    }).join('')}
+  </div>
+</div>`;
+
+}
+
+// ─ GAME ─
+else if(page==='game' && word){
+const blanks = getBlanks(slots);
+const currentBlankIdx = blanks[blankFocus]?.idx;
+const levelColor = level==='easy'?'var(--gold)':'var(--red)';
+const levelLabel = level==='easy'?'🟡 Facile':'🔴 Difficile';
+
+// Count remaining blanks
+const remaining = blanks.filter(b=>!slots[b.idx].filled).length;
+const allFilled = blanks.every(b=>slots[b.idx].filled!=='');
+
+// Build display word (hint line: translation)
+const hintParts=[word.en,word.darija].filter(Boolean).join(' · ');
+
+app.innerHTML=`
+<div class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:400px;margin-bottom:10px">
+    <button class="back-btn" style="margin:0" onclick="setState({page:'home',feedback:'',history:[]})">← Accueil</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      ${streak>=2?`<div class="streak">🔥 ${streak}</div>`:''}
+      <span style="font-size:12px;font-weight:800;color:#bbb">${score}⭐</span>
+    </div>
+  </div>
+
+  <div class="level-pill" style="background:${level==='easy'?'#FFF3E0':'#FFEBEE'};color:${levelColor}">${levelLabel}</div>
+
+  <div class="word-card">
+    <span class="wc-emoji">${word.emoji}</span>
+    <div class="wc-cat">${word.cat}</div>
+
+    <!-- Slots -->
+    <div class="slots">
+      ${slots.map((s,i)=>{
+        if(s.isSpace) return`<div class="slot space"></div>`;
+        const isFocused=i===currentBlankIdx&&feedback==='';
+        const color=COLORS[word.fr.length%COLORS.length];
+        if(!s.isBlank) return`<div class="slot given">${s.letter}</div>`;
+        const displayLetter=s.state==='correct'?s.letter:s.state==='wrong'?s.filled:s.filled||'';
+        return`<div class="slot blank ${s.filled?'filled':''} ${s.state!=='idle'?s.state:''}"
+          style="${isFocused?`border-color:${color};background:${color}22;box-shadow:0 0 0 3px ${color}33`:''}"
+          onclick="focusBlank(${blanks.findIndex(b=>b.idx===i)})">
+          ${displayLetter}
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="trans-hint">${hintParts}</div>
+
+    ${feedback==='done'?`
+      <div style="font-size:22px;font-weight:900;color:var(--green);margin-top:4px;animation:pop .3s ease">
+        🎉 ${word.fr.toUpperCase()} !
+      </div>
+    `:''}
+  </div>
+
+  <!-- Feedback -->
+  <div class="feedback ${feedback==='correct'?'fb-correct':feedback==='wrong'?'fb-wrong':''}">
+    ${feedback==='correct'?['✅ Oui !','⭐ Bravo !','🎉 Super !'][~~(Math.random()*3)]:
+      feedback==='wrong'?'❌':
+      feedback==='done'?'':
+      remaining>0?`${remaining} lettre${remaining>1?'s':''} restante${remaining>1?'s':''}...`:''}
+  </div>
+
+  <!-- Keyboard -->
+  ${feedback==='done'
+    ?`<div class="btn-row">
+        <button class="btn btn-ghost" onclick="setState({page:'home',feedback:'',history:[]})">🏠 Accueil</button>
+        <button class="btn" style="background:linear-gradient(135deg,var(--blue),var(--purple))" onclick="nextWord()">Mot suivant →</button>
+      </div>`
+    :`<div class="keyboard">
+      ${KB_ROWS.map(row=>`<div class="kb-row">
+        ${row.map(k=>{
+          if(k==='⌫') return`<button class="key delete-btn" onclick="deleteLetter()">⌫</button>`;
+          if(k==='✓') return`<button class="key validate-btn ${allFilled?'':''}${feedback==='checking'?'disabled':''}" onclick="validate()">✓</button>`;
+          const ks=usedKeys[k]||'';
+          return`<button class="key ${ks==='correct'?'used-correct':ks==='wrong'?'used-wrong':''}"
+            style="${!ks?`border-color:${COLORS[k.charCodeAt(0)%COLORS.length]}55`:''}; color:${!ks?COLORS[k.charCodeAt(0)%COLORS.length]:'inherit'}"
+            onclick="pressKey('${k}')">${k}</button>`;
+        }).join('')}
+      </div>`).join('')}
+    </div>
+    <div style="font-size:10px;color:#ccc;text-align:center;margin-top:4px">Appuie sur les cases pour changer de case active</div>`
+  }
+</div>`;
+
+}
+}
+
+// ── ACTIONS ───────────────────────────────────────
+function setLevel(l){ST.level=l;save();render()}
+function setCat(c){ST.cat=c;render()}
+
+function startGame(){
+const pool=getFilteredWords();
+const remaining=pool.filter(w=>!ST.done[wordId(w,ST.level)]);
+const arr=remaining.length>0?remaining:pool;
+const w=shuffle(arr)[0];
+loadWord(w);
+}
+
+function playWord(fr){
+const w=WORDS.find(x=>x.fr===fr);
+if(w) loadWord(w);
+}
+
+function loadWord(w){
+const sl=buildSlots(w,ST.level);
+ST.word=w;
+ST.slots=sl;
+ST.blankFocus=0;
+ST.usedKeys={};
+ST.feedback='';
+setState({page:'game'});
+}
+
+function focusBlank(bIdx){
+const blanks=getBlanks(ST.slots);
+if(bIdx>=0&&bIdx<blanks.length) setState({blankFocus:bIdx});
+}
+
+function pressKey(k){
+if(ST.feedback==='done') return;
+const blanks=getBlanks(ST.slots);
+if(!blanks.length) return;
+let fi=ST.blankFocus;
+if(fi>=blanks.length) fi=blanks.length-1;
+const targetIdx=blanks[fi].idx;
+
+// Fill current blank
+ST.slots[targetIdx].filled=k;
+ST.slots[targetIdx].state='idle';
+
+// Auto-advance to next empty blank
+let next=fi+1;
+while(next<blanks.length && ST.slots[blanks[next].idx].filled!=='') next++;
+if(next>=blanks.length){
+// All filled — find first empty or stay
+next=fi; // keep focus
+}
+
+setState({blankFocus:next,feedback:''});
+}
+
+function deleteLetter(){
+if(ST.feedback==='done') return;
+const blanks=getBlanks(ST.slots);
+if(!blanks.length) return;
+let fi=ST.blankFocus;
+if(fi>=blanks.length) fi=blanks.length-1;
+const targetIdx=blanks[fi].idx;
+
+if(ST.slots[targetIdx].filled){
+ST.slots[targetIdx].filled='';
+ST.slots[targetIdx].state='idle';
+setState({feedback:''});
+} else {
+// go back
+let prev=fi-1;
+while(prev>=0 && !blanks[prev]) prev--;
+if(prev>=0){
+const prevIdx=blanks[prev].idx;
+ST.slots[prevIdx].filled='';
+ST.slots[prevIdx].state='idle';
+setState({blankFocus:prev,feedback:''});
+}
+}
+}
+
+function validate(){
+if(ST.feedback==='done') return;
+const blanks=getBlanks(ST.slots);
+const allFilled=blanks.every(b=>ST.slots[b.idx].filled!=='');
+if(!allFilled){toast('❓ Complète toutes les cases d’abord !');return;}
+
+let allCorrect=true;
+blanks.forEach(b=>{
+const s=ST.slots[b.idx];
+if(s.filled.toUpperCase()===s.letter.toUpperCase()){
+s.state='correct';
+ST.usedKeys[s.filled]='correct';
+} else {
+s.state='wrong';
+allCorrect=false;
+if(ST.usedKeys[s.filled]!=='correct') ST.usedKeys[s.filled]='wrong';
+}
+});
+
+if(allCorrect){
+const wid=wordId(ST.word,ST.level);
+ST.done[wid]=true;
+ST.score++;
+ST.streak++;
+save();
+confetti();
+setState({feedback:'done'});
+} else {
+ST.streak=0;
+// Clear wrong slots for retry
+setTimeout(()=>{
+blanks.forEach(b=>{
+if(ST.slots[b.idx].state==='wrong'){
+ST.slots[b.idx].filled='';
+ST.slots[b.idx].state='idle';
+}
+});
+// Focus first wrong slot
+const firstWrong=blanks.findIndex(b=>ST.slots[b.idx].state==='idle'&&!ST.slots[b.idx].filled);
+setState({blankFocus:firstWrong>=0?firstWrong:0,feedback:'wrong'});
+},800);
+setState({feedback:'wrong'});
+}
+}
+
+function nextWord(){
+const pool=getFilteredWords();
+const remaining=pool.filter(w=>!ST.done[wordId(w,ST.level)]);
+const arr=remaining.length>0?shuffle(remaining):shuffle(pool);
+// avoid same word
+const next=arr.find(w=>w.fr!==ST.word?.fr)||arr[0];
+if(next) loadWord(next);
+else setState({page:'home',feedback:''});
+}
+
+render();
+</script>
+
+</body>
+</html>

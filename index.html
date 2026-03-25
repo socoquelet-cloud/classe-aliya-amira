@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Aliya & Amira"/>
+<title>✨ La classe d'Aliya & Amira</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif}
+#app{min-height:100vh}
+
+:root{
+--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+--purple:#9B59B6;--teal:#1ABC9C;
+}
+
+/* – ANIMATIONS – */
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@keyframes starPop{0%{transform:scale(0) rotate(-30deg)}70%{transform:scale(1.3) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+
+/* ==================================================
+PROFILE PICKER
+================================================== */
+.picker{min-height:100vh;background:linear-gradient(160deg,#FFE4EC 0%,#E8F4FF 50%,#FFF4E0 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px}
+
+.picker-hero{text-align:center;margin-bottom:32px;animation:fadeDown .5s ease both}
+.picker-emoji{font-size:60px;display:block;animation:float 3s ease-in-out infinite;margin-bottom:10px}
+.picker-title{font-size:24px;font-weight:900;background:linear-gradient(90deg,#FF9A9E,#FF6B9D,#4A90D9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.picker-sub{font-size:13px;color:#aaa;font-weight:700}
+
+.profiles{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+
+.profile-card{background:#fff;border-radius:28px;padding:26px 22px;min-width:190px;max-width:220px;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,.1);cursor:pointer;transition:all .22s;animation:fadeUp .5s ease both;border:3px solid transparent;position:relative;overflow:hidden}
+.profile-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s}
+.profile-card:hover{transform:translateY(-6px);box-shadow:0 20px 44px rgba(0,0,0,.14)}
+.profile-card:active{transform:scale(.96)}
+
+.pc-emoji{font-size:64px;margin-bottom:10px;display:block}
+.pc-name{font-size:22px;font-weight:900;margin-bottom:4px}
+.pc-badge{font-size:10px;font-weight:800;border-radius:10px;padding:3px 10px;display:inline-block;margin-bottom:14px}
+.pc-stats{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;text-align:left}
+.pc-stat-row{display:flex;align-items:center;gap:8px}
+.pc-stat-flag{font-size:14px;width:20px;text-align:center}
+.pc-bar-wrap{flex:1;height:7px;background:#F0F0F0;border-radius:6px;overflow:hidden}
+.pc-bar{height:100%;border-radius:6px;transition:width .8s}
+.pc-stat-pct{font-size:9px;font-weight:800;color:#bbb;min-width:26px;text-align:right}
+.pc-cta{border-radius:18px;padding:11px 20px;font-weight:900;font-size:14px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;width:100%;transition:transform .15s}
+.pc-cta:active{transform:scale(.96)}
+
+/* ==================================================
+MAIN HUB
+================================================== */
+.hub{min-height:100vh;padding:0 0 60px}
+
+/* Header */
+.hub-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.hh-left{display:flex;align-items:center;gap:10px}
+.hh-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.hh-name{font-weight:900;font-size:15px;line-height:1.1}
+.hh-sub{font-size:10px;opacity:.7;font-weight:700}
+.switch-btn{background:rgba(255,255,255,.25);border:none;border-radius:18px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;color:#fff;backdrop-filter:blur(8px)}
+
+/* Welcome band */
+.welcome-band{padding:20px 18px 16px;text-align:center}
+.wb-greeting{font-size:26px;font-weight:900;margin-bottom:4px}
+.wb-date{font-size:12px;opacity:.6;font-weight:700}
+
+/* Streak + global progress */
+.prog-section{padding:0 16px 16px;max-width:500px;margin:0 auto}
+.streak-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.7);border-radius:16px;padding:10px 16px;margin-bottom:12px;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.streak-emoji{font-size:24px}
+.streak-info{flex:1}
+.streak-label{font-size:12px;font-weight:800;color:#555}
+.streak-count{font-size:20px;font-weight:900;color:var(--gold);font-family:'Baloo 2',cursive;line-height:1}
+
+.global-prog{background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.gp-title{font-size:12px;font-weight:800;color:#888;margin-bottom:10px;display:flex;justify-content:space-between}
+.gp-title span:last-child{color:var(--gold)}
+.gp-bars{display:flex;flex-direction:column;gap:7px}
+.gp-row{display:flex;align-items:center;gap:8px}
+.gp-icon{font-size:14px;width:22px;text-align:center}
+.gp-module{font-size:11px;font-weight:700;color:#666;min-width:90px}
+.gp-track{flex:1;height:8px;background:#F0F0F0;border-radius:6px;overflow:hidden}
+.gp-fill{height:100%;border-radius:6px;transition:width .7s}
+.gp-pct{font-size:9px;font-weight:800;color:#bbb;min-width:28px;text-align:right}
+
+/* Module grid */
+.modules-section{padding:16px 16px 0;max-width:500px;margin:0 auto}
+.ms-title{font-size:14px;font-weight:900;color:#555;margin-bottom:12px}
+.modules-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.module-tile{background:#fff;border-radius:22px;padding:18px 14px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.08);border:3px solid transparent;transition:all .2s;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+.module-tile:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.13)}
+.module-tile:active{transform:scale(.96)}
+.module-tile.locked{opacity:.55;cursor:not-allowed}
+.mt-icon{font-size:38px;margin-bottom:10px;display:block}
+.mt-title{font-weight:900;font-size:15px;margin-bottom:3px}
+.mt-desc{font-size:10px;color:#aaa;line-height:1.4;margin-bottom:8px}
+.mt-progress{display:flex;align-items:center;gap:7px}
+.mt-bar-wrap{flex:1;height:6px;background:#F0F0F0;border-radius:4px;overflow:hidden}
+.mt-bar{height:100%;border-radius:4px;transition:width .6s}
+.mt-pct{font-size:9px;font-weight:800;color:#bbb}
+.mt-stars{font-size:11px;position:absolute;top:12px;right:12px}
+.mt-new{position:absolute;top:10px;right:10px;background:var(--pink);color:#fff;font-size:9px;font-weight:900;border-radius:8px;padding:2px 7px}
+.mt-lock{position:absolute;top:10px;right:10px;font-size:16px;opacity:.4}
+
+/* Quote of the day */
+.quote-section{padding:16px 16px 0;max-width:500px;margin:0 auto}
+.quote-card{background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,107,157,.1));border-radius:18px;padding:16px 18px;border:1.5px solid rgba(255,215,0,.3)}
+.quote-text{font-size:14px;font-weight:700;color:#555;line-height:1.6;font-style:italic;margin-bottom:6px}
+.quote-ar{font-family:'Noto Naskh Arabic',serif;font-size:16px;direction:rtl;color:var(--gold);text-align:right}
+.quote-source{font-size:10px;color:#bbb;font-weight:700}
+
+/* Recent activity */
+.activity-section{padding:16px 16px 0;max-width:500px;margin:0 auto}
+.activity-title{font-size:14px;font-weight:900;color:#555;margin-bottom:10px}
+.activity-list{display:flex;flex-direction:column;gap:8px}
+.act-item{background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);animation:slideIn .3s ease both}
+.act-icon{font-size:24px;flex-shrink:0}
+.act-info{flex:1}
+.act-title{font-size:13px;font-weight:800;color:#444}
+.act-sub{font-size:10px;color:#bbb;margin-top:1px}
+.act-badge{font-size:11px}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ==================================================
+// CONFIG MODULES
+// ==================================================
+const MODULES = [
+  {
+    id:'vocab',
+    icon:'🌍',
+    title:'Vocabulaire',
+    desc:'🇫🇷 🇲🇦 🇬🇧 🕌 · 230 mots · 14 catégories',
+    color:'#FF9500',
+    file:'vocabulaire.html',  // React app - ouvre dans le même onglet
+    isReact: false,
+    progKey: ()=> {
+      // count learned from learnedV5
+      try{
+        const raw=JSON.parse(localStorage.getItem('learnedV5')||'{"aliya":[],"amira":[]}');
+        const pid=getActiveProfile();
+        const arr=raw[pid]||[];
+        // unique words (strip :lang suffix)
+        const words=new Set(arr.map(k=>k.split(':').slice(0,-1).join(':')));
+        return{done:words.size,total:160*4};
+      }catch{return{done:0,total:160*4}}
+    },
+    langs:['fr','darija','en','ar'],
+    aliyaOnly:false,
+  },
+  {
+    id:'sourates',
+    icon:'🕌',
+    title:'Sourates',
+    desc:'114 sourates · Écoute, répète & quiz',
+    color:'#FFD700',
+    file:'sourates.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const prog=JSON.parse(localStorage.getItem('sourates_prog')||'{}');
+        const done=Object.values(prog).filter(v=>v>=3).length;
+        return{done,total:114};
+      }catch{return{done:0,total:114}}
+    },
+    langs:['ar','fr'],
+    aliyaOnly:false,
+  },
+  {
+    id:'alphabet',
+    icon:'🔤',
+    title:'Alphabet',
+    desc:'26 lettres · Script FR & print EN · 4 modes',
+    color:'#4A90D9',
+    file:'alphabet.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const l=JSON.parse(localStorage.getItem('alpha_learned')||'{}');
+        return{done:Object.keys(l).length,total:26};
+      }catch{return{done:0,total:26}}
+    },
+    langs:['fr','en'],
+    aliyaOnly:false,
+  },
+  {
+    id:'maths',
+    icon:'🧮',
+    title:'Maths',
+    desc:'Nombres · Formes · Additions · Soustractions',
+    color:'#4CAF50',
+    file:'maths.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const s=JSON.parse(localStorage.getItem('maths_stars')||'{}');
+        const total=Object.values(s).reduce((a,b)=>a+b,0);
+        return{done:total,total:21};
+      }catch{return{done:0,total:21}}
+    },
+    langs:['fr','en'],
+    aliyaOnly:false,
+  },
+  {
+    id:'completion',
+    icon:'✏️',
+    title:'Complétion',
+    desc:'80 mots · 2 niveaux · Clavier coloré',
+    color:'#9B59B6',
+    file:'completion.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const d=JSON.parse(localStorage.getItem('comp_done')||'{}');
+        return{done:Object.keys(d).length,total:80*2};
+      }catch{return{done:0,total:80*2}}
+    },
+    langs:['fr'],
+    aliyaOnly:false,
+  },
+  {
+    id:'heure',
+    icon:'🕐',
+    title:"L'Heure",
+    desc:'Horloge · Routine · Quiz · 🇫🇷 🇲🇦 🇬🇧',
+    color:'#1ABC9C',
+    file:'heure.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const l=JSON.parse(localStorage.getItem('heure_learned')||'{}');
+        return{done:Object.keys(l).length,total:24};
+      }catch{return{done:0,total:24}}
+    },
+    langs:['fr','darija','en'],
+    aliyaOnly:false,
+  },
+  {
+    id:'alphabets',
+    icon:'🔡',
+    title:'Alphabets EN & AR',
+    desc:'🇬🇧 26 lettres · 🕌 28 lettres · 4 formes',
+    color:'#1565C0',
+    file:'alphabets.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const en=JSON.parse(localStorage.getItem('alpha_en_learned')||'{}');
+        const ar=JSON.parse(localStorage.getItem('alpha_ar_learned')||'{}');
+        return{done:Object.keys(en).length+Object.keys(ar).length,total:26+28};
+      }catch{return{done:0,total:54}}
+    },
+    langs:['en','ar'],
+    aliyaOnly:false,
+  },
+  {
+    id:'jours',
+    icon:'📅',
+    title:'Jours & Mois',
+    desc:'7 jours · 12 mois · 4 saisons · 4 langues',
+    color:'#9B59B6',
+    file:'jours-mois.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const l=JSON.parse(localStorage.getItem('jours_learned')||'{}');
+        return{done:Object.keys(l).length,total:7+12+4};
+      }catch{return{done:0,total:23}}
+    },
+    langs:['fr','darija','en','ar'],
+    aliyaOnly:false,
+  },
+  {
+    id:'geo',
+    icon:'🌍',
+    title:'Géographie',
+    desc:'🇫🇷 🇲🇦 🇪🇸 · Villes · Drapeaux · Continents',
+    color:'#2E7D32',
+    file:'geo.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const l=JSON.parse(localStorage.getItem('geo_learned')||'{}');
+        return{done:Object.keys(l).length,total:3+6+18};
+      }catch{return{done:0,total:27}}
+    },
+    langs:['fr','darija','en'],
+    aliyaOnly:false,
+  },
+  {
+    id:'coloriages',
+    icon:'🎨',
+    title:'Coloriages',
+    desc:'7 dessins · Mode guidé & libre · 3 langues',
+    color:'#FF6B9D',
+    file:'coloriages.html',
+    isReact:false,
+    progKey:()=>{
+      try{
+        const c=JSON.parse(localStorage.getItem('coloring_colors')||'{}');
+        const done=Object.keys(c).filter(pid=>{
+          const pg=Object.keys(c[pid]||{}).length;
+          return pg>0;
+        }).length;
+        return{done,total:7};
+      }catch{return{done:0,total:7}}
+    },
+    langs:['fr','darija','en'],
+    aliyaOnly:false,
+  },
+];
+
+// – Quotes ––––––––––––––––––––
+const QUOTES = [
+{fr:"Demande à Allah et Il te donnera.", ar:"اسْأَلُوا اللَّهَ مِنْ فَضْلِهِ", src:"Hadith"},
+{fr:"Le savoir est une lumière.", ar:"الْعِلْمُ نُورٌ", src:"Proverbe"},
+{fr:"Chaque effort compte, même le plus petit.", ar:"إِنَّ مَعَ الْعُسْرِ يُسْرًا", src:"Coran 94:5"},
+{fr:"Lis ! Car ton Seigneur est le Très Noble.", ar:"اقْرَأْ وَرَبُّكَ الْأَكْرَمُ", src:"Coran 96:3"},
+{fr:"La patience est une vertu.", ar:"الصَّبْرُ مِفْتَاحُ الْفَرَجِ", src:"Proverbe"},
+{fr:"Chaque jour est une nouvelle chance d'apprendre.", ar:"طَلَبُ الْعِلْمِ فَرِيضَةٌ", src:"Hadith"},
+{fr:"La mer du savoir n'a pas de rivage.", ar:"بَحْرُ الْعِلْمِ لَا شَاطِئَ لَهُ", src:"Proverbe arabe"},
+];
+
+// – Profiles –––––––––––––––––––
+const PROFILES = {
+aliya: {
+id:'aliya', name:'Aliya', emoji:'🦋',
+grad:'linear-gradient(135deg,#FF9A9E,#FAD0C4,#FFD700)',
+accent:'#FF6B9D', light:'#FFF0F5', badge:'#FF9A9E',
+badgeLabel:'CP · 4 langues *',
+badgeColor:'#E8EAF6', badgeText:'#3F51B5',
+langs:['🇫🇷','🇲🇦','🇬🇧','🕌'],
+greeting:['Salam Aliya !','Bonjour Aliya !','Hello Aliya !','أَهْلاً يا عَلِيا !'],
+},
+amira: {
+id:'amira', name:'Amira', emoji:'🌸',
+grad:'linear-gradient(135deg,#B5DEFF,#E0F4FF,#B5FFD9)',
+accent:'#4A90D9', light:'#EEF7FF', badge:'#90CAF9',
+badgeLabel:'3 langues',
+badgeColor:'#E0F2F1', badgeText:'#00695C',
+langs:['🇫🇷','🇲🇦','🇬🇧'],
+greeting:['Salam Amira !','Bonjour Amira !','Hello Amira !'],
+},
+};
+
+// – State —————————————–
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let activeProfile = loadLS('hub_profile',null);
+let hubState = {streak: loadLS('hub_streak',{count:0,last:''})};
+
+function getActiveProfile(){return activeProfile}
+
+function updateStreak(){
+const today=new Date().toDateString();
+const s=hubState.streak;
+if(s.last===today)return;
+const yesterday=new Date(Date.now()-86400000).toDateString();
+s.count=(s.last===yesterday)?s.count+1:1;
+s.last=today;
+hubState.streak=s;
+saveLS('hub_streak',s);
+}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#9B59B6'];
+for(let i=0;i<40;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=6+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.6}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+
+// – RENDER ––––––––––––––––––––
+function render(){
+const app=document.getElementById('app');
+
+if(!activeProfile){
+renderPicker(app);
+} else {
+renderHub(app);
+}
+}
+
+function renderPicker(app){
+app.innerHTML=`
+
+  <div class="picker">
+    <div class="picker-hero">
+      <span class="picker-emoji">✨</span>
+      <div class="picker-title">La classe d'Aliya & Amira</div>
+      <div class="picker-sub">Qui apprend aujourd'hui ?</div>
+    </div>
+    <div class="profiles">
+      ${Object.values(PROFILES).map((p,pi)=>{
+        // Compute per-lang stats for display
+        const langStats = getLangStats(p.id);
+        return`<div class="profile-card" onclick="selectProfile('${p.id}')" style="animation-delay:${pi*.1}s;border-color:transparent" onmouseover="this.style.borderColor='${p.accent}55'" onmouseout="this.style.borderColor='transparent'">
+          <span class="pc-emoji">${p.emoji}</span>
+          <div class="pc-name" style="color:${p.accent}">${p.name}</div>
+          <div class="pc-badge" style="background:${p.badgeColor};color:${p.badgeText}">${p.badgeLabel}</div>
+          <div class="pc-stats">
+            ${langStats.map(l=>`<div class="pc-stat-row">
+              <span class="pc-stat-flag">${l.flag}</span>
+              <div class="pc-bar-wrap"><div class="pc-bar" style="width:${l.pct}%;background:${l.color}"></div></div>
+              <span class="pc-stat-pct">${l.pct}%</span>
+            </div>`).join('')}
+            ${getModuleStats(p.id).map(m=>`<div class="pc-stat-row">
+              <span class="pc-stat-flag">${m.icon}</span>
+              <div class="pc-bar-wrap"><div class="pc-bar" style="width:${m.pct}%;background:${m.color}"></div></div>
+              <span class="pc-stat-pct">${m.pct}%</span>
+            </div>`).join('')}
+          </div>
+          <button class="pc-cta" style="background:${p.grad};color:${p.accent}">
+            C'est parti ! ${p.emoji}
+          </button>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function renderHub(app){
+const p = PROFILES[activeProfile];
+const quote = QUOTES[new Date().getDay() % QUOTES.length];
+const greetingIdx = new Date().getHours()<12?1:new Date().getHours()<18?0:2;
+const greeting = p.greeting[greetingIdx%p.greeting.length];
+const streak = hubState.streak.count;
+const today = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+today.charAt(0).toUpperCase()+today.slice(1);
+
+app.innerHTML=`
+
+  <div class="hub">
+    <!-- HEADER -->
+    <div class="hub-header" style="background:${p.grad}">
+      <div class="hh-left">
+        <div class="hh-avatar" style="background:rgba(255,255,255,.3)">${p.emoji}</div>
+        <div>
+          <div class="hh-name" style="color:${p.accent}">${p.name}</div>
+          <div class="hh-sub" style="color:${p.accent}">${p.langs.join(' ')}</div>
+        </div>
+      </div>
+      <button class="switch-btn" onclick="switchProfile()" style="color:${p.accent};background:rgba(255,255,255,.5)">
+        ← Changer
+      </button>
+    </div>
+
+
+<!-- WELCOME -->
+<div class="welcome-band" style="background:${p.light}">
+  <div class="wb-greeting" style="color:${p.accent}">${greeting}</div>
+  <div class="wb-date">${today.charAt(0).toUpperCase()+today.slice(1)}</div>
+</div>
+
+<!-- STREAK + PROGRESS -->
+<div class="prog-section">
+  ${streak>=1?`<div class="streak-bar">
+    <div class="streak-emoji">🔥</div>
+    <div class="streak-info">
+      <div class="streak-label">Série en cours</div>
+      <div class="streak-count">${streak} jour${streak>1?'s':''} de suite !</div>
+    </div>
+    ${streak>=7?`<div style="font-size:22px;animation:bounce 1.5s infinite">🏆</div>`:''}
+  </div>`:''}
+
+  <div class="global-prog">
+    <div class="gp-title">
+      <span>📊 Progression globale</span>
+      <span>${getTotalStars()} ⭐</span>
+    </div>
+    <div class="gp-bars">
+      ${MODULES.filter(m=>!m.aliyaOnly||activeProfile==='aliya').map(m=>{
+        const prog=m.progKey();
+        const pct=prog.total>0?Math.min(Math.round(prog.done/prog.total*100),100):0;
+        return`<div class="gp-row">
+          <span class="gp-icon">${m.icon}</span>
+          <span class="gp-module">${m.title}</span>
+          <div class="gp-track"><div class="gp-fill" style="width:${pct}%;background:${m.color}"></div></div>
+          <span class="gp-pct">${pct}%</span>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<div class="modules-section">
+  <div class="ms-title">🎒 Mes activités</div>
+  <div class="modules-grid">
+    ${MODULES.filter(m=>!m.aliyaOnly||activeProfile==='aliya').map((m,i)=>{
+      const prog=m.progKey();
+      const pct=prog.total>0?Math.min(Math.round(prog.done/prog.total*100),100):0;
+      const stars=getModuleStars(m.id);
+      return`<div class="module-tile" onclick="openModule('${m.id}')" style="animation-delay:${i*.07}s;border-color:${m.color}22;background:linear-gradient(135deg,${m.color}08,#fff)">
+        <span class="mt-icon">${m.icon}</span>
+        <div class="mt-title" style="color:${m.color}">${m.title}</div>
+        <div class="mt-desc">${m.desc}</div>
+        <div class="mt-progress">
+          <div class="mt-bar-wrap"><div class="mt-bar" style="width:${pct}%;background:${m.color}"></div></div>
+          <span class="mt-pct">${pct}%</span>
+        </div>
+        ${stars?`<div class="mt-stars">${'*'.repeat(Math.min(stars,3))}</div>`:''}
+      </div>`;
+    }).join('')}
+  </div>
+</div>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <div class="quote-card">
+    <div class="quote-text">"${quote.fr}"</div>
+    <div class="quote-ar">${quote.ar}</div>
+    <div class="quote-source">- ${quote.src}</div>
+  </div>
+</div>
+
+<!-- RECENT ACTIVITY -->
+<div class="activity-section">
+  <div class="activity-title">📅 Activités récentes</div>
+  <div class="activity-list">
+    ${getRecentActivity().map((a,i)=>`<div class="act-item" style="animation-delay:${i*.06}s">
+      <span class="act-icon">${a.icon}</span>
+      <div class="act-info">
+        <div class="act-title">${a.title}</div>
+        <div class="act-sub">${a.sub}</div>
+      </div>
+      <span class="act-badge">${a.badge}</span>
+    </div>`).join('')}
+  </div>
+</div>
+
+
+  </div>`;
+}
+
+// – Helpers —————————————
+function getLangStats(pid){
+const langColors={'🇫🇷':'#4FC3F7','🇲🇦':'#FF8A65','🇬🇧':'#81C784','🕌':'#AB47BC'};
+const p=PROFILES[pid];
+return p.langs.map(flag=>{
+let pct=0;
+try{
+const raw=JSON.parse(localStorage.getItem('learnedV5')||'{}');
+const arr=raw[pid]||[];
+const langKey={'🇫🇷':'fr','🇲🇦':'darija','🇬🇧':'en','🕌':'ar'}[flag]||'fr';
+const done=arr.filter(k=>k.endsWith(':'+langKey)).length;
+pct=Math.min(Math.round(done/160*100),100);
+}catch{}
+return{flag,pct,color:langColors[flag]||'#999'};
+});
+}
+
+function getModuleStats(pid){
+return[
+{icon:'🕌', pct:getModulePct('sourates'), color:'#FFD700'},
+{icon:'🔤', pct:getModulePct('alphabet'),  color:'#4A90D9'},
+{icon:'🧮', pct:getModulePct('maths'),      color:'#4CAF50'},
+{icon:'🌍', pct:getModulePct('geo'),         color:'#2E7D32'},
+{icon:'🕐', pct:getModulePct('heure'),       color:'#1ABC9C'},
+];
+}
+
+function getModulePct(id){
+const m=MODULES.find(x=>x.id===id);
+if(!m)return 0;
+const prog=m.progKey();
+return prog.total>0?Math.min(Math.round(prog.done/prog.total*100),100):0;
+}
+
+function getTotalStars(){
+let s=0;
+try{s+=Object.values(JSON.parse(localStorage.getItem('maths_stars')||'{}')).reduce((a,b)=>a+b,0)}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('alpha_learned')||'{}')).length}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('alpha_en_learned')||'{}')).length}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('alpha_ar_learned')||'{}')).length}catch{}
+try{s+=Object.values(JSON.parse(localStorage.getItem('sourates_prog')||'{}')).reduce((a,b)=>a+b,0)}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('comp_done')||'{}')).length}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('heure_learned')||'{}')).length}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('jours_learned')||'{}')).length}catch{}
+try{s+=Object.keys(JSON.parse(localStorage.getItem('geo_learned')||'{}')).length}catch{}
+try{
+const cc=JSON.parse(localStorage.getItem('coloring_colors')||'{}');
+s+=Object.values(cc).reduce((a,b)=>a+Object.keys(b).length,0);
+}catch{}
+return s;
+}
+
+function getModuleStars(id){
+try{
+if(id==='maths')      return Math.min(Object.values(JSON.parse(localStorage.getItem('maths_stars')||'{}')).reduce((a,b)=>a+b,0),3);
+if(id==='alphabet')   return Math.min(Math.floor(Object.keys(JSON.parse(localStorage.getItem('alpha_learned')||'{}')).length/9),3);
+if(id==='sourates')   return Math.min(Math.floor(Object.values(JSON.parse(localStorage.getItem('sourates_prog')||'{}')).filter(v=>v>=3).length/10),3);
+if(id==='completion') return Math.min(Math.floor(Object.keys(JSON.parse(localStorage.getItem('comp_done')||'{}')).length/20),3);
+if(id==='heure')      return Math.min(Math.floor(Object.keys(JSON.parse(localStorage.getItem('heure_learned')||'{}')).length/8),3);
+if(id==='alphabets')  return Math.min(Math.floor((Object.keys(JSON.parse(localStorage.getItem('alpha_en_learned')||'{}')).length+Object.keys(JSON.parse(localStorage.getItem('alpha_ar_learned')||'{}')).length)/18),3);
+if(id==='jours')      return Math.min(Math.floor(Object.keys(JSON.parse(localStorage.getItem('jours_learned')||'{}')).length/8),3);
+if(id==='geo')        return Math.min(Math.floor(Object.keys(JSON.parse(localStorage.getItem('geo_learned')||'{}')).length/9),3);
+if(id==='coloriages') return Math.min(Object.keys(JSON.parse(localStorage.getItem('coloring_colors')||'{}')).length,3);
+return 0;
+}catch{return 0}
+}
+
+function getRecentActivity(){
+const acts=[];
+try{
+const sp=JSON.parse(localStorage.getItem('sourates_prog')||'{}');
+const done=Object.entries(sp).filter(([,v])=>v>=3).length;
+if(done>0) acts.push({icon:'🕌',title:`${done} sourate${done>1?'s':''} acquise${done>1?'s':''}`,sub:'Sourates',badge:'*'.repeat(Math.min(done,3))});
+}catch{}
+try{
+const al=JSON.parse(localStorage.getItem('alpha_learned')||'{}');
+const done=Object.keys(al).length;
+if(done>0) acts.push({icon:'🔤',title:`${done} lettre${done>1?'s':''} apprise${done>1?'s':''}`,sub:'Alphabet',badge:'*'.repeat(Math.min(Math.ceil(done/9),3))});
+}catch{}
+try{
+const cd=JSON.parse(localStorage.getItem('comp_done')||'{}');
+const done=Object.keys(cd).length;
+if(done>0) acts.push({icon:'✏️',title:`${done} mot${done>1?'s':''} complété${done>1?'s':''}`,sub:'Complétion',badge:'*'.repeat(Math.min(Math.ceil(done/20),3))});
+}catch{}
+try{
+const ms=JSON.parse(localStorage.getItem('maths_stars')||'{}');
+const done=Object.values(ms).filter(v=>v>0).length;
+if(done>0) acts.push({icon:'🧮',title:`${done} module${done>1?'s':''} de maths`,sub:'Maths',badge:'*'.repeat(Math.min(done,3))});
+}catch{}
+try{
+const hl=JSON.parse(localStorage.getItem('heure_learned')||'{}');
+const done=Object.keys(hl).length;
+if(done>0) acts.push({icon:'🕐',title:`${done} heure${done>1?'s':''} apprise${done>1?'s':''}`,sub:"L'Heure",badge:'*'.repeat(Math.min(Math.ceil(done/8),3))});
+}catch{}
+try{
+const en=JSON.parse(localStorage.getItem('alpha_en_learned')||'{}');
+const ar=JSON.parse(localStorage.getItem('alpha_ar_learned')||'{}');
+const done=Object.keys(en).length+Object.keys(ar).length;
+if(done>0) acts.push({icon:'🔡',title:`${done} lettre${done>1?'s':''} (EN+AR)`,sub:'Alphabets',badge:'*'.repeat(Math.min(Math.ceil(done/18),3))});
+}catch{}
+try{
+const jl=JSON.parse(localStorage.getItem('jours_learned')||'{}');
+const done=Object.keys(jl).length;
+if(done>0) acts.push({icon:'📅',title:`${done} jour${done>1?'s':''}/mois appris`,sub:'Jours & Mois',badge:'*'.repeat(Math.min(Math.ceil(done/8),3))});
+}catch{}
+try{
+const gl=JSON.parse(localStorage.getItem('geo_learned')||'{}');
+const done=Object.keys(gl).length;
+if(done>0) acts.push({icon:'🌍',title:`${done} lieu${done>1?'x':''} exploré${done>1?'s':''}`,sub:'Géographie',badge:'*'.repeat(Math.min(Math.ceil(done/9),3))});
+}catch{}
+try{
+const cc=JSON.parse(localStorage.getItem('coloring_colors')||'{}');
+const done=Object.keys(cc).length;
+if(done>0) acts.push({icon:'🎨',title:`${done} coloriage${done>1?'s':''} commencé${done>1?'s':''}`,sub:'Coloriages',badge:'*'.repeat(Math.min(done,3))});
+}catch{}
+if(acts.length===0){
+acts.push({icon:'🌟',title:'Commence une activité !',sub:'Choisis un module ci-dessus',badge:'👆'});
+}
+return acts.slice(0,4);
+}
+
+// – Actions —————————————
+function selectProfile(id){
+activeProfile=id;
+saveLS('hub_profile',id);
+updateStreak();
+confetti();
+render();
+}
+
+function switchProfile(){
+activeProfile=null;
+saveLS('hub_profile',null);
+render();
+}
+
+function openModule(id){
+const m=MODULES.find(x=>x.id===id);
+if(!m) return;
+saveLS('hub_active_profile', activeProfile);
+window.location.href = m.file;
+}
+render();
+</script>
+
+</body>
+</html>

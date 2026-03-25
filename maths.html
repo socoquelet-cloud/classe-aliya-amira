@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>✨ Les Maths</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;font-family:'Nunito',sans-serif}
+#app{min-height:100vh}
+
+:root{
+--pink:#FF6B9D;--gold:#FF9500;--blue:#4A90D9;--green:#4CAF50;
+--purple:#9B59B6;--teal:#1ABC9C;--red:#E74C3C;--orange:#FF7043;
+--bg:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);
+--num:'Baloo 2',cursive;
+}
+
+/* ── GLOBAL ── */
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes appear{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
+.cp{position:fixed;top:-20px;border-radius:50%;pointer-events:none;z-index:9999;animation:cfall 2.2s ease-in forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(40,40,70,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap}
+
+/* ── HOME ── */
+.home{min-height:100vh;background:var(--bg);padding:22px 16px 60px}
+.hero{text-align:center;margin-bottom:22px;animation:fadeDown .5s ease both}
+.hero-emoji{font-size:54px;display:block;animation:bounce 2.5s infinite;margin-bottom:6px}
+.hero-title{font-size:25px;font-weight:900;background:linear-gradient(90deg,var(--gold),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:#bbb;font-weight:700;margin-top:2px}
+
+/* level toggle */
+.level-toggle{display:flex;background:#fff;border-radius:20px;padding:4px;gap:4px;max-width:280px;margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.lv-btn{flex:1;border:none;border-radius:16px;padding:8px 12px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.lv-btn.active{color:#fff}
+.lv-btn:not(.active){background:transparent;color:#bbb}
+
+/* progress */
+.prog-strip{background:#fff;border-radius:18px;padding:13px 16px;max-width:440px;margin:0 auto 18px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px;font-weight:700;color:#888}
+.prog-row span:last-child{color:var(--gold)}
+.bar-track{background:#F0F0F0;border-radius:99px;height:9px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s}
+
+/* module grid */
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:440px;margin:0 auto}
+.mod-card{background:#fff;border-radius:18px;padding:16px 12px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .18s}
+.mod-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.mod-card:active{transform:scale(.96)}
+.mod-icon{font-size:34px;margin-bottom:7px}
+.mod-title{font-weight:900;font-size:14px;margin-bottom:2px}
+.mod-desc{font-size:10px;color:#bbb}
+.mod-stars{font-size:11px;margin-top:4px}
+
+/* ── PAGE ── */
+.page{min-height:100vh;background:var(--bg);padding:18px 16px 56px;display:flex;flex-direction:column;align-items:center}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.07);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;color:#666;margin-bottom:14px;font-weight:700}
+.page-title{font-size:18px;font-weight:900;color:#555;margin-bottom:18px;text-align:center}
+
+/* ── NUMBERS ── */
+.num-display{background:#fff;border-radius:24px;padding:24px 20px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px}
+.num-big{font-family:var(--num);font-size:96px;font-weight:800;line-height:1}
+.num-word{font-size:22px;font-weight:900;margin-top:4px;margin-bottom:16px}
+.objects-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0;min-height:60px}
+.obj{font-size:28px;animation:appear .2s ease both}
+.fingers{font-size:32px;letter-spacing:2px;margin-top:8px}
+.num-nav{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.num-dot{width:10px;height:10px;border-radius:50%;cursor:pointer;transition:background .2s}
+
+/* ── TENS ── */
+.tens-display{background:#fff;border-radius:22px;padding:20px;width:100%;max-width:400px;box-shadow:0 5px 16px rgba(0,0,0,.08);margin-bottom:14px;text-align:center}
+.tens-blocks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}
+.block-ten{background:var(--blue);border-radius:6px;width:22px;height:80px;position:relative;display:flex;flex-direction:column;gap:3px;padding:3px;align-items:center}
+.block-ten .unit{width:14px;height:6px;background:rgba(255,255,255,.7);border-radius:2px}
+.block-one{background:var(--orange);border-radius:4px;width:22px;height:22px}
+.tens-label{font-family:var(--num);font-size:64px;font-weight:800;color:var(--blue);line-height:1}
+.tens-word{font-size:18px;font-weight:900;color:#555;margin-top:2px}
+.decompose{font-size:14px;color:#888;margin-top:8px;font-weight:700}
+
+/* ── OPERATIONS ── */
+.op-card{background:#fff;border-radius:22px;padding:22px 18px;width:100%;max-width:400px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:16px;text-align:center}
+.op-objects{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;min-height:70px}
+.op-group{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:160px}
+.op-symbol{font-family:var(--num);font-size:40px;font-weight:800;color:var(--gold);flex-shrink:0}
+.op-formula{font-family:var(--num);font-size:42px;font-weight:800;color:#444;letter-spacing:2px;margin-bottom:12px}
+.op-formula .op-blank{display:inline-block;width:50px;height:52px;background:#FFF3E0;border:3px solid var(--gold);border-radius:12px;vertical-align:middle;line-height:52px;color:var(--gold);cursor:pointer}
+
+/* number keyboard */
+.num-keyboard{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:380px;margin-bottom:12px}
+.num-key{background:#fff;border:2.5px solid #E0E0E0;border-radius:14px;padding:12px 6px;font-family:var(--num);font-size:22px;font-weight:700;cursor:pointer;text-align:center;color:#444;transition:all .18s;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.num-key:active{transform:scale(.92)}
+.num-key.selected{border-color:var(--gold);background:#FFF3E0;color:var(--gold)}
+.num-key.correct-ans{border-color:var(--green);background:#E8F5E9;color:var(--green)}
+.num-key.wrong-ans{border-color:var(--red);background:#FFEBEE;color:var(--red);animation:shake .4s ease}
+
+/* ── SHAPES ── */
+.shapes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:400px;margin-bottom:16px}
+.shape-card{background:#fff;border-radius:18px;padding:18px 12px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .18s}
+.shape-card:active{transform:scale(.95)}
+.shape-card.learned{border-color:var(--green)}
+.shape-svg{margin:0 auto 8px;display:block}
+.shape-name-fr{font-weight:900;font-size:15px;color:#444;margin-bottom:2px}
+.shape-name-en{font-size:11px;color:#bbb}
+.shape-props{font-size:10px;color:#ccc;margin-top:4px}
+
+/* shape detail */
+.shape-big{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
+.shape-detail-card{background:#fff;border-radius:22px;padding:24px 20px;text-align:center;width:100%;max-width:380px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:16px}
+.shape-fact{background:#F8F8F8;border-radius:12px;padding:10px 14px;font-size:13px;color:#666;margin-top:10px;font-weight:600;text-align:left}
+
+/* completion */
+.completion-card{background:#fff;border-radius:22px;padding:22px 18px;width:100%;max-width:400px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:16px;text-align:center}
+.seq-display{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.seq-num{font-family:var(--num);font-size:36px;font-weight:800;color:#444;min-width:44px;text-align:center}
+.seq-blank{width:52px;height:52px;background:#FFF3E0;border:3px solid var(--gold);border-radius:14px;font-family:var(--num);font-size:28px;font-weight:800;color:var(--gold);display:inline-flex;align-items:center;justify-content:center}
+.seq-arrow{font-size:18px;color:#ddd}
+
+/* quiz */
+.quiz-question{background:#fff;border-radius:20px;padding:22px 18px;text-align:center;width:100%;max-width:400px;margin-bottom:14px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:400px}
+.q-opt{background:#F8F8F8;border:2.5px solid #EEE;border-radius:15px;padding:14px 8px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;text-align:center;transition:all .2s;color:#444}
+.q-opt:active{transform:scale(.95)}
+.q-opt.correct{background:#E8F5E9;border-color:var(--green);color:#2E7D32}
+.q-opt.wrong{background:#FFEBEE;border-color:var(--red);color:#C62828}
+.q-opt .q-emoji{font-size:28px;display:block;margin-bottom:5px}
+
+/* result */
+.result-screen{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;animation:slideUp .4s ease both;padding-top:28px}
+.result-big{font-size:70px;animation:pop .5s ease both}
+.stars-row{display:flex;gap:5px;font-size:26px}
+
+/* buttons */
+.btn{border:none;border-radius:14px;padding:12px 24px;font-weight:800;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .12s;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn-ghost{background:rgba(0,0,0,.08);color:#666}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;max-width:320px;margin-top:6px}
+.dot{width:9px;height:9px;border-radius:50%;cursor:pointer;transition:background .25s}
+
+/* feedback bubble */
+.feedback{font-size:28px;font-weight:900;text-align:center;margin:8px 0;animation:pop .35s ease;min-height:40px}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════
+
+const NUMBERS = [
+{n:1,  word:'un',      en:'one',    emoji:'🍎', fingers:'☝️'},
+{n:2,  word:'deux',    en:'two',    emoji:'🍊', fingers:'✌️'},
+{n:3,  word:'trois',   en:'three',  emoji:'🍋', fingers:'🤟'},
+{n:4,  word:'quatre',  en:'four',   emoji:'🍇', fingers:'🖐️'},
+{n:5,  word:'cinq',    en:'five',   emoji:'⭐', fingers:'🖐️'},
+{n:6,  word:'six',     en:'six',    emoji:'🌸', fingers:'🖐️☝️'},
+{n:7,  word:'sept',    en:'seven',  emoji:'🦋', fingers:'🖐️✌️'},
+{n:8,  word:'huit',    en:'eight',  emoji:'🐝', fingers:'🖐️🤟'},
+{n:9,  word:'neuf',    en:'nine',   emoji:'🌈', fingers:'🖐️🖐️'},
+{n:10, word:'dix',     en:'ten',    emoji:'🎉', fingers:'🖐️🖐️'},
+];
+
+const TENS = [
+{n:10,  word:'dix',         en:'ten',          decomp:'1 dizaine'},
+{n:20,  word:'vingt',       en:'twenty',       decomp:'2 dizaines'},
+{n:30,  word:'trente',      en:'thirty',       decomp:'3 dizaines'},
+{n:40,  word:'quarante',    en:'forty',        decomp:'4 dizaines'},
+{n:50,  word:'cinquante',   en:'fifty',        decomp:'5 dizaines'},
+{n:60,  word:'soixante',    en:'sixty',        decomp:'6 dizaines'},
+{n:70,  word:'soixante-dix',en:'seventy',      decomp:'7 dizaines'},
+{n:80,  word:'quatre-vingts',en:'eighty',      decomp:'8 dizaines'},
+{n:90,  word:'quatre-vingt-dix',en:'ninety',   decomp:'9 dizaines'},
+{n:100, word:'cent',        en:'one hundred',  decomp:'10 dizaines'},
+];
+
+// 2D + 3D shapes
+const SHAPES = [
+// 2D
+{id:'cercle',    fr:'Cercle',     en:'Circle',    dim:'2D', color:'#FF6B9D',
+svg:`<circle cx="50" cy="50" r="40" fill="#FF6B9D" opacity=".9"/>`,
+facts:['Pas de côté', 'Pas de sommet', '1 face courbe'], ex:'une roue, une pièce'},
+{id:'carre',     fr:'Carré',      en:'Square',    dim:'2D', color:'#4A90D9',
+svg:`<rect x="10" y="10" width="80" height="80" rx="4" fill="#4A90D9" opacity=".9"/>`,
+facts:['4 côtés égaux', '4 angles droits', '4 sommets'], ex:'une fenêtre, un carreau'},
+{id:'triangle',  fr:'Triangle',   en:'Triangle',  dim:'2D', color:'#FF9500',
+svg:`<polygon points="50,8 92,88 8,88" fill="#FF9500" opacity=".9"/>`,
+facts:['3 côtés', '3 angles', '3 sommets'], ex:'une pyramide vue de face'},
+{id:'rectangle', fr:'Rectangle',  en:'Rectangle', dim:'2D', color:'#9B59B6',
+svg:`<rect x="5" y="22" width="90" height="56" rx="4" fill="#9B59B6" opacity=".9"/>`,
+facts:['4 côtés (2 paires égales)', '4 angles droits', '4 sommets'], ex:'une porte, un livre'},
+{id:'ovale',     fr:'Ovale',      en:'Oval',      dim:'2D', color:'#1ABC9C',
+svg:`<ellipse cx="50" cy="50" rx="45" ry="30" fill="#1ABC9C" opacity=".9"/>`,
+facts:['Pas de côté', 'Forme allongée', 'Pas de sommet'], ex:"un œuf, une rugby"},
+{id:'losange',   fr:'Losange',    en:'Diamond',   dim:'2D', color:'#E74C3C',
+svg:`<polygon points="50,5 95,50 50,95 5,50" fill="#E74C3C" opacity=".9"/>`,
+facts:['4 côtés égaux', '4 sommets', 'Angles différents'], ex:'un cerf-volant'},
+{id:'etoile',    fr:'Étoile',     en:'Star',      dim:'2D', color:'#F39C12',
+svg:`<polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="#F39C12" opacity=".9"/>`,
+facts:['5 ou plus de pointes', 'Forme pointue', 'Symétrique'], ex:'une étoile de mer'},
+{id:'coeur',     fr:'Cœur',       en:'Heart',     dim:'2D', color:'#E91E63',
+svg:`<path d="M50,80 C10,55 5,25 25,15 C35,10 45,15 50,25 C55,15 65,10 75,15 C95,25 90,55 50,80Z" fill="#E91E63" opacity=".9"/>`,
+facts:['Forme symétrique', "Symbole de l'amour", '1 pointe en bas'], ex:"un symbole de cœur"},
+// 3D
+{id:'sphere',    fr:'Sphère',     en:'Sphere',    dim:'3D', color:'#FF6B9D',
+svg:`<defs><radialGradient id="sg" cx="35%" cy="35%"><stop offset="0%" stop-color="#fff" stop-opacity=".6"/><stop offset="100%" stop-color="#FF6B9D"/></radialGradient></defs><circle cx="50" cy="50" r="42" fill="url(#sg)"/>`,
+facts:['1 face courbe', 'Roule partout', 'Comme une balle'], ex:'une balle, une orange'},
+{id:'cube',      fr:'Cube',       en:'Cube',      dim:'3D', color:'#4A90D9',
+svg:`<polygon points="15,35 50,15 85,35 85,75 50,95 15,75" fill="#4A90D9" opacity=".85"/><polygon points="50,15 85,35 85,75 50,55" fill="#2980b9" opacity=".9"/><polygon points="50,55 85,75 50,95 15,75" fill="#1a6a9a" opacity=".9"/><line x1="15" y1="35" x2="50" y2="55" stroke="white" stroke-width="1.5" opacity=".4"/><line x1="85" y1="35" x2="50" y2="55" stroke="white" stroke-width="1.5" opacity=".4"/><line x1="50" y1="95" x2="50" y2="55" stroke="white" stroke-width="1.5" opacity=".4"/>`,
+facts:['6 faces carrées', '8 sommets', '12 arêtes'], ex:"un dé, une boîte carrée"},
+{id:'cone',      fr:'Cône',       en:'Cone',      dim:'3D', color:'#FF9500',
+svg:`<ellipse cx="50" cy="78" rx="38" ry="14" fill="#d4780a" opacity=".9"/><polygon points="50,8 88,78 12,78" fill="#FF9500" opacity=".9"/><ellipse cx="50" cy="78" rx="38" ry="14" fill="none" stroke="#d4780a" stroke-width="2"/>`,
+facts:['1 base circulaire', '1 sommet pointu', '1 face courbe'], ex:'un cornet de glace, un chapeau de fête'},
+{id:'cylindre',  fr:'Cylindre',   en:'Cylinder',  dim:'3D', color:'#9B59B6',
+svg:`<ellipse cx="50" cy="22" rx="38" ry="14" fill="#7d3c98" opacity=".9"/><rect x="12" y="22" width="76" height="56" fill="#9B59B6" opacity=".9"/><ellipse cx="50" cy="78" rx="38" ry="14" fill="#9B59B6" opacity=".9"/><ellipse cx="50" cy="22" rx="38" ry="14" fill="none" stroke="#7d3c98" stroke-width="2"/>`,
+facts:['2 bases circulaires', '1 face courbe', 'Roule sur le côté'], ex:"une boîte de conserve, un rouleau"},
+{id:'pyramide',  fr:'Pyramide',   en:'Pyramid',   dim:'3D', color:'#F39C12',
+svg:`<polygon points="50,8 88,82 12,82" fill="#F39C12" opacity=".9"/><polygon points="50,8 88,82 70,75 50,88" fill="#d68910" opacity=".9"/>`,
+facts:['Base carrée ou triangulaire', '4 faces triangulaires', '5 sommets'], ex:"les pyramides d'Égypte"},
+{id:'prisme',    fr:'Prisme',     en:'Prism',     dim:'3D', color:'#1ABC9C',
+svg:`<polygon points="20,75 50,20 80,75" fill="#1ABC9C" opacity=".9"/><polygon points="20,75 50,20 50,20 80,20 80,75" fill="#148f77" opacity=".85"/><polygon points="20,75 80,75 80,88 20,88" fill="#0e6655" opacity=".9"/>`,
+facts:['2 faces triangulaires', '3 faces rectangulaires', '6 sommets'], ex:'un toit de maison'},
+];
+
+// Quiz pool generator
+function makeQuiz(level){
+const qs=[];
+// Number recognition
+const numPool = level==='petite'?NUMBERS:NUMBERS;
+for(let i=0;i<numPool.length;i++){
+const correct=numPool[i];
+const others=shuffle(numPool.filter((_,j)=>j!==i)).slice(0,3);
+qs.push({type:'num-read',correct,opts:shuffle([correct,...others]),question:`Combien y a-t-il de ${correct.emoji} ?`,objects:Array(correct.n).fill(correct.emoji).join('')});
+}
+if(level==='grande'){
+// Additions
+for(let a=1;a<=10;a++){
+for(let b=1;b<=10-a;b++){
+const ans=a+b;
+const wrong=[ans+1,ans-1,ans+2].filter(x=>x>0&&x<=20&&x!==ans);
+qs.push({type:'add',a,b,ans,opts:shuffle([ans,...wrong.slice(0,3)]),
+question:`${a} + ${b} = ?`,aEmoji:NUMBERS[a-1].emoji,bEmoji:NUMBERS[b-1].emoji});
+}
+}
+// Subtractions
+for(let a=2;a<=10;a++){
+for(let b=1;b<a;b++){
+const ans=a-b;
+const wrong=[ans+1,ans-1,ans+2].filter(x=>x>=0&&x!==ans);
+qs.push({type:'sub',a,b,ans,opts:shuffle([ans,...wrong.slice(0,3)]),
+question:`${a} - ${b} = ?`,emoji:NUMBERS[a-1].emoji});
+}
+}
+// Shape recognition
+SHAPES.forEach(s=>{
+const others=shuffle(SHAPES.filter(x=>x.id!==s.id)).slice(0,3);
+qs.push({type:'shape',correct:s,opts:shuffle([s,...others]),question:'Quelle est cette forme ?'});
+});
+// Completion
+for(let start=1;start<=8;start++){
+qs.push({type:'complete',seq:[start,start+1,'?',start+3],ans:start+2,context:`Suite : ${start}, ${start+1}, __, ${start+3}`});
+}
+}
+return shuffle(qs).slice(0,level==='petite'?10:20);
+}
+
+// ── storage ──
+function loadLS(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let ST={
+page:'home',        // home | numbers | number-detail | tens | tens-detail | operations | shapes | shape-detail | completion | quiz | result
+level: loadLS('maths_level','petite'),   // petite | grande
+numIdx:0, tensIdx:0, shapeIdx:0,
+opType:'add', opA:1, opB:1, opSelected:null, opDone:false,
+quizPool:[], quizIdx:0, quizAns:null, quizScore:0,
+completionSeq:[], completionAns:null, completionSel:null, completionDone:false,
+feedback:'',
+learned: loadLS('maths_learned',{}),
+stars: loadLS('maths_stars',{}),
+};
+
+function setState(p){Object.assign(ST,p);render()}
+function save(){saveLS('maths_learned',ST.learned);saveLS('maths_stars',ST.stars);saveLS('maths_level',ST.level)}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+function confetti(){
+const c=['#FFD700','#FF9500','#FF6B9D','#4A90D9','#4CAF50','#E74C3C'];
+for(let i=0;i<38;i++){
+const el=document.createElement('div');el.className='cp';
+const sz=7+Math.random()*12;
+el.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c[~~(Math.random()*6)]};animation-delay:${Math.random()*.6}s;`;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2800);
+}
+}
+function toast(msg){
+const el=document.createElement('div');el.className='toast';el.textContent=msg;
+document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+}
+
+// Generate random operation
+function genOp(type, level){
+const max=level==='petite'?5:10;
+let a,b;
+if(type==='add'){a=rnd(1,max-1);b=rnd(1,max-a);}
+else{a=rnd(2,max);b=rnd(1,a-1);}
+return{a,b,ans:type==='add'?a+b:a-b};
+}
+function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+
+// Generate completion sequence
+function genCompletion(level){
+const max=level==='petite'?8:18;
+const step=level==='petite'?1:[1,2][rnd(0,1)];
+const start=rnd(1,max-step*3);
+const blankPos=rnd(1,3);
+const seq=[start,start+step,start+step*2,start+step*3];
+const ans=seq[blankPos];
+const display=seq.map((v,i)=>i===blankPos?'?':v);
+return{seq:display,ans,step};
+}
+
+// ══════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════
+function render(){
+const app=document.getElementById('app');
+const {page,level,numIdx,tensIdx,shapeIdx,opType,opA,opB,opSelected,opDone,
+quizPool,quizIdx,quizAns,quizScore,completionSeq,completionAns,
+completionSel,completionDone,feedback,learned,stars} = ST;
+
+const isGrande=level==='grande';
+const modules=[
+{id:'numbers',   icon:'🔢', title:'Les nombres',    desc:isGrande?'1 à 100':'1 à 10',   color:'#FF9500', stars:stars.numbers||0},
+{id:'tens',      icon:'🔟', title:'Les dizaines',   desc:'10, 20... 100',                  color:'#4A90D9', stars:stars.tens||0, grande:true},
+{id:'operations',icon:'➕', title:'Additions',      desc:isGrande?"Jusqu'à 10+10":"1+1 → 5+5", color:'#4CAF50', stars:stars.add||0},
+{id:'subtraction',icon:'➖',title:'Soustractions',  desc:isGrande?"Jusqu'à 10-10":"Petites", color:'#E74C3C', stars:stars.sub||0, grande:true},
+{id:'shapes',    icon:'🔵', title:'Les formes',     desc:isGrande?'2D & 3D':'Formes simples', color:'#9B59B6', stars:stars.shapes||0},
+{id:'completion',icon:'❓', title:'Complétion',     desc:'Trouve le nombre manquant',    color:'#1ABC9C', stars:stars.completion||0, grande:true},
+{id:'quiz',      icon:'🎯', title:'Quiz général',   desc:'Teste tout ce que tu sais !',  color:'#FF6B9D', stars:0},
+].filter(m=>!m.grande||isGrande);
+
+const totalStars=Object.values(stars).reduce((a,b)=>a+b,0);
+
+// ─ HOME ─
+if(page==='home'){
+app.innerHTML=`
+<div class="home">
+<div class="hero">
+<span class="hero-emoji">🧮</span>
+<div class="hero-title">Les Maths</div>
+<div class="hero-sub">La classe d'Aliya & Amira</div>
+</div>
+
+
+  <div class="level-toggle">
+    <button class="lv-btn ${level==='petite'?'active':''}" onclick="setLevel('petite')" style="${level==='petite'?'background:linear-gradient(135deg,#FF9A9E,#FF6B9D)':''}">
+      🌱 Petite
+    </button>
+    <button class="lv-btn ${level==='grande'?'active':''}" onclick="setLevel('grande')" style="${level==='grande'?'background:linear-gradient(135deg,#4FC3F7,#4A90D9)':''}">
+      🌟 Grande (CP)
+    </button>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-row"><span>⭐ Progression</span><span>${totalStars} étoiles</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.min(totalStars/30*100,100)}%;background:linear-gradient(90deg,#FF9500,#FF6B9D)"></div></div>
+  </div>
+
+  <div class="module-grid">
+    ${modules.map(m=>`<div class="mod-card" onclick="openModule('${m.id}')" style="border-color:${m.color}33">
+      <div class="mod-icon">${m.icon}</div>
+      <div class="mod-title" style="color:${m.color}">${m.title}</div>
+      <div class="mod-desc">${m.desc}</div>
+      ${m.stars>0?`<div class="mod-stars">${'⭐'.repeat(m.stars)}</div>`:''}
+    </div>`).join('')}
+  </div>
+</div>`;
+
+
+}
+
+// ─ NUMBERS ─
+else if(page==='numbers'){
+const N=NUMBERS[numIdx];
+const prev=numIdx>0, next=numIdx<9;
+const objs=Array(N.n).fill(N.emoji);
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+<div class="page-title">🔢 Les nombres</div>
+
+
+  <div class="num-display" style="border-top:5px solid ${['#FF6B9D','#FF9500','#4A90D9','#9B59B6','#2ECC71','#E74C3C','#1ABC9C','#F39C12','#3498DB','#E91E63'][numIdx]}">
+    <div class="num-big" style="color:${['#FF6B9D','#FF9500','#4A90D9','#9B59B6','#2ECC71','#E74C3C','#1ABC9C','#F39C12','#3498DB','#E91E63'][numIdx]}">${N.n}</div>
+    <div class="num-word">${N.word} · <span style="font-size:16px;color:#aaa">${N.en}</span></div>
+    <div class="objects-grid">${objs.map((e,i)=>`<span class="obj" style="animation-delay:${i*0.05}s">${e}</span>`).join('')}</div>
+    <div class="fingers">${N.fingers}</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="setState({numIdx:${numIdx-1}})" ${prev?'':'disabled'}>← Préc.</button>
+    <button class="btn" style="background:var(--green)" onclick="markModule('numbers',${numIdx})">✓ Je sais !</button>
+    <button class="btn btn-ghost" onclick="setState({numIdx:${numIdx+1}})" ${next?'':'disabled'}>Suiv. →</button>
+  </div>
+  <div class="dots">${NUMBERS.map((_,i)=>`<div class="dot" onclick="setState({numIdx:${i}})" style="background:${i===numIdx?'var(--gold)':learned['num_'+i]?'var(--green)':'#DDD'}"></div>`).join('')}</div>
+</div>`;
+
+
+}
+
+// ─ TENS ─
+else if(page==='tens'){
+const T=TENS[tensIdx];
+const tens=Math.floor(T.n/10), ones=T.n%10;
+const prev=tensIdx>0, next=tensIdx<9;
+const blocksTen=Array(tens).fill(0);
+const blocksOne=Array(ones).fill(0);
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
+<div class="page-title">🔟 Les dizaines</div>
+
+
+  <div class="tens-display" style="border-top:5px solid var(--blue)">
+    <div class="tens-label">${T.n}</div>
+    <div class="tens-word">${T.word} · <span style="font-size:14px;color:#aaa">${T.en}</span></div>
+    <div class="tens-blocks">
+      ${blocksTen.map(()=>`<div class="block-ten">${Array(10).fill('<div class="unit"></div>').join('')}</div>`).join('')}
+      ${blocksOne.map(()=>`<div class="block-one"></div>`).join('')}
+    </div>
+    <div class="decompose">= ${T.decomp}${ones>0?' et '+ones+' unité'+(ones>1?'s':''):''}</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="setState({tensIdx:${tensIdx-1}})" ${prev?'':'disabled'}>← Préc.</button>
+    <button class="btn" style="background:var(--blue)" onclick="markModule('tens',${tensIdx})">✓ Je sais !</button>
+    <button class="btn btn-ghost" onclick="setState({tensIdx:${tensIdx+1}})" ${next?'':'disabled'}>Suiv. →</button>
+  </div>
+  <div class="dots">${TENS.map((_,i)=>`<div class="dot" onclick="setState({tensIdx:${i}})" style="background:${i===tensIdx?'var(--blue)':learned['tens_'+i]?'var(--green)':'#DDD'}"></div>`).join('')}</div>
+</div>`;
+
+
+}
+
+// ─ OPERATIONS (add/sub) ─
+else if(page==='operations'||page==='subtraction'){
+const isAdd=page==='operations';
+const color=isAdd?'var(--green)':'var(--red)';
+const sym=isAdd?'+':'−';
+const aEmoji=NUMBERS[Math.min(opA-1,9)].emoji;
+const bEmoji=NUMBERS[Math.min(opB-1,9)].emoji;
+const ans=isAdd?opA+opB:opA-opB;
+const opts=makeOpOpts(ans);
+
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',opDone:false,opSelected:null,feedback:''})">← Retour</button>
+  <div class="page-title">${isAdd?'➕ Addition':'➖ Soustraction'}</div>
+
+  <div class="op-card" style="border-top:5px solid ${color}">
+    <div class="op-objects">
+      <div class="op-group">${Array(opA).fill(aEmoji).map((e,i)=>`<span style="font-size:26px;animation:appear .15s ${i*.04}s both">${e}</span>`).join('')}</div>
+      <div class="op-symbol">${sym}</div>
+      ${isAdd
+        ?`<div class="op-group">${Array(opB).fill(bEmoji).map((e,i)=>`<span style="font-size:26px;animation:appear .15s ${i*.04}s both">${e}</span>`).join('')}</div>`
+        :`<div class="op-group" style="position:relative">${Array(opA).fill(aEmoji).map((e,i)=>`<span style="font-size:26px;${i>=opA-opB?'opacity:.2;text-decoration:line-through':''}">${e}</span>`).join('')}</div>`
+      }
+    </div>
+    <div class="op-formula" style="color:#444;font-size:36px">${opA} ${sym} ${opB} = <span style="color:${opDone&&opSelected===ans?'var(--green)':opDone?'var(--red)':color}">${opDone?ans:'?'}</span></div>
+  </div>
+
+  <div class="feedback">${feedback}</div>
+
+  ${opDone
+    ?`<div class="btn-row">
+        <button class="btn" style="background:${color}" onclick="newOp('${page}')">Nouveau ! →</button>
+      </div>`
+    :`<div class="num-keyboard">
+        ${opts.map(n=>`<button class="num-key ${opSelected===n?(n===ans?'correct-ans':'wrong-ans'):''}"
+          onclick="answerOp(${n},${ans},'${page}')">${n}</button>`).join('')}
+      </div>`
+  }
+</div>`;
+
+
+}
+
+// ─ SHAPES ─
+else if(page==='shapes'){
+const shapesToShow=isGrande?SHAPES:SHAPES.filter(s=>['cercle','carre','triangle','rectangle','ovale','losange'].includes(s.id));
+app.innerHTML=` <div class="page"> <button class="back-btn" onclick="setState({page:'home'})">← Retour</button> <div class="page-title">🔵 Les formes</div> <div class="shapes-grid"> ${shapesToShow.map(s=>`<div class="shape-card ${learned['shape_'+s.id]?'learned':''}" onclick="openShape('${s.id}')"
+style="${learned['shape_'+s.id]?`border-color:${s.color}55;background:${s.color}10`:''}">
+<svg class="shape-svg" width="72" height="72" viewBox="0 0 100 100">${s.svg}</svg>
+<div class="shape-name-fr" style="color:${s.color}">${s.fr}</div>
+<div class="shape-name-en">${s.en} · <span style="font-size:10px;color:${s.dim==='3D'?'var(--purple)':'var(--blue)'}">${s.dim}</span></div>
+${learned['shape_'+s.id]?'<div style="font-size:12px;margin-top:3px">✅</div>':''}
+</div>`).join('')} </div> </div>`;
+}
+
+// ─ SHAPE DETAIL ─
+else if(page==='shape-detail'){
+const S=SHAPES.find(s=>s.id===shapeIdx);
+if(!S){setState({page:'shapes'});return}
+app.innerHTML=` <div class="page"> <button class="back-btn" onclick="setState({page:'shapes'})">← Retour</button> <div class="shape-detail-card" style="border-top:5px solid ${S.color}"> <svg width="120" height="120" viewBox="0 0 100 100" style="margin-bottom:10px">${S.svg}</svg> <div class="shape-name-fr" style="color:${S.color};font-size:24px;font-weight:900;margin-bottom:2px">${S.fr}</div> <div class="shape-name-en" style="font-size:14px">${S.en}</div> <div style="display:inline-block;background:${S.dim==='3D'?'var(--purple)':'var(--blue)'}22;color:${S.dim==='3D'?'var(--purple)':'var(--blue)'};border-radius:8px;padding:2px 10px;font-size:11px;font-weight:800;margin:8px 0">${S.dim}</div> ${S.facts.map(f=>`<div class="shape-fact">✓ ${f}</div>`).join('')} <div style="font-size:12px;color:#aaa;margin-top:10px">Exemples : ${S.ex}</div> </div> <div class="btn-row"> <button class="btn" style="background:${S.color}" onclick="markShape('${S.id}')"> ${learned['shape_'+S.id]?'✅ Je la connais !':'⭐ Je la connais !'} </button> </div> </div>`;
+}
+
+// ─ COMPLETION ─
+else if(page==='completion'){
+const {seq,ans}=completionSeq.length?{seq:completionSeq,ans:completionAns}:genCompAndStore();
+const opts=makeCompOpts(ans);
+app.innerHTML=`
+<div class="page">
+<button class="back-btn" onclick="setState({page:'home',completionDone:false,completionSel:null,feedback:''})">← Retour</button>
+<div class="page-title">❓ Complétion</div>
+
+
+  <div class="completion-card" style="border-top:5px solid var(--teal)">
+    <div style="font-size:12px;color:#bbb;font-weight:700;margin-bottom:12px">Trouve le nombre manquant !</div>
+    <div class="seq-display">
+      ${completionSeq.map((v,i)=>`
+        ${i>0?`<span class="seq-arrow">→</span>`:''}
+        ${v==='?'
+          ?`<div class="seq-blank" style="${completionDone?`border-color:${completionSel===ans?'var(--green)':'var(--red)'};background:${completionSel===ans?'#E8F5E9':'#FFEBEE'};color:${completionSel===ans?'var(--green)':'var(--red)'}`:''}">
+              ${completionDone?ans:completionSel||'?'}
+            </div>`
+          :`<div class="seq-num">${v}</div>`
+        }
+      `).join('')}
+    </div>
+    ${completionDone&&completionSel!==ans?`<div style="font-size:13px;color:var(--red);font-weight:700">La bonne réponse était ${ans}</div>`:''}
+  </div>
+
+  <div class="feedback">${feedback}</div>
+
+  ${completionDone
+    ?`<div class="btn-row"><button class="btn" style="background:var(--teal)" onclick="newCompletion()">Nouveau ! →</button></div>`
+    :`<div class="num-keyboard">
+        ${opts.map(n=>`<button class="num-key ${completionSel===n?(n===ans?'correct-ans':'wrong-ans'):''}"
+          onclick="answerCompletion(${n},${ans})">${n}</button>`).join('')}
+      </div>`
+  }
+</div>`;
+
+
+}
+
+// ─ QUIZ ─
+else if(page==='quiz'){
+if(!quizPool.length){
+const pool=makeQuiz(level);
+setState({quizPool:pool,quizIdx:0,quizAns:null,quizScore:0});return;
+}
+const Q=quizPool[quizIdx];
+if(!Q){showQuizResult();return;}
+
+
+let questionHTML='',optsHTML='';
+
+if(Q.type==='num-read'){
+  questionHTML=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:10px">Combien d'objets ?</div>
+    <div style="font-size:32px;letter-spacing:4px;line-height:1.6;max-width:280px;margin:0 auto;word-break:break-all">${Q.objects}</div>`;
+  optsHTML=Q.opts.map((o,i)=>optBtn(i,quizAns,Q.correct.n,`<span style="font-family:'Baloo 2';font-size:28px;font-weight:800;color:${['#FF6B9D','#FF9500','#4A90D9','#9B59B6'][i]}">${o.n}</span><div style="font-size:10px;color:#bbb">${o.word}</div>`)).join('');
+}
+else if(Q.type==='add'||Q.type==='sub'){
+  const sym=Q.type==='add'?'+':'−';
+  questionHTML=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:10px">${Q.question}</div>
+    <div style="font-family:'Baloo 2';font-size:48px;font-weight:800;color:#444">${Q.a} ${sym} ${Q.b} = ?</div>
+    <div style="font-size:24px;margin-top:8px">
+      ${Array(Q.a).fill(Q.aEmoji||'🔵').join('')}
+      ${Q.type==='add'?` <span style="opacity:.5">${sym}</span> ${Array(Q.b).fill(Q.bEmoji||'🔴').join('')}`:''}
+    </div>`;
+  optsHTML=Q.opts.slice(0,4).map((o,i)=>optBtn(i,quizAns,Q.ans,`<span style="font-family:'Baloo 2';font-size:28px;font-weight:800">${o}</span>`)).join('');
+}
+else if(Q.type==='shape'){
+  questionHTML=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:10px">Quelle est cette forme ?</div>
+    <svg width="90" height="90" viewBox="0 0 100 100">${Q.correct.svg}</svg>`;
+  optsHTML=Q.opts.map((o,i)=>{
+    const isC=quizAns!==null&&o.id===Q.correct.id;
+    const isW=quizAns!==null&&o.id===quizAns&&o.id!==Q.correct.id;
+    return `<button class="q-opt ${isC?'correct':isW?'wrong':''}" onclick="answerQuizQ('${o.id}','${Q.correct.id}')">
+      <svg width="32" height="32" viewBox="0 0 100 100" style="display:block;margin:0 auto 5px">${o.svg}</svg>
+      ${o.fr}
+    </button>`;
+  }).join('');
+}
+else if(Q.type==='complete'){
+  questionHTML=`<div style="font-size:13px;color:#bbb;font-weight:700;margin-bottom:12px">Trouve le nombre manquant</div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap">
+      ${Q.seq.map((v,i)=>`${i>0?'<span style="color:#ddd;font-size:16px">→</span>':''}
+        ${v==='?'?`<div style="width:48px;height:48px;background:#FFF3E0;border:3px solid var(--gold);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:'Baloo 2';font-size:22px;font-weight:800;color:var(--gold)">${quizAns!==null?Q.ans:'?'}</div>`
+        :`<span style="font-family:'Baloo 2';font-size:32px;font-weight:800;color:#444">${v}</span>`}`).join('')}
+    </div>`;
+  const wrongOpts=[Q.ans+1,Q.ans-1,Q.ans+2].filter(x=>x>=0&&x!==Q.ans).slice(0,3);
+  const allOpts=shuffle([Q.ans,...wrongOpts]);
+  optsHTML=allOpts.map((o,i)=>optBtn(i,quizAns,Q.ans,`<span style="font-family:'Baloo 2';font-size:28px;font-weight:800">${o}</span>`)).join('');
+}
+
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',quizPool:[],quizScore:0,quizAns:null})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:400px;margin-bottom:12px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${quizIdx+1}/${quizPool.length}</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
+  <div class="quiz-question">${questionHTML}</div>
+  <div class="feedback">${feedback}</div>
+  <div class="quiz-opts">${optsHTML}</div>
+</div>`;
+
+
+}
+
+// ─ RESULT ─
+else if(page==='result'){
+const pct=Math.round(quizScore/quizPool.length*100);
+const s=pct>=85?3:pct>=60?2:1;
+app.innerHTML=` <div class="page"> <div class="result-screen"> <div class="result-big">${s===3?'🏆':s===2?'⭐':'💪'}</div> <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / ${quizPool.length}</div> <div class="stars-row">${[0,1,2].map(j=>`<span>${j<s?'⭐':'☆'}</span>`).join('')}</div> <div style="font-size:14px;color:#888;text-align:center">${s===3?'Parfait ! Tout juste ! 🎉':s===2?'Très bien ! Continue 😊':'Courage, tu progresses ! 💪'}</div> <div class="btn-row" style="margin-top:8px"> <button class="btn" style="background:var(--gold)" onclick="setState({quizPool:[],quizIdx:0,quizScore:0,quizAns:null,page:'quiz',feedback:''})">🔄 Rejouer</button> <button class="btn btn-ghost" onclick="setState({page:'home',quizPool:[],quizScore:0,feedback:''})">🏠 Accueil</button> </div> </div> </div>`;
+confetti();
+}
+}
+
+// ── Helpers ──────────────────────────────────────
+function optBtn(i,ans,correct,inner){
+const isC=ans!==null&&ans===correct&&i===[0,1,2,3].indexOf(i);
+return `<button class="q-opt" onclick="answerQuizQ(${i},${correct})" data-opt="${i}">${inner}</button>`;
+}
+
+function makeOpOpts(ans){
+const wrongs=[ans+1,ans-1,ans+2,ans+3,ans-2].filter(x=>x>=0&&x<=20&&x!==ans);
+return shuffle([ans,...shuffle(wrongs).slice(0,ST.level==='petite'?4:9)].slice(0,ST.level==='petite'?5:10));
+}
+
+function makeCompOpts(ans){
+const wrongs=[ans+1,ans-1,ans+2,ans-2,ans+3].filter(x=>x>=0&&x!==ans);
+return shuffle([ans,...shuffle(wrongs).slice(0,4)]).slice(0,5);
+}
+
+function genCompAndStore(){
+const c=genCompletion(ST.level);
+ST.completionSeq=c.seq;ST.completionAns=c.ans;ST.completionSel=null;ST.completionDone=false;
+return{seq:c.seq,ans:c.ans};
+}
+
+// ── Actions ──────────────────────────────────────
+function setLevel(l){ST.level=l;save();setState({page:'home'})}
+
+function openModule(id){
+if(id==='numbers')    setState({page:'numbers',numIdx:0});
+else if(id==='tens')  setState({page:'tens',tensIdx:0});
+else if(id==='operations') { const o=genOp('add',ST.level); setState({page:'operations',opA:o.a,opB:o.b,opSelected:null,opDone:false,feedback:''}); }
+else if(id==='subtraction') { const o=genOp('sub',ST.level); setState({page:'subtraction',opA:o.a,opB:o.b,opSelected:null,opDone:false,feedback:''}); }
+else if(id==='shapes') setState({page:'shapes'});
+else if(id==='completion'){ genCompAndStore(); setState({page:'completion',feedback:''}); }
+else if(id==='quiz')  setState({page:'quiz',quizPool:[],quizIdx:0,quizScore:0,quizAns:null,feedback:''});
+}
+
+function markModule(mod,idx){
+ST.learned[mod+'_'+idx]=true;
+if(!ST.stars[mod]) ST.stars[mod]=0;
+ST.stars[mod]=Math.min(ST.stars[mod]+1,3);
+save();toast('⭐ Bien joué !');render();
+}
+
+function markShape(id){
+ST.learned['shape_'+id]=true;
+if(!ST.stars.shapes)ST.stars.shapes=0;
+ST.stars.shapes=Math.min(ST.stars.shapes+1,3);
+save();toast('⭐ Forme apprise !');render();
+}
+
+function openShape(id){setState({page:'shape-detail',shapeIdx:id})}
+
+function answerOp(selected,ans,page){
+if(ST.opDone)return;
+const ok=selected===ans;
+ST.opSelected=selected;ST.opDone=true;
+ST.feedback=ok?'🎉 Bravo !':'💪 La réponse était '+ans;
+if(ok){if(!ST.stars[page==='operations'?'add':'sub'])ST.stars[page==='operations'?'add':'sub']=0;ST.stars[page==='operations'?'add':'sub']=Math.min(ST.stars[page==='operations'?'add':'sub']+1,3);save();}
+render();
+}
+
+function newOp(page){
+const type=page==='operations'?'add':'sub';
+const o=genOp(type,ST.level);
+setState({opA:o.a,opB:o.b,opSelected:null,opDone:false,feedback:''});
+}
+
+function answerCompletion(selected,ans){
+if(ST.completionDone)return;
+const ok=selected===ans;
+ST.completionSel=selected;ST.completionDone=true;
+ST.feedback = ok ? "🎉 Parfait !" : "💪 C'était " + ans;
+if(ok){if(!ST.stars.completion)ST.stars.completion=0;ST.stars.completion=Math.min(ST.stars.completion+1,3);save();}
+render();
+}
+
+function newCompletion(){genCompAndStore();setState({feedback:''})}
+
+function answerQuizQ(selected,correct){
+if(ST.quizAns!==null)return;
+const ok=selected===correct||selected==correct;
+const score=ok?ST.quizScore+1:ST.quizScore;
+const fb=ok?['🎉 Bravo !','⭐ Parfait !','✅ Exact !'][~~(Math.random()*3)]:'💪 Presque !';
+ST.quizAns=selected;ST.quizScore=score;ST.feedback=fb;
+render();
+setTimeout(()=>{
+const next=ST.quizIdx+1;
+if(next>=ST.quizPool.length){showQuizResult();return;}
+ST.quizIdx=next;ST.quizAns=null;ST.feedback='';
+render();
+},1100);
+}
+
+function showQuizResult(){
+const pct=Math.round(ST.quizScore/ST.quizPool.length*100);
+const s=pct>=85?3:pct>=60?2:1;
+ST.stars.quiz=Math.max(ST.stars.quiz||0,s);
+save();setState({page:'result'});confetti();
+}
+
+render();
+</script>
+
+</body>
+</html>
