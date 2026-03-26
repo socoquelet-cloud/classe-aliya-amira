@@ -13,15 +13,15 @@ html,body{height:100%;-webkit-tap-highlight-color:transparent}
 #app{min-height:100vh}
 
 :root{
-–bg1:#FFF8F0;–bg2:#FFF0FA;–bg3:#F0F8FF;
-–gold:#FF9500;–pink:#FF6B9D;–blue:#4A90D9;–green:#4CAF50;
-–script:'Caveat',cursive;
-–print:'Patrick Hand',cursive;
-–ui:'Nunito',sans-serif;
+--bg1:#FFF8F0;--bg2:#FFF0FA;--bg3:#F0F8FF;
+--gold:#FF9500;--pink:#FF6B9D;--blue:#4A90D9;--green:#4CAF50;
+--script:'Caveat',cursive;
+--print:'Patrick Hand',cursive;
+--ui:'Nunito',sans-serif;
 }
 
 /* ── HOME ── */
-.home{min-height:100vh;background:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);padding:24px 16px 60px;font-family:var(–ui)}
+.home{min-height:100vh;background:linear-gradient(135deg,#FFF8F0 0%,#FFF0FA 50%,#F0F8FF 100%);padding:24px 16px 60px;font-family:var(--ui)}
 .hero{text-align:center;margin-bottom:24px;animation:fadeDown .5s ease both}
 .hero-title{font-size:26px;font-weight:900;background:linear-gradient(90deg,#FF9500,#FF6B9D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
 .hero-sub{font-size:12px;color:#bbb;font-weight:700}
@@ -36,13 +36,13 @@ html,body{height:100%;-webkit-tap-highlight-color:transparent}
 /* global progress strip */
 .prog-strip{background:#fff;border-radius:18px;padding:14px 18px;max-width:440px;margin:0 auto 20px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
 .prog-strip .row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;font-weight:700;color:#888}
-.prog-strip .row span:last-child{color:var(–gold)}
+.prog-strip .row span:last-child{color:var(--gold)}
 .bar-track{background:#F0F0F0;border-radius:99px;height:10px;overflow:hidden}
 .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#FFD700,#FF6B9D);transition:width .6s}
 
 /* mode buttons */
 .modes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:440px;margin:0 auto 24px}
-.mode-card{background:#fff;border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .18s;font-family:var(–ui)}
+.mode-card{background:#fff;border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.07);border:2.5px solid transparent;transition:all .18s;font-family:var(--ui)}
 .mode-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
 .mode-card:active{transform:scale(.96)}
 .mode-card .mc-icon{font-size:32px;margin-bottom:8px}
@@ -50,44 +50,46 @@ html,body{height:100%;-webkit-tap-highlight-color:transparent}
 .mode-card .mc-desc{font-size:10px;color:#bbb}
 
 /* alphabet grid */
-.alpha-title{font-weight:900;color:#666;font-size:14px;max-width:440px;margin:0 auto 10px;font-family:var(–ui)}
+.alpha-title{font-weight:900;color:#666;font-size:14px;max-width:440px;margin:0 auto 10px;font-family:var(--ui)}
 .alpha-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;max-width:440px;margin:0 auto}
 .alpha-cell{background:#fff;border-radius:12px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07);border:2px solid transparent;transition:all .18s;position:relative}
 .alpha-cell:active{transform:scale(.92)}
-.alpha-cell .ac-letter{font-family:var(–script);font-size:22px;font-weight:700;line-height:1}
+.alpha-cell .ac-letter{font-family:var(--script);font-size:22px;font-weight:700;line-height:1}
 .alpha-cell .ac-dot{width:6px;height:6px;border-radius:50%;margin-top:3px}
-.alpha-cell.learned{border-color:var(–green)}
+.alpha-cell.learned{border-color:var(--green)}
 .alpha-cell .ac-check{position:absolute;top:2px;right:3px;font-size:9px}
 
+
+
 /* ── PAGE LETTRE ── */
-.page{min-height:100vh;background:linear-gradient(135deg,#FFF8F0,#FFF0FA,#F0F8FF);padding:18px 16px 56px;display:flex;flex-direction:column;align-items:center;font-family:var(–ui)}
-.back-btn{align-self:flex-start;background:rgba(0,0,0,.06);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:var(–ui);color:#666;margin-bottom:14px;font-weight:700}
+.page{min-height:100vh;background:linear-gradient(135deg,#FFF8F0,#FFF0FA,#F0F8FF);padding:18px 16px 56px;display:flex;flex-direction:column;align-items:center;font-family:var(--ui)}
+.back-btn{align-self:flex-start;background:rgba(0,0,0,.06);border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:var(--ui);color:#666;margin-bottom:14px;font-weight:700}
 .letter-hero{text-align:center;margin-bottom:20px;width:100%;max-width:400px}
-.letter-big{font-family:var(–script);font-size:96px;font-weight:700;line-height:1;margin-bottom:6px}
+.letter-big{font-family:var(--script);font-size:96px;font-weight:700;line-height:1;margin-bottom:6px}
 .letter-forms{display:flex;justify-content:center;gap:16px;margin-bottom:10px}
 .form-box{background:#fff;border-radius:14px;padding:8px 14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .form-label{font-size:9px;color:#bbb;font-weight:700;text-transform:uppercase;margin-bottom:3px}
-.form-script{font-family:var(–script);font-size:24px;font-weight:700;line-height:1.2}
-.form-print{font-family:var(–print);font-size:22px;line-height:1.2}
+.form-script{font-family:var(--script);font-size:24px;font-weight:700;line-height:1.2}
+.form-print{font-family:var(--print);font-size:22px;line-height:1.2}
 
 /* card */
 .letter-card{background:#fff;border-radius:24px;padding:28px 24px;text-align:center;width:100%;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.08);margin-bottom:18px}
 .word-emoji{font-size:72px;margin-bottom:10px}
-.word-fr{font-family:var(–script);font-size:36px;font-weight:700;margin-bottom:4px}
-.word-en{font-family:var(–print);font-size:18px;color:#888;margin-bottom:4px}
-.word-letter-highlight{color:var(–gold)}
+.word-fr{font-family:var(--script);font-size:36px;font-weight:700;margin-bottom:4px}
+.word-en{font-family:var(--print);font-size:18px;color:#888;margin-bottom:4px}
+.word-letter-highlight{color:var(--gold)}
 .word-sub{font-size:11px;color:#ccc;font-weight:700}
 
 /* mode selector */
 .mode-pills{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
-.mode-pill{border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(–ui);transition:all .18s}
+.mode-pill{border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--ui);transition:all .18s}
 .mode-pill.active{color:#fff}
 .mode-pill:not(.active){background:#F0F0F0;color:#888}
 
 /* quiz */
 .quiz-q{background:#fff;border-radius:20px;padding:24px 20px;text-align:center;width:100%;max-width:380px;margin-bottom:16px;box-shadow:0 6px 18px rgba(0,0,0,.07)}
 .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:380px}
-.qopt{background:#F8F8F8;border:2px solid #EEE;border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;font-family:var(–ui);font-weight:800;font-size:14px;transition:all .2s}
+.qopt{background:#F8F8F8;border:2px solid #EEE;border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;font-family:var(--ui);font-weight:800;font-size:14px;transition:all .2s}
 .qopt:active{transform:scale(.96)}
 .qopt.correct{background:#E8F5E9;border-color:#4CAF50;color:#2E7D32}
 .qopt.wrong{background:#FFEBEE;border-color:#F44336;color:#C62828}
@@ -96,14 +98,14 @@ html,body{height:100%;-webkit-tap-highlight-color:transparent}
 /* order mode */
 .order-area{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:400px;margin-bottom:20px;min-height:50px;padding:12px;background:#fff;border-radius:16px;border:2.5px dashed #E0E0E0;width:100%}
 .order-letters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:400px;margin-bottom:16px}
-.o-tile{background:#fff;border:2px solid #E0E0E0;border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(–script);font-size:22px;font-weight:700;transition:all .18s;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.o-tile{background:#fff;border:2px solid #E0E0E0;border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--script);font-size:22px;font-weight:700;transition:all .18s;box-shadow:0 2px 6px rgba(0,0,0,.06)}
 .o-tile:active{transform:scale(.92)}
-.o-tile.placed{background:#FFF8E1;border-color:var(–gold)}
-.o-tile.correct-final{background:#E8F5E9;border-color:var(–green)}
+.o-tile.placed{background:#FFF8E1;border-color:var(--gold)}
+.o-tile.correct-final{background:#E8F5E9;border-color:var(--green)}
 .o-tile.wrong-final{background:#FFEBEE;border-color:#F44336}
 
 /* buttons */
-.btn{border:none;border-radius:14px;padding:12px 24px;font-weight:800;font-size:14px;cursor:pointer;font-family:var(–ui);transition:transform .12s;color:#fff}
+.btn{border:none;border-radius:14px;padding:12px 24px;font-weight:800;font-size:14px;cursor:pointer;font-family:var(--ui);transition:transform .12s;color:#fff}
 .btn:active{transform:scale(.95)}
 .btn:disabled{opacity:.25;cursor:not-allowed}
 .btn-ghost{background:rgba(0,0,0,.08);color:#666}
@@ -121,11 +123,13 @@ html,body{height:100%;-webkit-tap-highlight-color:transparent}
 @keyframes cfall{to{transform:translateY(115vh) rotate(720deg);opacity:0}}
 
 /* toast */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(50,50,80,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap;font-family:var(–ui)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(50,50,80,.95);border-radius:14px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;z-index:500;animation:fadeUp .3s ease both;white-space:nowrap;font-family:var(--ui)}
 </style>
 
 </head>
 <body>
+<button onclick="window.location.href='index.html'"
+style="position:fixed;top:12px;left:12px;z-index:9999;background:#fff;border:none;border-radius:14px;padding:8px 12px;font-weight:800;color:#666;box-shadow:0 4px 10px rgba(0,0,0,.15);cursor:pointer;font-family:'Nunito',sans-serif">← Hub</button>
 <div id="app"></div>
 <script>
 // ══════════════════════════════════════════════════
@@ -219,24 +223,23 @@ return shuffle(letters.map(l=>l.l));
 // ══════════════════════════════════════════════════
 // RENDER
 // ══════════════════════════════════════════════════
+
 function render(){
 const app = document.getElementById('app');
-const {page,letterIdx,cardIdx,mode,quizOpts,quizAns,quizScore,
-orderPlaced,orderShuffled,orderDone,result,learned,progress} = state;
+const {page,letterIdx,cardIdx,quizOpts,quizAns,quizScore,
+orderPlaced,orderShuffled,orderDone,learned,progress} = state;
 
 const totalLearned = Object.keys(learned).length;
-const totalProgress = Object.values(progress).reduce((a,b)=>a+b,0);
 
 // ─ HOME ─────────────────────────────────────────
 if(page==='home'){
 app.innerHTML=`
 <div class="home">
-<div class="hero">
-<span class="hero-emoji">🔤</span>
-<div class="hero-title">L'Alphabet</div>
-<div class="hero-sub">La classe d'Aliya & Amira · 🇫🇷 🇬🇧</div>
-</div>
-
+  <div class="hero">
+    <span class="hero-emoji">🔤</span>
+    <div class="hero-title">L'Alphabet</div>
+    <div class="hero-sub">La classe d'Aliya & Amira · 🇫🇷 🇬🇧</div>
+  </div>
 
   <div class="prog-strip">
     <div class="row"><span>⭐ Lettres connues</span><span>${totalLearned}/26</span></div>
@@ -245,10 +248,10 @@ app.innerHTML=`
 
   <div class="modes-grid">
     ${[
-      {id:'decouverte', icon:'👀', title:'Découverte',      desc:'Explore chaque lettre',         color:'#FF9500'},
-      {id:'repetition', icon:'🎤', title:'Répète !',        desc:'Dis la lettre à voix haute',    color:'#FF6B9D'},
-      {id:'quiz',       icon:'🎯', title:'Quiz',            desc:'Trouve la bonne lettre',        color:'#4A90D9'},
-      {id:'ordre',      icon:'🔢', title:'Ordre alpha...',    desc:'Remets les lettres en ordre',   color:'#9B59B6'},
+      {id:'decouverte', icon:'👀', title:'Découverte', desc:'Explore chaque lettre', color:'#FF9500'},
+      {id:'repetition', icon:'🎤', title:'Répète !', desc:'Dis la lettre à voix haute', color:'#FF6B9D'},
+      {id:'quiz', icon:'🎯', title:'Quiz', desc:'Trouve la bonne lettre', color:'#4A90D9'},
+      {id:'ordre', icon:'🔢', title:'Ordre alpha...', desc:'Remets les lettres en ordre', color:'#9B59B6'},
     ].map(m=>`<div class="mode-card" onclick="startMode('${m.id}')" style="border-color:${m.color}33">
       <div class="mc-icon">${m.icon}</div>
       <div class="mc-title" style="color:${m.color}">${m.title}</div>
@@ -259,15 +262,13 @@ app.innerHTML=`
   <div class="alpha-title">🔤 Toutes les lettres</div>
   <div class="alpha-grid">
     ${ALPHABET.map((l,i)=>`
-      <div class="alpha-cell ${learned[l.l]?'learned':''}" onclick="openLetter(${i})" style="${learned[l.l]?`border-color:${l.color}55;background:${l.color}12`:''};background:${learned[l.l]?l.color+'12':'#fff'}">
+      <div class="alpha-cell ${learned[l.l]?'learned':''}" onclick="openLetter(${i})" style="background:${learned[l.l]?l.color+'12':'#fff'}">
         <div class="ac-letter" style="color:${l.color}">${l.l}</div>
         <div class="ac-dot" style="background:${learned[l.l]?l.color:'#E0E0E0'}"></div>
         ${learned[l.l]?`<span class="ac-check">✅</span>`:''}
       </div>`).join('')}
   </div>
 </div>`;
-```
-
 }
 
 // ─ LETTRE (fiche) ────────────────────────────────
@@ -277,7 +278,6 @@ const prev = letterIdx > 0;
 const next = letterIdx < 25;
 const isLearned = !!learned[L.l];
 
-```
 app.innerHTML=`
 <div class="page">
   <button class="back-btn" onclick="setState({page:'home'})">← Retour</button>
@@ -315,8 +315,8 @@ app.innerHTML=`
   <div class="mode-pills">
     ${[
       {id:'decouverte',label:'👀 Découverte',color:'#FF9500'},
-      {id:'quiz',      label:'🎯 Quiz',      color:'#4A90D9'},
-      {id:'ordre',     label:'🔢 Ordre',     color:'#9B59B6'},
+      {id:'quiz',label:'🎯 Quiz',color:'#4A90D9'},
+      {id:'ordre',label:'🔢 Ordre',color:'#9B59B6'},
     ].map(m=>`<button class="mode-pill" style="background:${m.color}20;color:${m.color}" onclick="startMode('${m.id}',${letterIdx})">${m.label}</button>`).join('')}
   </div>
 
@@ -324,19 +324,17 @@ app.innerHTML=`
     ${ALPHABET.map((_,i)=>`<div class="dot" onclick="setState({letterIdx:${i}})" style="background:${i===letterIdx?L.color:learned[ALPHABET[i].l]?ALPHABET[i].color+'88':'#DDD'}"></div>`).join('')}
   </div>
 </div>`;
-```
-
 }
 
-// ─ MODE DÉCOUVERTE (toutes les lettres en flashcard) ──
+// ─ MODE DÉCOUVERTE ───────────────────────────────
 else if(page==='mode-decouverte'){
 const L = ALPHABET[cardIdx];
 const last = cardIdx === 25;
-app.innerHTML=
-<div class="page">
-<button class="back-btn" onclick="setState({page:'home'})">← Accueil</button>
-<div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:14px">${cardIdx+1} / 26</div>
 
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home'})">← Accueil</button>
+  <div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:14px">${cardIdx+1} / 26</div>
 
   <div class="letter-card" style="border-top:5px solid ${L.color};cursor:pointer" onclick="openLetter(${cardIdx})">
     <div class="letter-big" style="color:${L.color};font-size:80px">${L.l}</div>
@@ -363,20 +361,18 @@ app.innerHTML=
     ${ALPHABET.map((_,i)=>`<div class="dot" onclick="setState({cardIdx:${i}})" style="background:${i===cardIdx?L.color:learned[ALPHABET[i].l]?ALPHABET[i].color+'99':'#DDD'}"></div>`).join('')}
   </div>
 </div>`;
-```
-
 }
 
 // ─ MODE RÉPÉTITION ───────────────────────────────
 else if(page==='mode-repetition'){
 const L = ALPHABET[cardIdx];
 const last = cardIdx === 25;
-app.innerHTML=
-<div class="page">
-<button class="back-btn" onclick="setState({page:'home'})">← Accueil</button>
-<div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:14px">${cardIdx+1} / 26</div>
-<div class="section-title" style="font-size:15px;font-weight:900;margin-bottom:14px;color:#666">🎤 Dis cette lettre à voix haute !</div>
 
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home'})">← Accueil</button>
+  <div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:14px">${cardIdx+1} / 26</div>
+  <div class="section-title" style="font-size:15px;font-weight:900;margin-bottom:14px;color:#666">🎤 Dis cette lettre à voix haute !</div>
 
   <div class="letter-card" style="border-top:5px solid ${L.color}">
     <div class="letter-big" style="color:${L.color};font-size:88px">${L.l}</div>
@@ -391,7 +387,7 @@ app.innerHTML=
   <div class="btns-row">
     <button class="btn btn-ghost" onclick="setState({cardIdx:${cardIdx-1}})" ${cardIdx===0?'disabled':''}>← Préc.</button>
     <button class="btn" style="background:${L.color}" onclick="markLearned(${cardIdx});setState({cardIdx:${last?cardIdx:cardIdx+1}})">
-      ${last?'🎉 Terminé !':'Je l\'ai dit ! →'}
+      ${last?'🎉 Terminé !':"Je l'ai dit ! →"}
     </button>
   </div>
 
@@ -399,21 +395,19 @@ app.innerHTML=
     ${ALPHABET.map((_,i)=>`<div class="dot" onclick="setState({cardIdx:${i}})" style="background:${i===cardIdx?L.color:learned[ALPHABET[i].l]?ALPHABET[i].color+'99':'#DDD'}"></div>`).join('')}
   </div>
 </div>`;
-```
-
 }
 
 // ─ MODE QUIZ ─────────────────────────────────────
 else if(page==='mode-quiz'){
 const L = ALPHABET[cardIdx];
-app.innerHTML=
-<div class="page">
-<button class="back-btn" onclick="setState({page:'home',quizScore:0,quizAns:null})">← Accueil</button>
-<div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:14px">
-<span style="font-size:11px;color:#bbb;font-weight:700">${cardIdx+1} / 26</span>
-<span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
-</div>
 
+app.innerHTML=`
+<div class="page">
+  <button class="back-btn" onclick="setState({page:'home',quizScore:0,quizAns:null})">← Accueil</button>
+  <div style="display:flex;justify-content:space-between;width:100%;max-width:380px;margin-bottom:14px">
+    <span style="font-size:11px;color:#bbb;font-weight:700">${cardIdx+1} / 26</span>
+    <span style="font-size:14px;font-weight:900;color:var(--gold)">⭐ ${quizScore}</span>
+  </div>
 
   <div class="quiz-q">
     <div style="font-size:11px;color:#bbb;font-weight:700;margin-bottom:12px">Quelle lettre commence ce mot ?</div>
@@ -436,23 +430,19 @@ app.innerHTML=
 
   ${cardIdx===25&&quizAns!==null?`<div style="margin-top:14px"><button class="btn" style="background:var(--gold);color:#fff" onclick="showResult()">Voir mon score 🎉</button></div>`:''}
 </div>`;
-```
-
 }
 
 // ─ MODE ORDRE ────────────────────────────────────
 else if(page==='mode-ordre'){
-const targetLetters = orderShuffled.slice().sort(); // correct order
+const targetLetters = orderShuffled.slice().sort();
 const correct = orderPlaced.join('')===targetLetters.join('') && orderPlaced.length===targetLetters.length;
 
-```
 app.innerHTML=`
 <div class="page">
   <button class="back-btn" onclick="setState({page:'home'})">← Accueil</button>
   <div style="font-size:14px;font-weight:900;color:#666;margin-bottom:6px;text-align:center">🔢 Remets dans l'ordre !</div>
   <div style="font-size:11px;color:#bbb;margin-bottom:18px;text-align:center">De la plus petite à la plus grande</div>
 
-  <!-- Zone de dépôt -->
   <div style="font-size:10px;color:#bbb;font-weight:700;margin-bottom:6px;text-align:center">TON ORDRE</div>
   <div class="order-area" id="placed-area">
     ${orderPlaced.map((l,i)=>{
@@ -462,10 +452,9 @@ app.innerHTML=`
     ${orderPlaced.length===0?`<span style="color:#ddd;font-size:13px;font-family:var(--ui)">Appuie sur les lettres ↓</span>`:''}
   </div>
 
-  <!-- Lettres à placer -->
   <div style="font-size:10px;color:#bbb;font-weight:700;margin-bottom:8px;text-align:center">LES LETTRES</div>
   <div class="order-letters">
-    ${orderShuffled.map((l,i)=>{
+    ${orderShuffled.map((l)=>{
       const La = ALPHABET.find(x=>x.l===l);
       const placed = orderPlaced.includes(l);
       return `<div class="o-tile ${placed?'placed':''}" onclick="${placed?'':`placeLetter('${l}')`}" style="border-color:${placed?'#E0E0E0':La.color};color:${placed?'#DDD':La.color};${placed?'cursor:default;opacity:.4':''}">
@@ -476,25 +465,35 @@ app.innerHTML=`
 
   <div class="btns-row">
     <button class="btn btn-ghost" onclick="resetOrder()">🔄 Recommencer</button>
-    ${orderPlaced.length===orderShuffled.length&&!orderDone
-      ?`<button class="btn" style="background:var(--gold)" onclick="checkOrder()">Vérifier ✓</button>`:''}
+    ${orderPlaced.length===orderShuffled.length&&!orderDone?`<button class="btn" style="background:var(--gold)" onclick="checkOrder()">Vérifier ✓</button>`:''}
   </div>
 
   ${orderDone?`<div style="text-align:center;margin-top:10px;font-size:28px;animation:pop .4s ease">${correct?'🎉 Parfait !':'💪 Presque ! Réessaie'}</div>
   <button class="btn" style="background:var(--pink);margin-top:12px" onclick="nextOrder()">Ensemble suivant →</button>`:''}
 </div>`;
-```
-
 }
 
 // ─ RÉSULTAT QUIZ ─────────────────────────────────
 else if(page==='result'){
 const pct = Math.round(quizScore/26*100);
 const stars = pct>=85?3:pct>=60?2:1;
-app.innerHTML= <div class="page"> <div class="result"> <div class="result-emoji">${stars===3?'🏆':stars===2?'⭐':'💪'}</div> <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / 26</div> <div class="stars-row">${[0,1,2].map(j=>`<span>${j<stars?'⭐':'☆'}</span>`).join('')}</div> <div style="font-size:14px;color:#888;text-align:center">${stars===3?'Parfait ! Tu connais tout l\'alphabet ! 🎉':stars===2?'Très bien ! Continue à t\'entraîner 😊':'Continue, tu y arrives ! 💪'}</div> <div class="btns-row" style="margin-top:8px"> <button class="btn" style="background:var(--gold)" onclick="startMode('quiz')">🔄 Rejouer</button> <button class="btn btn-ghost" onclick="setState({page:'home',quizScore:0,quizAns:null})">🏠 Accueil</button> </div> </div> </div>`;
+app.innerHTML=`
+<div class="page">
+  <div class="result">
+    <div class="result-emoji">${stars===3?'🏆':stars===2?'⭐':'💪'}</div>
+    <div style="font-size:22px;font-weight:900;color:#444">${quizScore} / 26</div>
+    <div class="stars-row">${[0,1,2].map(j=>`<span>${j<stars?'⭐':'☆'}</span>`).join('')}</div>
+    <div style="font-size:14px;color:#888;text-align:center">${stars===3?"Parfait ! Tu connais tout l'alphabet ! 🎉":stars===2?"Très bien ! Continue à t'entraîner 😊":"Continue, tu y arrives ! 💪"}</div>
+    <div class="btns-row" style="margin-top:8px">
+      <button class="btn" style="background:var(--gold)" onclick="startMode('quiz')">🔄 Rejouer</button>
+      <button class="btn btn-ghost" onclick="setState({page:'home',quizScore:0,quizAns:null})">🏠 Accueil</button>
+    </div>
+  </div>
+</div>`;
 confetti();
 }
 }
+
 
 // ══════════════════════════════════════════════════
 // ACTIONS
@@ -566,6 +565,7 @@ const nextStart = (curIdx+5)%26;
 const sh = makeOrderSet(nextStart);
 setState({orderShuffled:sh,orderPlaced:[],orderDone:false});
 }
+
 
 render();
 </script>
